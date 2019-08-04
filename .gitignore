@@ -9,3 +9,4 @@ WebApp/WebApp.csproj.user
 .vs/Naandi/v16/Server/sqlite3/db.lock
 .vs/Naandi/v16/Server/sqlite3/storage.ide
 .vs/
+Json samples/registrationrequest.json
