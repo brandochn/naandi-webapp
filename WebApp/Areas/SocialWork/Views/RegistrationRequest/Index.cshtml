@@ -1,0 +1,146 @@
+﻿@model WebApp.Areas.SocialWork.Models.RegistrationRequestViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-uppercase text-center">solicitud de ingreso</h3>
+            <br />
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <p class="text-uppercase">Guardadas recientemente</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between bg-primary">
+                    <div>
+                        @Html.ActionLink("+ Nuevo", "ShowForm", "RegistrationRequest", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-success" })
+                    </div>
+                    <div class="col-md-6">
+                        <input onkeydown="AddSearchBoxKeyDownEvent(event)" type="search" class="form-control" id="searchInput" placeholder="Busca por el nombre de la menor ...">
+                    </div>
+                    <div></div>
+                </div>
+                <div class="card-body pb-4">
+                    <div id="RegistrationRequestTable">
+                        @await Html.PartialAsync("_RegistrationRequestTable", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalwindow" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Confirmación</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center">¿Deseas borrar este registro?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button id="btnyes" class="btn btn-primary">Si</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script type="text/javascript">
+
+        let SearchRegistrationRequestsByMinorName = function (searchItem) {
+
+            if (searchItem === null || searchItem === '') {
+                searchItem = "_all_";
+            }
+
+            let url = '@Url.Action("SearchRegistrationRequestsByMinorName", "RegistrationRequest", new { Area = "SocialWork", minorName = "replace1" }, null)';
+
+            url = url.replace("replace1", searchItem);
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                cache: false,
+                success: function (response) {
+                    $('#RegistrationRequestTable').html(response);
+                    $('#RegistrationRequestTableId').DataTable({ searching: false, "order": [[ 0, "desc" ]] });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+            });
+    }
+
+    let AddSearchBoxKeyDownEvent = function (event) {
+
+        let searchItem = "";
+        if (event.which === 13) {
+                searchItem = $('#searchInput').val();
+                SearchRegistrationRequestsByMinorName(searchItem);
+                event.preventDefault();
+                return false;
+        } else if (event.which === 8 || event.which === 46) {
+             searchItem = $('#searchInput').val();
+            if (searchItem === null || (searchItem.length - 1) === 0) {
+                    searchItem = "_all_";
+                    SearchRegistrationRequestsByMinorName(searchItem);
+                    return false;
+            }
+        }
+    }
+
+    $('#modalwindow').on('show.bs.modal', function (event) {
+
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var registrationrequestid = button.data('registrationrequestid'); // Extract info from data-* attributes
+        var minorfullname = button.data('minorfullname');
+        var modal = $(this);
+        modal.find('#btnyes').attr('data-registrationrequestid', registrationrequestid);
+        modal.find('.modal-body p').html('¿Deseas borrar la solicitud de registro de ' + '<span class="font-weight-bold">' + minorfullname + '</span>' + '?');
+    });
+
+    $(function() {
+        $("#btnyes").click( function(){
+            var button = $(this);
+            let id = button.attr('data-registrationrequestid');
+            $.ajax({
+                url: '@Url.Action("Delete", "RegistrationRequest", new { Area = "SocialWork" })',
+                type: 'POST',
+                dataType: 'json',
+                cache: false,
+                data: { Id: id },
+                success: function ( data, textStatus, jQxhr ) {
+                    location.reload(true);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+            });
+
+           }
+        );
+    });
+
+    $(document).ready( function () {
+        $('#RegistrationRequestTableId').DataTable({ searching: false, "order": [[ 0, "desc" ]] });
+    });
+
+    </script>
+}

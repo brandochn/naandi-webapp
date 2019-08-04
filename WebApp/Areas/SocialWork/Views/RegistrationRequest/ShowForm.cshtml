@@ -1,0 +1,498 @@
+﻿@model WebApp.Areas.SocialWork.Models.RegistrationRequestViewModel
+
+@{
+    ViewData["Title"] = "Solicitud de ingreso";
+}
+
+@if (ViewData.ModelState.IsValid == false)
+{
+    <div class="alert alert-danger">
+        <h4 class="text-danger">Errores:</h4>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    </div>
+}
+
+<form method="post" class="container">
+    <div class="card row shadow-sm">
+        <h2 class="text-center text-uppercase mt-4">
+            solicitud de ingreso
+        </h2>
+        <div class="card-body">
+            <input type="hidden" asp-for="Id" value="@Model.Id" />
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label>Supo del albergue por</label>
+                    <input type="text" asp-for="HowYouHearAboutUs" class="form-control" value="@Model.HowYouHearAboutUs" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label>Fecha de solicitud</label>
+                    <input type="text" readonly asp-for="CreationDate" class="form-control" value="@Model.CreationDate.ToString("dd/MM/yyyy")" />
+                </div>
+                 <div class="form-group col-md-4">
+                        <label>Estatus de la solicitud</label>
+                        @Html.DropDownListFor(x => Model.RegistrationRequestStatusId, new SelectList(Model.RegistrationRequestStatusList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "RegistrationRequestStatus" })
+                 </div>
+            </div>
+            <div class="card">
+                <h5 class="card-header text-center text-white bg-primary">
+                    Datos del solicitante
+                </h5>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-9">
+                            <label>Nombre de solicitante</label>
+                            @if (Model.Requestor == null)
+                            {
+                                <input type="text" asp-for="Requestor.FullName" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.FullName" class="form-control" value="@Model.Requestor.FullName" />
+                            }
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Edad</label>
+                            @if (Model.Requestor == null)
+                            {
+                                <input type="text" asp-for="Requestor.Age" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Age" class="form-control" value="@Model.Requestor.Age" />
+                            }
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Lugar de nacimiento</label>
+                            @if (Model.Requestor == null)
+                            {
+                                <input type="text" asp-for="Requestor.PlaceOfBirth" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.PlaceOfBirth" class="form-control" value="@Model.Requestor.PlaceOfBirth" />
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Fecha de nacimiento</label>
+                            @if (Model.Requestor == null)
+                            {
+                                <input type="date" asp-for="Requestor.DateOfBirth" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="date" asp-for="Requestor.DateOfBirth" class="form-control" value="@Model.Requestor.DateOfBirth.ToString("yyyy-MM-dd")" />
+                            }
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Estado civil</label>
+                            @Html.DropDownListFor(x => Model.Requestor.MaritalStatusId, new SelectList(Model.MaritalStatusList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "MaritalStatus" })
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Escolaridad</label>
+                            @if (Model.Requestor == null)
+                            {
+                                <input type="text" asp-for="Requestor.Education" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Education" class="form-control" value="@Model.Requestor.Education" />
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Ocupación</label>
+                            @if (Model.Requestor == null)
+                            {
+                                <input type="text" asp-for="Requestor.CurrentOccupation" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.CurrentOccupation" class="form-control" value="@Model.Requestor.CurrentOccupation" />
+                            }
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Parentesco</label>
+                            @Html.DropDownListFor(x => Model.Requestor.RelationshipId, new SelectList(Model.RelationshipList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "Relationship" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="card">
+                <h5 class="card-header text-center text-white bg-primary">
+                    Dirección
+                </h5>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Calle</label>
+                            @if (Model.Requestor == null || Model.Requestor.Address == null)
+                            {
+                                <input type="text" asp-for="Requestor.Address.Street" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Address.Street" class="form-control" value="@Model.Requestor.Address.Street" />
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Número</label>
+                            @if (Model.Requestor == null || Model.Requestor.Address == null)
+                            {
+                                <input type="text" asp-for="Requestor.Address.HouseNumber" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Address.HouseNumber" class="form-control" value="@Model.Requestor.Address.HouseNumber" />
+                            }
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Int.</label>
+                            @if (Model.Requestor == null || Model.Requestor.Address == null)
+                            {
+                                <input type="text" asp-for="Requestor.Address.PoBox" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Address.PoBox" class="form-control" value="@Model.Requestor.Address.PoBox" />
+                            }
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Colonia</label>
+                            @if (Model.Requestor == null || Model.Requestor.Address == null)
+                            {
+                                <input type="text" asp-for="Requestor.Address.Neighborhood" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Address.Neighborhood" class="form-control" value="@Model.Requestor.Address.Neighborhood" />
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Estado</label>
+                            @Html.DropDownListFor(x => Model.Requestor.Address.State, new SelectList(Model.StatesOfMexico, "Name", "Name"), htmlAttributes: new { @class = "form-control", id = "StatesOfMexico" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Municipio</label>
+                            @Html.DropDownListFor(x => Model.Requestor.Address.City, new SelectList(Model.MunicipalitiesOfMexico, "Name", "Name"), htmlAttributes: new { @class = "form-control", @id = "MunicipalitiesOfMexico" })
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Entre (Referencia)</label>
+                            @if (Model.Requestor == null || Model.Requestor.Address == null)
+                            {
+                                <input type="text" asp-for="Requestor.Address.Reference" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Address.Reference" class="form-control" value="@Model.Requestor.Address.Reference" />
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Código postal</label>
+                            @if (Model.Requestor == null || Model.Requestor.Address == null)
+                            {
+                                <input type="text" asp-for="Requestor.Address.Zip" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Address.Zip" class="form-control" value="@Model.Requestor.Address.Zip" />
+                            }
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Teléfono</label>
+                            @if (Model.Requestor == null || Model.Requestor.Address == null)
+                            {
+                                <input type="text" asp-for="Requestor.Address.PhoneNumber" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Address.PhoneNumber" class="form-control" value="@Model.Requestor.Address.PhoneNumber" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="card">
+                <h5 class="card-header text-center text-white bg-primary">
+                    Datos laborales
+                </h5>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Lugar de trabajo</label>
+                            @if (Model.Requestor == null || Model.Requestor.Job == null)
+                            {
+                                <input type="text" asp-for="Requestor.Job.Location" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Job.Location" class="form-control" value="@Model.Requestor.Job.Location" />
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Puesto</label>
+                            @if (Model.Requestor == null || Model.Requestor.Job == null)
+                            {
+                                <input type="text" asp-for="Requestor.Job.JobTitle" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Job.JobTitle" class="form-control" value="@Model.Requestor.Job.JobTitle" />
+                            }
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Horario</label>
+                            @if (Model.Requestor == null || Model.Requestor.Job == null)
+                            {
+                                <input type="text" asp-for="Requestor.Job.OfficialHours" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Job.OfficialHours" class="form-control" value="@Model.Requestor.Job.OfficialHours" />
+                            }
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Domicilio laboral</label>
+                            @if (Model.Requestor == null || Model.Requestor.Job == null)
+                            {
+                                <input type="text" asp-for="Requestor.Job.Address.Street" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Job.Address.Street" class="form-control" value="@Model.Requestor.Job.Address.Street" />
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Antigüedad</label>
+                            @if (Model.Requestor == null || Model.Requestor.Job == null)
+                            {
+                                <input type="text" asp-for="Requestor.Job.YearsOfService" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Job.YearsOfService" class="form-control" value="@Model.Requestor.Job.YearsOfService" />
+                            }
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Sueldo</label>
+                            @if (Model.Requestor == null || Model.Requestor.Job == null)
+                            {
+                                <input type="text" asp-for="Requestor.Job.Salary" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Job.Salary" class="form-control" value="@Model.Requestor.Job.Salary" />
+                            }
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Nombre de jefe directo</label>
+                            @if (Model.Requestor == null || Model.Requestor.Job == null)
+                            {
+                                <input type="text" asp-for="Requestor.Job.ManagerName" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Job.ManagerName" class="form-control" value="@Model.Requestor.Job.ManagerName" />
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Puesto de jefe</label>
+                            @if (Model.Requestor == null || Model.Requestor.Job == null)
+                            {
+                                <input type="text" asp-for="Requestor.Job.ManagerPosition" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Job.ManagerPosition" class="form-control" value="@Model.Requestor.Job.ManagerPosition" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="card">
+                <h5 class="card-header text-center text-white bg-primary">
+                    Datos del menor
+                </h5>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Nombre</label>
+                            @if (Model.Minor == null)
+                            {
+                                <input type="text" asp-for="Minor.FullName" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Minor.FullName" class="form-control" value="@Model.Minor.FullName" />
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Lugar de nacimiento</label>
+                            @if (Model.Minor == null)
+                            {
+                                <input type="text" asp-for="Minor.PlaceOfBirth" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Minor.PlaceOfBirth" class="form-control" value="@Model.Minor.PlaceOfBirth" />
+                            }
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Fecha de nacimiento</label>
+                            @if (Model.Minor == null)
+                            {
+                                <input type="date" asp-for="Minor.DateOfBirth" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="date" asp-for="Minor.DateOfBirth" class="form-control" value="@Model.Minor.DateOfBirth.ToString("yyyy-MM-dd")" />
+                            }
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Ocupación</label>
+                            @if (Model.Minor == null)
+                            {
+                                <input type="text" asp-for="Minor.CurrentOccupation" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Minor.CurrentOccupation" class="form-control" value="@Model.Minor.CurrentOccupation" />
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Escolaridad</label>
+                            @if (Model.Minor == null)
+                            {
+                                <input type="text" asp-for="Minor.Education" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Minor.Education" class="form-control" value="@Model.Minor.Education" />
+                            }
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Edad</label>
+                            @if (Model.Minor == null)
+                            {
+                                <input type="text" asp-for="Minor.Age" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Minor.Age" class="form-control" value="@Model.Minor.Age" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p></p>
+            <div class="card">
+                <h5 class="card-header text-center text-white bg-primary">
+                    Motivo de solicitud
+                </h5>
+                <div class="card-body">
+                    <textarea asp-for="Reasons" rows="3" class="form-control">@Model.Reasons</textarea>
+                </div>
+            </div>
+            <p></p>
+            <div class="card">
+                <h5 class="card-header text-center text-white bg-primary">
+                    Composición familiar
+                </h5>
+                <div class="card-body">
+                    <textarea rows="3" asp-for="FamilyComposition" class="form-control">@Model.FamilyComposition</textarea>
+                </div>
+            </div>
+            <p></p>
+            <div class="card">
+                <h5 class="card-header text-center text-white bg-primary">
+                    Dinámica familiar
+                </h5>
+                <div class="card-body">
+                    <textarea rows="3" asp-for="FamilyInteraction" class="form-control">@Model.FamilyInteraction</textarea>
+                </div>
+            </div>
+            <p></p>
+            <div class="card">
+                <h5 class="card-header text-center text-white bg-primary">
+                    Situación economica
+                </h5>
+                <div class="card-body">
+                    <textarea rows="3" asp-for="EconomicSituation" class="form-control">@Model.EconomicSituation</textarea>
+                </div>
+            </div>
+            <p></p>
+            <div class="card">
+                <h5 class="card-header text-center text-white bg-primary">
+                    Situaciones de violencia
+                </h5>
+                <div class="card-body">
+                    <textarea rows="3" asp-for="SituationsOfDomesticViolence" class="form-control">@Model.SituationsOfDomesticViolence</textarea>
+                </div>
+            </div>
+            <p></p>
+            <div class="card">
+                <h5 class="card-header text-center text-white bg-primary">
+                    Estado de salud familiar
+                </h5>
+                <div class="card-body">
+                    <textarea rows="3" asp-for="FamilyHealthStatus" class="form-control">@Model.FamilyHealthStatus</textarea>
+                </div>
+            </div>
+            <p></p>
+            <div class="card">
+                <h5 class="card-header text-center text-white bg-primary">
+                    Observaciones
+                </h5>
+                <div class="card-body">
+                    <textarea rows="3" asp-for="Comments" class="form-control">@Model.Comments</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer  text-right">
+            <button asp-controller="RegistrationRequest" asp-area="SocialWork" asp-action="AddOrUpdateRegistrationRequest" type="submit" class="btn btn-primary">Guardar</button>
+            @Html.ActionLink("Cancelar", "Index", "RegistrationRequest", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-secondary" })
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script type="text/javascript">
+            $('#StatesOfMexico').change(function () {
+                var selectedStateOfMexico = $("#StatesOfMexico").val();
+                var municipalitiesOfMexicoSelect = $('#MunicipalitiesOfMexico');
+                municipalitiesOfMexicoSelect.empty();
+                if (selectedStateOfMexico != null && selectedStateOfMexico != '') {
+                    $.getJSON('@Url.Action("GetMunicipalitiesOfMexico")', { nameOfState: selectedStateOfMexico }, function (municipalities) {
+                        if (municipalities != null && !jQuery.isEmptyObject(municipalities))
+                        {
+                            municipalitiesOfMexicoSelect.append($('<option/>', {
+                                value: null,
+                                text: ""
+                            }));
+                            $.each(municipalities, function (index, municipality) {
+                                municipalitiesOfMexicoSelect.append($('<option/>', {
+                                    value: municipality.name,
+                                    text: municipality.name
+                                }));
+                            });
+                        };
+                    });
+                }
+            });
+    </script>
+}

@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewData["Title"] = "Web pages por area";
+}
+
+
+
+<div class="container">
+    <h1 class="display-4 font-weight-bold text-center pb-4">Actividades</h1>
+    <div class="row">
+        @if (ViewBag.Process == "SocialWork")
+        {
+            <article class="col-12 col-md-6 col-lg-3 mb-3 mb-lg-0">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title font-weight-bold">Solicitud de registro</h5>
+                        <p class="card-text">
+                            Trabaja con la solicitud de registro aqui puedes consultar, agregar, modificar y borrar su información.
+                        </p>
+                        @Html.ActionLink("Entrar", "Index", "RegistrationRequest", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-primary btn-block" })
+                    </div>
+                </div>
+            </article>
+        }
+        else
+        {
+            <div class="col-12 text-center">
+                <p class="h3">En construcción...</p>
+            </div>
+        }
+    </div>
+</div>

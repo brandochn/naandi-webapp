@@ -1,0 +1,39 @@
+﻿@model WebApp.Areas.SocialWork.Models.RegistrationRequestViewModel
+
+<div class="row">
+    <div class="col">
+        <table id="RegistrationRequestTableId" class="table table-responsive-lg table-hover">
+            <thead class="">
+                <tr>
+                    <th>Id</th>
+                    <th>Solicitante</th>
+                    <th>Menor</th>
+                    <th>Fecha</th>
+                    <th>Estatus</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.RegistrationRequests != null)
+                {
+                    foreach (var item in Model.RegistrationRequests)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(model => item.Id)</td>
+                            <td>@Html.DisplayFor(model => item.Requestor.FullName)</td>
+                            <td>@Html.DisplayFor(model => item.Minor.FullName)</td>
+                            <td>@item.CreationDate.ToString("dd/MM/yyyy")</td>
+                            <td>@item.RegistrationRequestStatus.Name</td>
+                            <td>
+                                @Html.ActionLink("Editar", "ShowForm", "RegistrationRequest", new { id = item.Id, area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-info" })
+                                <button id="btn-print" type="button" class="btn btn-secondary d-inline">
+                                    Imprimir
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+{
+	"Id": 0,
+	"HowYouHearAboutUs": "por internet",
+	"CreationDate": "0001-01-01T00:00:00",
+	"RequestorId": 0,
+	"Requestor": {
+		"Address": {
+			"Id": 0,
+			"Street": "Los Altos",
+			"HouseNumber": "1786",
+			"PhoneNumber": "3336327025",
+			"City": "Guadalajara",
+			"Zip": "44260",
+			"State": "Jalisco",
+			"Neighborhood": "Mezquitan Country",
+			"Reference": "Ingnacio Ramirez y Jaime Nuno"
+		},
+		"AddressId": 0,
+		"Age": 36,
+		"DateOfBirth": "1981-06-26T00:00:00",
+		"Education": "Posgrado",
+		"FullName": "Hildebrando Chávez Núñez",
+		"Id": 0,
+		"Job": {
+			"Id": 0,
+			"Location": "Flex",
+			"JobTitle": "Programador",
+			"OfficialHours": "8 a 5",
+			"YearsOfService": 4,
+			"Salary": 5000,
+			"AddressId": 0,
+			"Address": {
+				"Id": 0,
+				"Street": "Av Brad Knight"
+			},
+			"ManagerName": "Jose Chávez",
+			"ManagerPosition": "Director"
+		},
+		"JobId": 0,
+		"MaritalStatusId": 2,
+		"PlaceOfBirth": "Jiquilpan Michoacán",
+		"RelationshipId": 3,
+		"CurrentOccupation": "Programador"
+	},
+	"MinorId": 0,
+	"Minor": {
+		"Id": 0,
+		"FullName": "Luis Matías Sanchez",
+		"DateOfBirth": "2015-05-05T00:00:00",
+		"PlaceOfBirth": "Zamora Michoacán",
+		"Age": 4,
+		"Education": "kinder",
+		"CurrentOccupation": "estudiante"
+	},
+	"Reasons": "Motivo de solicitud ",
+	"FamilyComposition": "Composición familiar ",
+	"FamilyInteraction": "Dinámica familiar ",
+	"EconomicSituation": "Situación economica ",
+	"SituationsOfDomesticViolence": "Situaciones de violencia ",
+	"FamilyHealthStatus": "Estado de salud familiar ",
+	"Comments": "Observaciones",
+	"IsActive": false
+}

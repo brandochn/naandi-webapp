@@ -1,0 +1,10 @@
+vs/Naandi/v16/.suo
+Shared/bin
+Shared/obj
+WebApp/bin
+WebApp/obj
+WebApp/WebApp.csproj.user
+.vs/Naandi/DesignTimeBuild/.dtbcache
+.vs/Naandi/v16/.suo
+.vs/Naandi/v16/Server/sqlite3/db.lock
+.vs/Naandi/v16/Server/sqlite3/storage.ide

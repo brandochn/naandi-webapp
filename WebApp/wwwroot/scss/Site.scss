@@ -1,0 +1,119 @@
+﻿//--------------------------------------
+// 			PATRON DE COLORES
+//--------------------------------------
+$primary: #59266d;
+$secondary: #d02981;
+$text: #44484a;
+
+
+html {
+    font-size: 1rem;
+}
+
+body {
+    color: $text;
+    font-family: 'Open Sans', sans-serif !important;
+}
+
+//--------------------------------------
+// 			Buttons
+//--------------------------------------
+
+.bg-primary {
+    background-color: $primary !important;
+}
+
+.text-primary {
+    color: $primary !important;
+}
+
+.btn-primary {
+    background-color: $primary !important;
+    border-color: darken($primary,10%) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: darken($primary,10%) !important;
+}
+
+.btn-primary:active {
+    background-color: darken($primary,20%) !important;
+    border-color: darken($primary,30%) !important;
+}
+
+.btn-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba($primary,.5) !important;
+}
+
+.bg-secondary {
+    background-color: $secondary !important;
+}
+
+.text-secondary {
+    color: $secondary !important;
+}
+
+.btn-secondary {
+    background-color: $secondary !important;
+    border-color: darken($secondary,5%) !important;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+    background-color: darken($secondary,10%) !important;
+}
+
+.btn-secondary:active {
+    background-color: darken($secondary,20%) !important;
+    border-color: darken($secondary,30%) !important;
+}
+
+.btn-secondary:focus {
+    box-shadow: 0 0 0 0.2rem rgba($secondary,.5) !important;
+}
+
+
+//--------------------------------------
+// 			Customs FONTS
+//--------------------------------------
+/* open-sans-regular - latin */
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans Regular'), local('OpenSans-Regular'), url('../fonts/open-sans-v16-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+    url('../fonts/open-sans-v16-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* open-sans-italic - latin */
+@font-face {
+    font-family: 'Open Sans';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../fonts/open-sans-v16-latin-italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+    url('../fonts/open-sans-v16-latin-italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* open-sans-700 - latin */
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Open Sans Bold'), local('OpenSans-Bold'), url('../fonts/open-sans-v16-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+    url('../fonts/open-sans-v16-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* open-sans-700italic - latin */
+@font-face {
+    font-family: 'Open Sans';
+    font-style: italic;
+    font-weight: 700;
+    src: local('Open Sans Bold Italic'), local('OpenSans-BoldItalic'), url('../fonts/open-sans-v16-latin-700italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+    url('../fonts/open-sans-v16-latin-700italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+.copyleft {
+    display: inline-block;
+    transform: rotate(180deg);
+}
