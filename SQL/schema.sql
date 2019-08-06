@@ -1,4 +1,4 @@
-CREATE DATABASE  IF NOT EXISTS `naandi`;
+CREATE DATABASE IF NOT EXISTS `naandi` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `naandi`;
 
 
@@ -78,14 +78,14 @@ DROP TABLE IF EXISTS `Minor`;
 
 CREATE TABLE `Minor` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `FullName` varchar(50) NOT NULL,
+  `FullName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `DateOfBirth` datetime NOT NULL,
   `PlaceOfBirth` varchar(50) NOT NULL,
   `Age` int(11) NOT NULL,
   `Education` varchar(100) DEFAULT NULL,
   `CurrentOccupation` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `MaritalStatus`
@@ -119,7 +119,7 @@ DROP TABLE IF EXISTS `Requestor`;
 
 CREATE TABLE `Requestor` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `FullName` varchar(100) NOT NULL,
+  `FullName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Age` int(11) NOT NULL,
   `DateOfBirth` datetime NOT NULL,
   `PlaceOfBirth` varchar(200) NOT NULL,
@@ -138,7 +138,7 @@ CREATE TABLE `Requestor` (
   CONSTRAINT `FK_Requestor_Job` FOREIGN KEY (`JobId`) REFERENCES `Job` (`Id`),
   CONSTRAINT `FK_Requestor_MaritalStatus` FOREIGN KEY (`MaritalStatusId`) REFERENCES `MaritalStatus` (`Id`),
   CONSTRAINT `FK_Requestor_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Solicitante como padre, madre, tutor etc...';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='Solicitante como padre, madre, tutor etc...';
 
 --
 -- Table structure for table `EntryRegister`

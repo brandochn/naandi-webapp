@@ -1,3 +1,4 @@
+USE `naandi`;
 --
 -- Dumping data for table `RegistrationRequestStatus`
 --
