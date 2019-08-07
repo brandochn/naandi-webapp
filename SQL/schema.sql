@@ -12,7 +12,7 @@ CREATE TABLE `RegistrationRequestStatus` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(50) NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB;
 
 
 --
@@ -33,7 +33,7 @@ CREATE TABLE `Address` (
   `Neighborhood` varchar(100) DEFAULT '0',
   `Reference` varchar(200) DEFAULT '0',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB;
 
 
 --
@@ -46,7 +46,7 @@ CREATE TABLE `Document` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(50) NOT NULL DEFAULT '0',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `Job`
@@ -67,7 +67,7 @@ CREATE TABLE `Job` (
   PRIMARY KEY (`Id`),
   KEY `FK_Job_Address` (`AddressId`),
   CONSTRAINT `FK_Job_Address` FOREIGN KEY (`AddressId`) REFERENCES `Address` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='DATOS LABORALES';
+) ENGINE=InnoDB COMMENT='DATOS LABORALES';
 
 
 --
@@ -78,14 +78,14 @@ DROP TABLE IF EXISTS `Minor`;
 
 CREATE TABLE `Minor` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `FullName` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `FullName` varchar(50) NOT NULL,
   `DateOfBirth` datetime NOT NULL,
   `PlaceOfBirth` varchar(50) NOT NULL,
   `Age` int(11) NOT NULL,
   `Education` varchar(100) DEFAULT NULL,
   `CurrentOccupation` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `MaritalStatus`
@@ -97,7 +97,7 @@ CREATE TABLE `MaritalStatus` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(50) NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='MaritalStatus are MARRIED, single etc..';
+) ENGINE=InnoDB COMMENT='MaritalStatus are MARRIED, single etc..';
 
 --
 -- Table structure for table `Relationship`
@@ -109,7 +109,7 @@ CREATE TABLE `Relationship` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(50) NOT NULL DEFAULT '0',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Parentesco con la menor';
+) ENGINE=InnoDB COMMENT='Parentesco con la menor';
 
 --
 -- Table structure for table `Requestor`
@@ -119,7 +119,7 @@ DROP TABLE IF EXISTS `Requestor`;
 
 CREATE TABLE `Requestor` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `FullName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `FullName` varchar(100) NOT NULL,
   `Age` int(11) NOT NULL,
   `DateOfBirth` datetime NOT NULL,
   `PlaceOfBirth` varchar(200) NOT NULL,
@@ -138,7 +138,7 @@ CREATE TABLE `Requestor` (
   CONSTRAINT `FK_Requestor_Job` FOREIGN KEY (`JobId`) REFERENCES `Job` (`Id`),
   CONSTRAINT `FK_Requestor_MaritalStatus` FOREIGN KEY (`MaritalStatusId`) REFERENCES `MaritalStatus` (`Id`),
   CONSTRAINT `FK_Requestor_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT='Solicitante como padre, madre, tutor etc...';
+) ENGINE=InnoDB COMMENT='Solicitante como padre, madre, tutor etc...';
 
 --
 -- Table structure for table `EntryRegister`
@@ -157,7 +157,7 @@ CREATE TABLE `EntryRegister` (
   KEY `FK_EntryRegister_Minor` (`MinorId`),
   CONSTRAINT `FK_EntryRegister_Minor` FOREIGN KEY (`MinorId`) REFERENCES `Minor` (`Id`),
   CONSTRAINT `FK_EntryRegister_Requestor` FOREIGN KEY (`RequestorId`) REFERENCES `Requestor` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Registro de ingreso';
+) ENGINE=InnoDB COMMENT='Registro de ingreso';
 
 --
 -- Table structure for table `MinorDocumentRelation`
@@ -175,7 +175,7 @@ CREATE TABLE `MinorDocumentRelation` (
   KEY `FK_MinorDocuemntRelation_Document` (`DocumentId`),
   CONSTRAINT `FK_MinorDocuemntRelation_Document` FOREIGN KEY (`DocumentId`) REFERENCES `Document` (`Id`),
   CONSTRAINT `FK_MinorDocumentRelation_Minor` FOREIGN KEY (`MinorId`) REFERENCES `Minor` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB;
 
 
 --
@@ -192,7 +192,7 @@ CREATE TABLE `MunicipalitiesOfMexico` (
   `activo` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   KEY `estado_id` (`estado_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Municipios de la República Mexicana';
+) ENGINE=InnoDB COMMENT='Municipios de la República Mexicana';
 
 --
 -- Table structure for table `RegistrationRequest`
@@ -221,7 +221,7 @@ CREATE TABLE `RegistrationRequest` (
   CONSTRAINT `FK_RegistrationRequest_Minor` FOREIGN KEY (`MinorId`) REFERENCES `Minor` (`Id`),
   CONSTRAINT `FK_RegistrationRequest_RegistrationRequestStatus` FOREIGN KEY (`RegistrationRequestStatusId`) REFERENCES `RegistrationRequestStatus` (`Id`),
   CONSTRAINT `FK_RegistrationRequest_Requestor` FOREIGN KEY (`RequestorId`) REFERENCES `Requestor` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='SOLICITUD DE INGRESO';
+) ENGINE=InnoDB COMMENT='SOLICITUD DE INGRESO';
 
 --
 -- Table structure for table `RequestorDocumentRelation`
@@ -239,7 +239,7 @@ CREATE TABLE `RequestorDocumentRelation` (
   KEY `FK_RquetorDocument_Document` (`DocumentId`),
   CONSTRAINT `FK_RequestorDocument_Requestor` FOREIGN KEY (`RequestorId`) REFERENCES `Requestor` (`Id`),
   CONSTRAINT `FK_RquetorDocument_Document` FOREIGN KEY (`DocumentId`) REFERENCES `Document` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB;
 
 
 --
@@ -255,8 +255,32 @@ CREATE TABLE `StatesOfMexico` (
   `abrev` varchar(10) NOT NULL COMMENT 'NOM_ABR - Nombre abreviado de la entidad',
   `activo` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Estados de la República Mexicana';
+) ENGINE=InnoDB COMMENT='Estados de la República Mexicana';
 
+
+DROP TABLE IF EXISTS `LegalGuardian`;
+
+CREATE TABLE `LegalGuardian` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `FullName` varchar(100) NOT NULL,
+  `Age` int(11) NOT NULL,
+  `PlaceOfBirth` varchar(200) NOT NULL,
+  `MaritalStatusId` int(11) NOT NULL,
+  `Education` varchar(100) DEFAULT NULL,
+  `CurrentOccupation` varchar(100) DEFAULT NULL,
+  `RelationshipId` int(11) NOT NULL,
+  `AddressId` int(11) NOT NULL,
+  `CellPhoneNumber` varchar(12) DEFAULT NULL,
+  `PhoneNumber` varchar(12) DEFAULT NULL,
+  `Errand` varchar(100) DEFAULT NULL COMMENT 'Recados', 
+  PRIMARY KEY (`Id`),
+  KEY `FK_LegalGuardian_MaritalStatus` (`MaritalStatusId`),
+  KEY `FK_LegalGuardian_Relationship` (`RelationshipId`),
+  KEY `FK_LegalGuardian_Address` (`AddressId`),
+  CONSTRAINT `FK_LegalGuardian_Address` FOREIGN KEY (`AddressId`) REFERENCES `Address` (`Id`),
+  CONSTRAINT `FK_LegalGuardian_MaritalStatus` FOREIGN KEY (`MaritalStatusId`) REFERENCES `MaritalStatus` (`Id`),
+  CONSTRAINT `FK_LegalGuardian_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`)
+) ENGINE=InnoDB COMMENT='Tutor legal';
 
 --
 -- Routines for database 'naandi'
