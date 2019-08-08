@@ -280,7 +280,31 @@ CREATE TABLE `LegalGuardian` (
   CONSTRAINT `FK_LegalGuardian_Address` FOREIGN KEY (`AddressId`) REFERENCES `Address` (`Id`),
   CONSTRAINT `FK_LegalGuardian_MaritalStatus` FOREIGN KEY (`MaritalStatusId`) REFERENCES `MaritalStatus` (`Id`),
   CONSTRAINT `FK_LegalGuardian_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`)
-) ENGINE=InnoDB COMMENT='Tutor legal';
+) ENGINE=InnoDB COMMENT='Tutor legal info';
+
+
+DROP TABLE IF EXISTS `Spouse`;
+
+CREATE TABLE `Spouse` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `FullName` varchar(100) NOT NULL,
+  `Age` int(11) NOT NULL,
+  `CurrentOccupation` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Conyuge info';
+
+
+DROP TABLE IF EXISTS `FormalEducation`;
+
+CREATE TABLE `FormalEducation` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `CanItRead` tinyint(1)  DEFAULT 0,
+  `CanItWrite` tinyint(1) DEFAULT 0,
+  `IsItStudyingNow` tinyint(1) DEFAULT 0,
+  `CurrentGrade` varchar(50) DEFAULT NULL,
+  `ReasonsToStopStudying` varchar(300) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Escolaridad';
 
 --
 -- Routines for database 'naandi'
