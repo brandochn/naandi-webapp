@@ -11,3 +11,5 @@ WebApp/WebApp.csproj.user
 .vs/
 Json samples/registrationrequest.json
 SQL/testing registration-request SP.sql
+WebApi/obj
+WebApi/bin
