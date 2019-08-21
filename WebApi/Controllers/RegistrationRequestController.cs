@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Naandi.Shared.Models;
 using Naandi.Shared.Services;
@@ -19,9 +20,17 @@ namespace WebApi.Controllers
         }
 
         [HttpGet(Name = "GetRegistrationRequests")]
-        public IEnumerable<RegistrationRequest> Get()
+        [Route("GetRegistrationRequests")]
+        public IEnumerable<RegistrationRequest> GetRegistrationRequests()
         {
-            return registrationRequestRepository.GetRegistrationRequests(numberOfRercordsToShow);
+            return registrationRequestRepository.GetRegistrationRequests(numberOfRercordsToShow).ToList();
+        }
+
+        [HttpGet(Name = "GetStatesOfMexico")]
+        [Route("GetStatesOfMexico")]
+        public IEnumerable<StatesOfMexico> GetStatesOfMexico()
+        {
+            return registrationRequestRepository.GetStatesOfMexico().ToList();
         }
     }
 }

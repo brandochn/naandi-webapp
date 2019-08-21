@@ -7,10 +7,12 @@ using Naandi.Shared.Exceptions;
 using Naandi.Shared.Models;
 using Naandi.Shared.Services;
 using WebApi.Data;
+using Dapper;
+using System.Linq;
 
 namespace WebApi.Services
 {
-public class RegistrationRequestRepository : IRegistrationRequest
+    public class RegistrationRequestRepository : IRegistrationRequest
     {
         private ApplicationDbContext applicationDbContext;
 
@@ -21,7 +23,7 @@ public class RegistrationRequestRepository : IRegistrationRequest
 
         public void Add(RegistrationRequest registrationRequest)
         {
-             
+
             JsonSerializerOptions options = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
@@ -72,66 +74,35 @@ public class RegistrationRequestRepository : IRegistrationRequest
             throw new NotImplementedException();
         }
 
-        public IList<MaritalStatus> GetMaritalStatuses()
+        public IEnumerable<MaritalStatus> GetMaritalStatuses()
         {
-            IList<MaritalStatus> maritalStatuses = new List<MaritalStatus>();
+            IEnumerable<MaritalStatus> maritalStatuses;
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
             {
 
-                MySqlCommand cmd = new MySqlCommand("SELECT Id, Name FROM MaritalStatus order by Name;", connection);
+                string sql = "SELECT * FROM MaritalStatus order by Name;";
 
-                connection.Open();
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        maritalStatuses.Add(new MaritalStatus()
-                        {
-                            Id = reader.GetInt32(0),
-                            Name = reader.GetString(1)
-                        });
-                    }
-                }
+                maritalStatuses = connection.Query<MaritalStatus>(sql);
             }
 
             return maritalStatuses;
         }
 
-        public IList<MunicipalitiesOfMexico> GetMunicipalitiesOfMexicoByStateOfMexicoName(string nameOfState)
+        public IEnumerable<MunicipalitiesOfMexico> GetMunicipalitiesOfMexicoByStateOfMexicoName(string nameOfState)
         {
-            IList<MunicipalitiesOfMexico> municipalities = new List<MunicipalitiesOfMexico>();
+            IEnumerable<MunicipalitiesOfMexico> municipalities;
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
             {
-                MySqlCommand cmd = new MySqlCommand();
-                cmd.Connection = connection;
-                cmd.CommandText = @"
-                   SELECT m.nombre
+                string sql = @"
+                   SELECT m.*
                     FROM MunicipalitiesOfMexico m
                     JOIN StatesOfMexico s ON s.id = m.estado_id
                     WHERE s.nombre = @nameOfState
                     ORDER BY m.nombre;";
-                cmd.CommandType = System.Data.CommandType.Text;
-                cmd.Parameters.Add(new MySqlParameter()
-                {
-                    ParameterName = "nameOfState",
-                    Direction = System.Data.ParameterDirection.Input,
-                    MySqlDbType = MySqlDbType.String,
-                    Value = nameOfState
-                });
 
-                connection.Open();
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        municipalities.Add(new MunicipalitiesOfMexico()
-                        {
-                            Name = reader.GetString(0),
-                        });
-                    }
-                }
+                municipalities = connection.Query<MunicipalitiesOfMexico>(sql, new { nameOfState });                             
             }
 
             return municipalities;
@@ -419,8 +390,9 @@ public class RegistrationRequestRepository : IRegistrationRequest
             return registrationRequests;
         }
 
-        public IList<RegistrationRequest> GetRegistrationRequests(int limitRequest)
+        public IEnumerable<RegistrationRequest> GetRegistrationRequests(int limitRequest)
         {
+            RegistrationRequest registrationRequest;
             IList<RegistrationRequest> registrationRequests = new List<RegistrationRequest>();
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
@@ -429,18 +401,80 @@ public class RegistrationRequestRepository : IRegistrationRequest
                 cmd.Connection = connection;
                 cmd.CommandText = @"
                     SELECT rr.Id
+                        , IFNULL(rr.HowYouHearAboutUs, '') HowYouHearAboutUs
                         , rr.CreationDate
-                        , r.Id
-                        , r.FullName
-                        , m.Id
-                        , m.FullName
+                        , IFNULL(rr.RequestorId, 0) RequestorId
+                        , IFNULL(rr.MinorId, 0) MinorId
+                        , IFNULL(rr.Reasons,'') Reasons
+                        , IFNULL(rr.FamilyComposition, '') FamilyComposition
+                        , IFNULL(rr.FamilyInteraction, '') FamilyInteraction
+                        , IFNULL(rr.EconomicSituation, '') EconomicSituation
+                        , IFNULL(rr.SituationsOfDomesticViolence, '') SituationsOfDomesticViolence
+                        , IFNULL(rr.FamilyHealthStatus, '') FamilyHealthStatus
+                        , IFNULL(rr.Comments, '') Comments
+                        , rr.RegistrationRequestStatusId
                         , rrs.Id
                         , rrs.Name
+                        , r.Id
+                        , r.FullName
+                        , r.Age
+                        , r.DateOfBirth
+                        , r.PlaceOfBirth
+                        , r.MaritalStatusId
+                        , IFNULL(r.Education, '') Education
+                        , IFNULL(r.CurrentOccupation, '') CurrentOccupation
+                        , r.RelationshipId
+                        , r.AddressId
+                        , IFNULL(r.JobId, 0) JobId
+                        , ms.Id
+                        , ms.Name
+                        , rs.Id
+                        , rs.Name
+                        , IFNULL(a.Id, 0 ) Id
+                        , IFNULL(a.Street, '') Street
+                        , IFNULL(a.HouseNumber, '') HouseNumber
+                        , IFNULL(a.PoBox, '') PoBox
+                        , IFNULL(a.PhoneNumber, '') PhoneNumber
+                        , IFNULL(a.City, '') City
+                        , IFNULL(a.ZIP, '') ZIP
+                        , IFNULL(a.State, '') State
+                        , IFNULL(a.Neighborhood, '') Neighborhood
+                        , IFNULL(a.Reference, '') Reference
+                        , IFNULL(j.Id, 0) Id
+                        , IFNULL(j.Location, '') Location
+                        , IFNULL(j.JobTitle, '') JobTitle
+                        , IFNULL(j.OfficialHours, '') OfficialHours
+                        , IFNULL(j.YearsOfService, 0) YearsOfService
+                        , IFNULL(j.Salary, 0) Salary
+                        , IFNULL(j.AddressId, 0) AddressId
+                        , IFNULL(j.ManagerName, '') ManagerName
+                        , IFNULL(j.ManagerPosition, '') ManagerPosition 
+                        , IFNULL(aj.Id, 0) Id
+                        , IFNULL(aj.Street,'') Street
+                        , IFNULL(aj.HouseNumber, '') HouseNumber
+                        , IFNULL(aj.PoBox, '') PoBox
+                        , IFNULL(aj.PhoneNumber, '') PhoneNumber
+                        , IFNULL(aj.City ,'') City
+                        , IFNULL(aj.ZIP, '') ZIP
+                        , IFNULL(aj.State, '') State
+                        , IFNULL(aj.Neighborhood, '') Neighborhood
+                        , IFNULL(aj.Reference, '') Reference
+                        , m.Id
+                        , m.FullName
+                        , m.DateOfBirth
+                        , m.PlaceOfBirth
+                        , m.Age
+                        , IFNULL(m.Education, '') Education
+                        , IFNULL(m.CurrentOccupation, '') CurrentOccupation
                     FROM RegistrationRequest rr
                     LEFT JOIN Requestor r ON r.Id = rr.RequestorId
+                    LEFT JOIN MaritalStatus ms ON ms.Id = r.MaritalStatusId
+                    LEFT JOIN Relationship rs ON rs.Id = r.RelationshipId
+                    LEFT JOIN Address a ON a.Id = r.AddressId
+                    LEFT JOIN Job j ON j.Id = r.JobId
+                    LEFT JOIN Address aj ON aj.Id = j.AddressId
                     LEFT JOIN Minor m ON m.Id = rr.MinorId
-                    LEFT JOIN RegistrationRequestStatus rrs on rr.RegistrationRequestStatusId = rrs.Id  
-                    ORDER BY rr.Id DESC
+                    LEFT JOIN RegistrationRequestStatus rrs on rr.RegistrationRequestStatusId = rrs.Id
                     LIMIT @limitRequest;";
                 cmd.CommandType = System.Data.CommandType.Text;
                 cmd.Parameters.Add(new MySqlParameter()
@@ -454,109 +488,163 @@ public class RegistrationRequestRepository : IRegistrationRequest
                 connection.Open();
                 using (var reader = cmd.ExecuteReader())
                 {
-
+                    if (reader.HasRows == false)
+                    {
+                        return null;
+                    }
                     int index;
                     while (reader.Read())
                     {
                         index = 0;
-                        registrationRequests.Add(new RegistrationRequest()
+
+                        registrationRequest = new RegistrationRequest
                         {
                             Id = reader.GetInt32(index++),
-                            CreationDate = reader.GetDateTime(index++).ToLocalTime()
-                           ,
-                            Requestor = new Requestor
-                            {
-                                Id = reader.GetInt32(index++),
-                                FullName = reader.GetString(index++)
-                            },
-                            Minor = new Minor
-                            {
-                                Id = reader.GetInt32(index++),
-                                FullName = reader.GetString(index++),
-                            },
+                            HowYouHearAboutUs = reader.GetString(index++),
+                            CreationDate = reader.GetDateTime(index++),
+                            RequestorId = reader.GetInt32(index++),
+                            MinorId = reader.GetInt32(index++),
+                            Reasons = reader.GetString(index++),
+                            FamilyComposition = reader.GetString(index++),
+                            FamilyInteraction = reader.GetString(index++),
+                            EconomicSituation = reader.GetString(index++),
+                            SituationsOfDomesticViolence = reader.GetString(index++),
+                            FamilyHealthStatus = reader.GetString(index++),
+                            Comments = reader.GetString(index++),
+                            RegistrationRequestStatusId = reader.GetInt32(index++),
                             RegistrationRequestStatus = new RegistrationRequestStatus
                             {
                                 Id = reader.GetInt32(index++),
                                 Name = reader.GetString(index++)
+                            },
+
+                            Requestor = new Requestor
+                            {
+                                Id = reader.GetInt32(index++),
+                                FullName = reader.GetString(index++),
+                                Age = reader.GetInt32(index++),
+                                DateOfBirth = reader.GetDateTime(index++),
+                                PlaceOfBirth = reader.GetString(index++),
+                                MaritalStatusId = reader.GetInt32(index++),
+                                Education = reader.GetString(index++),
+                                CurrentOccupation = reader.GetString(index++),
+                                RelationshipId = reader.GetInt32(index++),
+                                AddressId = reader.GetInt32(index++),
+                                JobId = reader.GetInt32(index++),
+
+                                Maritalstatus = new MaritalStatus
+                                {
+                                    Id = reader.GetInt32(index++),
+                                    Name = reader.GetString(index++)
+                                },
+
+                                Relationship = new Relationship
+                                {
+                                    Id = reader.GetInt32(index++),
+                                    Name = reader.GetString(index++),
+                                },
+
+                                Address = new Address
+                                {
+                                    Id = reader.GetInt32(index++),
+                                    Street = reader.GetString(index++),
+                                    HouseNumber = reader.GetString(index++),
+                                    PoBox = reader.GetString(index++),
+                                    PhoneNumber = reader.GetString(index++),
+                                    City = reader.GetString(index++),
+                                    Zip = reader.GetString(index++),
+                                    State = reader.GetString(index++),
+                                    Neighborhood = reader.GetString(index++),
+                                    Reference = reader.GetString(index++)
+                                },
+
+                                Job = new Job
+                                {
+                                    Id = reader.GetInt32(index++),
+                                    Location = reader.GetString(index++),
+                                    JobTitle = reader.GetString(index++),
+                                    OfficialHours = reader.GetString(index++),
+                                    YearsOfService = reader.GetInt32(index++),
+                                    Salary = reader.GetDecimal(index++),
+                                    AddressId = reader.GetInt32(index++),
+                                    ManagerName = reader.GetString(index++),
+                                    ManagerPosition = reader.GetString(index++),
+
+                                    Address = new Address
+                                    {
+                                        Id = reader.GetInt32(index++),
+                                        Street = reader.GetString(index++),
+                                        HouseNumber = reader.GetString(index++),
+                                        PoBox = reader.GetString(index++),
+                                        PhoneNumber = reader.GetString(index++),
+                                        City = reader.GetString(index++),
+                                        Zip = reader.GetString(index++),
+                                        State = reader.GetString(index++),
+                                        Neighborhood = reader.GetString(index++),
+                                        Reference = reader.GetString(index++)
+                                    }
+                                }
+                            },
+
+                            Minor = new Minor
+                            {
+                                Id = reader.GetInt32(index++),
+                                FullName = reader.GetString(index++),
+                                DateOfBirth = reader.GetDateTime(index++),
+                                PlaceOfBirth = reader.GetString(index++),
+                                Age = reader.GetInt32(index++),
+                                Education = reader.GetString(index++),
+                                CurrentOccupation = reader.GetString(index++)
                             }
-                        });
+                        };
+
+                        registrationRequests.Add(registrationRequest);
                     }
                 }
             }
 
             return registrationRequests;
+
         }
 
-        public IList<Relationship> GetRelationships()
+        public IEnumerable<Relationship> GetRelationships()
         {
-            IList<Relationship> relationships = new List<Relationship>();
+            IEnumerable<Relationship> relationships;
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
             {
 
-                MySqlCommand cmd = new MySqlCommand("SELECT Id, `Name` FROM Relationship order by Name;", connection);
+               string sql = "SELECT * FROM Relationship order by Name;";
 
-                connection.Open();
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        relationships.Add(new Relationship()
-                        {
-                            Id = reader.GetInt32(0),
-                            Name = reader.GetString(1)
-                        });
-                    }
-                }
+                relationships = connection.Query<Relationship>(sql);
             }
 
             return relationships;
         }
 
-        public IList<StatesOfMexico> GetStatesOfMexico()
+        public IEnumerable<StatesOfMexico> GetStatesOfMexico()
         {
-            IList<StatesOfMexico> statesOfMexicoList = new List<StatesOfMexico>();
+            IEnumerable<StatesOfMexico> statesOfMexicoList;
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
             {
-                MySqlCommand cmd = new MySqlCommand("SELECT nombre FROM StatesOfMexico ORDER BY nombre;", connection);
+                string sql = "SELECT * FROM StatesOfMexico ORDER BY nombre;";
 
-                connection.Open();
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        statesOfMexicoList.Add(new StatesOfMexico()
-                        {
-                            Name = reader.GetString(0),
-                        });
-                    }
-                }
+                statesOfMexicoList = connection.Query<StatesOfMexico>(sql);
             }
 
             return statesOfMexicoList;
         }
 
-        public IList<RegistrationRequestStatus> RegistrationRequestStatuses()
+        public IEnumerable<RegistrationRequestStatus> RegistrationRequestStatuses()
         {
-            IList<RegistrationRequestStatus> registrationRequestStatuses = new List<RegistrationRequestStatus>();
+            IEnumerable<RegistrationRequestStatus> registrationRequestStatuses;
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
             {
-                MySqlCommand cmd = new MySqlCommand("SELECT Id, Name FROM RegistrationRequestStatus;", connection);
+                string sql = "SELECT * FROM RegistrationRequestStatus;";
 
-                connection.Open();
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        registrationRequestStatuses.Add(new RegistrationRequestStatus()
-                        {
-                            Id = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                        });
-                    }
-                }
+                registrationRequestStatuses = connection.Query<RegistrationRequestStatus>(sql);
             }
 
             return registrationRequestStatuses;

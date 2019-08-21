@@ -73,7 +73,7 @@ namespace WebApp.Services
             throw new NotImplementedException();
         }
 
-        public IList<MaritalStatus> GetMaritalStatuses()
+        public IEnumerable<MaritalStatus> GetMaritalStatuses()
         {
             IList<MaritalStatus> maritalStatuses = new List<MaritalStatus>();
 
@@ -99,7 +99,7 @@ namespace WebApp.Services
             return maritalStatuses;
         }
 
-        public IList<MunicipalitiesOfMexico> GetMunicipalitiesOfMexicoByStateOfMexicoName(string nameOfState)
+        public IEnumerable<MunicipalitiesOfMexico> GetMunicipalitiesOfMexicoByStateOfMexicoName(string nameOfState)
         {
             IList<MunicipalitiesOfMexico> municipalities = new List<MunicipalitiesOfMexico>();
 
@@ -420,7 +420,7 @@ namespace WebApp.Services
             return registrationRequests;
         }
 
-        public IList<RegistrationRequest> GetRegistrationRequests(int limitRequest)
+        public IEnumerable<RegistrationRequest> GetRegistrationRequests(int limitRequest)
         {
             IList<RegistrationRequest> registrationRequests = new List<RegistrationRequest>();
 
@@ -488,7 +488,7 @@ namespace WebApp.Services
             return registrationRequests;
         }
 
-        public IList<Relationship> GetRelationships()
+        public IEnumerable<Relationship> GetRelationships()
         {
             IList<Relationship> relationships = new List<Relationship>();
 
@@ -514,7 +514,7 @@ namespace WebApp.Services
             return relationships;
         }
 
-        public IList<StatesOfMexico> GetStatesOfMexico()
+        public IEnumerable<StatesOfMexico> GetStatesOfMexico()
         {
             IList<StatesOfMexico> statesOfMexicoList = new List<StatesOfMexico>();
 
@@ -529,7 +529,7 @@ namespace WebApp.Services
                     {
                         statesOfMexicoList.Add(new StatesOfMexico()
                         {
-                            Name = reader.GetString(0),
+                            Nombre = reader.GetString(0),
                         });
                     }
                 }
@@ -538,7 +538,7 @@ namespace WebApp.Services
             return statesOfMexicoList;
         }
 
-        public IList<RegistrationRequestStatus> RegistrationRequestStatuses()
+        public IEnumerable<RegistrationRequestStatus> RegistrationRequestStatuses()
         {
             IList<RegistrationRequestStatus> registrationRequestStatuses = new List<RegistrationRequestStatus>();
 

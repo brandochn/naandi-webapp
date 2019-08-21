@@ -8,14 +8,14 @@ namespace Naandi.Shared.Services
         void Add(RegistrationRequest registrationRequest);
 
         RegistrationRequest GetRegistrationRequestById(int id);
-        IList<MaritalStatus> GetMaritalStatuses();
-        IList<Relationship> GetRelationships();
-        IList<StatesOfMexico> GetStatesOfMexico();
-        IList<MunicipalitiesOfMexico> GetMunicipalitiesOfMexicoByStateOfMexicoName(string nameOfState);
-        IList<RegistrationRequest> GetRegistrationRequests(int limitRequest);
+        IEnumerable<MaritalStatus> GetMaritalStatuses();
+        IEnumerable<Relationship> GetRelationships();
+        IEnumerable<StatesOfMexico> GetStatesOfMexico();
+        IEnumerable<MunicipalitiesOfMexico> GetMunicipalitiesOfMexicoByStateOfMexicoName(string nameOfState);
+        IEnumerable<RegistrationRequest> GetRegistrationRequests(int limitRequest);
         IList<RegistrationRequest> GetRegistrationRequestsByMinorName(string minorName);
         void DeleteById(int Id);
         void Update(RegistrationRequest registrationRequest);
-        IList<RegistrationRequestStatus> RegistrationRequestStatuses();
+        IEnumerable<RegistrationRequestStatus> RegistrationRequestStatuses();
     }
 }

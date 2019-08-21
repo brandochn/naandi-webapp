@@ -131,7 +131,7 @@ namespace WebApp.Areas.SocialWork.Models
             StatesOfMexico = registrationRequestRepository.GetStatesOfMexico().ToList();
             StatesOfMexico.Insert(0, new StatesOfMexico()
             {
-                Name = "Selecciona un estado"
+                Nombre = "Selecciona un estado"
             });
         }
 
@@ -148,13 +148,13 @@ namespace WebApp.Areas.SocialWork.Models
             else
             {
                 MunicipalitiesOfMexico = registrationRequestRepository
-                    .GetMunicipalitiesOfMexicoByStateOfMexicoName(Requestor.Address.State);
+                    .GetMunicipalitiesOfMexicoByStateOfMexicoName(Requestor.Address.State).ToList();
             }
         }
 
         public void LoadRegistrationRequestStatuses(IRegistrationRequest registrationRequestRepository)
         {
-            RegistrationRequestStatusList = registrationRequestRepository.RegistrationRequestStatuses();
+            RegistrationRequestStatusList = registrationRequestRepository.RegistrationRequestStatuses().ToList();
             RegistrationRequestStatusList.Insert(0, new RegistrationRequestStatus()
             {
                 Id = 0,
