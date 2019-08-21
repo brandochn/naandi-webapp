@@ -420,7 +420,7 @@ namespace WebApp.Services
             return registrationRequests;
         }
 
-        public IList<RegistrationRequest> GetRegistrationRequestsWithMinimumData(int limitRequest)
+        public IList<RegistrationRequest> GetRegistrationRequests(int limitRequest)
         {
             IList<RegistrationRequest> registrationRequests = new List<RegistrationRequest>();
 

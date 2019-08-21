@@ -12,7 +12,7 @@ namespace Naandi.Shared.Services
         IList<Relationship> GetRelationships();
         IList<StatesOfMexico> GetStatesOfMexico();
         IList<MunicipalitiesOfMexico> GetMunicipalitiesOfMexicoByStateOfMexicoName(string nameOfState);
-        IList<RegistrationRequest> GetRegistrationRequestsWithMinimumData(int limitRequest);
+        IList<RegistrationRequest> GetRegistrationRequests(int limitRequest);
         IList<RegistrationRequest> GetRegistrationRequestsByMinorName(string minorName);
         void DeleteById(int Id);
         void Update(RegistrationRequest registrationRequest);
