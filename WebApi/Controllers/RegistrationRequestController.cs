@@ -19,14 +19,14 @@ namespace WebApi.Controllers
             registrationRequestRepository = _registrationRequestRepository;
         }
 
-        [HttpGet(Name = "GetRegistrationRequests")]
+        [HttpGet]
         [Route("GetRegistrationRequests")]
         public IEnumerable<RegistrationRequest> GetRegistrationRequests()
         {
             return registrationRequestRepository.GetRegistrationRequests(numberOfRercordsToShow).ToList();
         }
 
-        [HttpGet(Name = "GetStatesOfMexico")]
+        [HttpGet]
         [Route("GetStatesOfMexico")]
         public IEnumerable<StatesOfMexico> GetStatesOfMexico()
         {
