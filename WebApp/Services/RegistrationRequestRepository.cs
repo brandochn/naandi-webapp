@@ -129,7 +129,7 @@ namespace WebApp.Services
                     {
                         municipalities.Add(new MunicipalitiesOfMexico()
                         {
-                            Name = reader.GetString(0),
+                            Nombre = reader.GetString(0),
                         });
                     }
                 }

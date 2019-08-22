@@ -142,7 +142,7 @@ namespace WebApp.Areas.SocialWork.Models
                 MunicipalitiesOfMexico = new List<MunicipalitiesOfMexico>();
                 MunicipalitiesOfMexico.Add(new MunicipalitiesOfMexico()
                 {
-                    Name = "Selecciona un municipio"
+                    Nombre = "Selecciona un municipio"
                 });
             }
             else

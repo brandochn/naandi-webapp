@@ -3,9 +3,11 @@
     public class MunicipalitiesOfMexico
     {
         public int Id { get; set; }
-        public int StatesOfMexicoId { get; set; }
+        public int EstadoId { get; set; }
+        public string Clave { get; set; }
+        public string Nombre { get; set; }
+        public byte Activo { get; set; }
+
         public StatesOfMexico StatesOfMexico { get; set; }
-        public string Name { get; set; }
-        public bool IsEnabled { get; set; }
     }
 }

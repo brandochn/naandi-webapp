@@ -6,6 +6,8 @@ using Microsoft.Extensions.Hosting;
 using WebApi.Data;
 using Naandi.Shared.Services;
 using WebApi.Services;
+using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
 namespace WebApi
 {
@@ -22,6 +24,11 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Naandi API", Version = "v1" });
+            });
+
             services.AddTransient(_ => new ApplicationDbContext(Configuration["ConnectionString"]));
 
             services.AddScoped<IRegistrationRequest, RegistrationRequestRepository>();
@@ -44,6 +51,12 @@ namespace WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api for Naandi foundation");
             });
         }
     }

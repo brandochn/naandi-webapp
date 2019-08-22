@@ -96,13 +96,19 @@ namespace WebApi.Services
             using (MySqlConnection connection = applicationDbContext.GetConnection())
             {
                 string sql = @"
-                   SELECT m.*
+                   SELECT m.*,s.*
                     FROM MunicipalitiesOfMexico m
                     JOIN StatesOfMexico s ON s.id = m.estado_id
                     WHERE s.nombre = @nameOfState
                     ORDER BY m.nombre;";
 
-                municipalities = connection.Query<MunicipalitiesOfMexico>(sql, new { nameOfState });
+                municipalities = connection.Query<MunicipalitiesOfMexico, StatesOfMexico, MunicipalitiesOfMexico>(sql, 
+                (m, s) =>
+                {
+                    m.StatesOfMexico = s;
+                    return m;
+
+                }, new { nameOfState });
             }
 
             return municipalities;
