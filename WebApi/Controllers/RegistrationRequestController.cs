@@ -32,5 +32,19 @@ namespace WebApi.Controllers
         {
             return registrationRequestRepository.GetStatesOfMexico().ToList();
         }
+
+        [HttpGet]
+        [Route("GetRegistrationRequestsByMinorName/{name}")]
+        public IActionResult GetRegistrationRequestsByMinorName(string name)
+        {
+            var registrationRequests = registrationRequestRepository.GetRegistrationRequestsByMinorName(name);
+
+            if(registrationRequests == null)
+            {
+                return NotFound("No record found");                
+            }
+            
+            return Ok(registrationRequests.ToList());
+        }
     }
 }

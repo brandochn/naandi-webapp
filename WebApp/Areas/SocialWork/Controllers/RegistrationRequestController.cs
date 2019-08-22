@@ -150,7 +150,7 @@ namespace WebApp.Areas.SocialWork.Controllers
             }
             else
             {
-                model.RegistrationRequests = registrationRequestRepository.GetRegistrationRequestsByMinorName(minorName);
+                model.RegistrationRequests = registrationRequestRepository.GetRegistrationRequestsByMinorName(minorName).ToList();
             }
 
             return PartialView("_RegistrationRequestTable", model);

@@ -352,7 +352,7 @@ namespace WebApp.Services
             return registrationRequest;
         }
 
-        public IList<RegistrationRequest> GetRegistrationRequestsByMinorName(string minorName)
+        public IEnumerable<RegistrationRequest> GetRegistrationRequestsByMinorName(string minorName)
         {
             IList<RegistrationRequest> registrationRequests = new List<RegistrationRequest>();
 
