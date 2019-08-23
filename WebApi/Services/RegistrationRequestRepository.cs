@@ -8,7 +8,6 @@ using Naandi.Shared.Models;
 using Naandi.Shared.Services;
 using WebApi.Data;
 using Dapper;
-using System.Linq;
 
 namespace WebApi.Services
 {
@@ -106,6 +105,7 @@ namespace WebApi.Services
                 (m, s) =>
                 {
                     m.StatesOfMexico = s;
+                    m.EstadoId = s.Id;
                     return m;
 
                 }, new { nameOfState });

@@ -67,14 +67,14 @@ namespace WebApi.Controllers
         [Route("GetMunicipalitiesOfMexicoByStateOfMexicoName/{nameOfState}")]
         public IActionResult GetMunicipalitiesOfMexicoByStateOfMexicoName(string nameOfState)
         {
-            if (nameOfState == null)
+            if (string.IsNullOrEmpty(nameOfState))
             {
                 return BadRequest("nameOfState cannot be null or empty");
             }
 
             var municipalities = registrationRequestRepository.GetMunicipalitiesOfMexicoByStateOfMexicoName(nameOfState);
 
-            if (municipalities == null)
+            if (municipalities == null || municipalities.Count() == 0)
             {
                 return NotFound("No record found");
             }
@@ -122,7 +122,7 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, Constants.UNHANDLED_EXCEPTION_MESSAGE);
             }
 
-            return StatusCode(StatusCodes.Status201Created);
+            return Ok();
         }
 
         [HttpPut]

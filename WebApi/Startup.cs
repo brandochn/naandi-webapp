@@ -57,6 +57,7 @@ namespace WebApi
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api for Naandi foundation");
+                c.RoutePrefix = string.Empty;
             });
         }
     }
