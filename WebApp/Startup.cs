@@ -27,7 +27,7 @@ namespace WebApp
                 options.CheckConsentNeeded = context => true;
             });
 
-            services.AddTransient(_ => new ApplicationDbContext(Configuration["ConnectionString"]));
+            services.AddTransient(_ => new ApplicationRestClient(Configuration["AppServiceUri"]));
 
             services.AddControllersWithViews()
                 .AddNewtonsoftJson();

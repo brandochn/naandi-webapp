@@ -13,3 +13,4 @@ Json samples/registrationrequest.json
 SQL/testing registration-request SP.sql
 WebApi/obj
 WebApi/bin
+/WebApi/WebApi.csproj.user
