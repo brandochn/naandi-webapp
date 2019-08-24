@@ -12,7 +12,7 @@ namespace Naandi.Shared.Services
         IEnumerable<Relationship> GetRelationships();
         IEnumerable<StatesOfMexico> GetStatesOfMexico();
         IEnumerable<MunicipalitiesOfMexico> GetMunicipalitiesOfMexicoByStateOfMexicoName(string nameOfState);
-        IEnumerable<RegistrationRequest> GetRegistrationRequests(int limitRequest);
+        IEnumerable<RegistrationRequest> GetRegistrationRequests();
         IEnumerable<RegistrationRequest> GetRegistrationRequestsByMinorName(string minorName);
         void DeleteById(int Id);
         void Update(RegistrationRequest registrationRequest);

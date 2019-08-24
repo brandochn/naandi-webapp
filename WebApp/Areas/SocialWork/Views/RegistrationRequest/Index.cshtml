@@ -80,7 +80,7 @@
                 cache: false,
                 success: function (response) {
                     $('#RegistrationRequestTable').html(response);
-                    $('#RegistrationRequestTableId').DataTable({ searching: false, "order": [[ 0, "desc" ]] });
+                    $('#RegistrationRequestTableId').DataTable({ searching: false });
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     alert(errorThrown);
@@ -139,7 +139,7 @@
     });
 
     $(document).ready( function () {
-        $('#RegistrationRequestTableId').DataTable({ searching: false, "order": [[ 0, "desc" ]] });
+        $('#RegistrationRequestTableId').DataTable({ searching: false });
     });
 
     </script>

@@ -545,10 +545,11 @@ namespace WebApi.Services
             return registrationRequests;
         }
 
-        public IEnumerable<RegistrationRequest> GetRegistrationRequests(int limitRequest)
+        public IEnumerable<RegistrationRequest> GetRegistrationRequests()
         {
             RegistrationRequest registrationRequest;
             IList<RegistrationRequest> registrationRequests = new List<RegistrationRequest>();
+            int limitRequest = 5000;
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
             {

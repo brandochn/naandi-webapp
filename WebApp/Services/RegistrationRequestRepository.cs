@@ -380,70 +380,12 @@ namespace WebApp.Services
             return registrationRequests;
         }
 
-        public IEnumerable<RegistrationRequest> GetRegistrationRequests(int limitRequest)
+        public IEnumerable<RegistrationRequest> GetRegistrationRequests()
         {
             IList<RegistrationRequest> registrationRequests = new List<RegistrationRequest>();
-
-            //using (MySqlConnection connection = applicationRestClient.GetConnection())
-            //{
-            //    MySqlCommand cmd = new MySqlCommand();
-            //    cmd.Connection = connection;
-            //    cmd.CommandText = @"
-            //        SELECT rr.Id
-            //            , rr.CreationDate
-            //            , r.Id
-            //            , r.FullName
-            //            , m.Id
-            //            , m.FullName
-            //            , rrs.Id
-            //            , rrs.Name
-            //        FROM RegistrationRequest rr
-            //        LEFT JOIN Requestor r ON r.Id = rr.RequestorId
-            //        LEFT JOIN Minor m ON m.Id = rr.MinorId
-            //        LEFT JOIN RegistrationRequestStatus rrs on rr.RegistrationRequestStatusId = rrs.Id  
-            //        ORDER BY rr.Id DESC
-            //        LIMIT @limitRequest;";
-            //    cmd.CommandType = System.Data.CommandType.Text;
-            //    cmd.Parameters.Add(new MySqlParameter()
-            //    {
-            //        ParameterName = "limitRequest",
-            //        Direction = System.Data.ParameterDirection.Input,
-            //        MySqlDbType = MySqlDbType.Int32,
-            //        Value = limitRequest
-            //    });
-
-            //    connection.Open();
-            //    using (var reader = cmd.ExecuteReader())
-            //    {
-
-            //        int index;
-            //        while (reader.Read())
-            //        {
-            //            index = 0;
-            //            registrationRequests.Add(new RegistrationRequest()
-            //            {
-            //                Id = reader.GetInt32(index++),
-            //                CreationDate = reader.GetDateTime(index++).ToLocalTime()
-            //               ,
-            //                Requestor = new Requestor
-            //                {
-            //                    Id = reader.GetInt32(index++),
-            //                    FullName = reader.GetString(index++)
-            //                },
-            //                Minor = new Minor
-            //                {
-            //                    Id = reader.GetInt32(index++),
-            //                    FullName = reader.GetString(index++),
-            //                },
-            //                RegistrationRequestStatus = new RegistrationRequestStatus
-            //                {
-            //                    Id = reader.GetInt32(index++),
-            //                    Name = reader.GetString(index++)
-            //                }
-            //            });
-            //        }
-            //    }
-            //}
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/RegistrationRequest/GetRegistrationRequests", Method.GET);
+            registrationRequests = client.Execute<List<RegistrationRequest>>(request).Data;            
 
             return registrationRequests;
         }

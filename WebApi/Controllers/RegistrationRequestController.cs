@@ -14,7 +14,6 @@ namespace WebApi.Controllers
     public class RegistrationRequestController : ControllerBase
     {       
         private readonly IRegistrationRequest registrationRequestRepository;
-        private const int numberOfRercordsToShow = 5000;
 
         public RegistrationRequestController(IRegistrationRequest _registrationRequestRepository)
         {
@@ -25,7 +24,7 @@ namespace WebApi.Controllers
         [Route("GetRegistrationRequests")]
         public IEnumerable<RegistrationRequest> GetRegistrationRequests()
         {
-            return registrationRequestRepository.GetRegistrationRequests(numberOfRercordsToShow).ToList();
+            return registrationRequestRepository.GetRegistrationRequests().ToList();
         }
 
         [HttpGet]
