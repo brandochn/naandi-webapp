@@ -257,6 +257,9 @@ CREATE TABLE `StatesOfMexico` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='Estados de la República Mexicana';
 
+--
+-- Table structure for table `LegalGuardian`
+--
 
 DROP TABLE IF EXISTS `LegalGuardian`;
 
@@ -282,6 +285,9 @@ CREATE TABLE `LegalGuardian` (
   CONSTRAINT `FK_LegalGuardian_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`)
 ) ENGINE=InnoDB COMMENT='Tutor legal info';
 
+--
+-- Table structure for table `Spouse`
+--
 
 DROP TABLE IF EXISTS `Spouse`;
 
@@ -293,6 +299,9 @@ CREATE TABLE `Spouse` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='Conyuge info';
 
+--
+-- Table structure for table `FormalEducation`
+--
 
 DROP TABLE IF EXISTS `FormalEducation`;
 
@@ -305,6 +314,26 @@ CREATE TABLE `FormalEducation` (
   `ReasonsToStopStudying` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='Escolaridad';
+
+--
+-- Table structure for table `DerivadaPor`
+--
+
+DROP TABLE IF EXISTS `PreviousFoundation`;
+
+CREATE TABLE `PreviousFoundation` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Familiar` varchar(300) DEFAULT NULL,
+  `Procuraduria` varchar(300) DEFAULT NULL,
+  `Dif` varchar(300) DEFAULT NULL,
+  `Otro` varchar(300) DEFAULT NULL,
+  `InstitucionAnterior` varchar(300) DEFAULT NULL,
+  `TiempoDeEstadia` varchar(300) DEFAULT NULL,
+  `MotivoDeEgreso` varchar(300) DEFAULT NULL
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='No encontre traducción la ingles para esta tabla (DerivadaPor)';
+
+
 
 --
 -- Routines for database 'naandi'
