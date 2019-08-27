@@ -350,7 +350,7 @@ CREATE TABLE `FamilyHealth` (
   `ConsumoDeTabaco` varchar(300) DEFAULT NULL,
   `ConsumoDeAlcohol` varchar(300) DEFAULT NULL,
   `ConsumoDeDrogas` varchar(300) DEFAULT NULL,
-  `Comments` varchar(300) DEFAULT NULL
+  `Comments` varchar(400) DEFAULT NULL
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='Salud familiar no tengo la traduccion correcta para algunas columnas';
 
@@ -369,12 +369,24 @@ CREATE TABLE `FamilyMembers` (
   `RelationshipId` int(11) NOT NULL,
   `Education` varchar(100) DEFAULT NULL,
   `CurrentOccupation` varchar(100) DEFAULT NULL,
+  `FamilyInteraction` varchar(400) DEFAULT NULL,
+  `Comments` varchar(400) DEFAULT NULL
   PRIMARY KEY (`Id`),
   KEY `FK_FamilyMembers_MaritalStatus` (`MaritalStatusId`),
   CONSTRAINT `FK_FamilyMembers_MaritalStatus` FOREIGN KEY (`MaritalStatusId`) REFERENCES `MaritalStatus` (`Id`),
   KEY `FK_FamilyMembers_Relationship` (`RelationshipId`),
   CONSTRAINT `FK_FamilyMembers_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`)
 ) ENGINE=InnoDB COMMENT='Composicion Familiar';
+
+--
+-- Table structure for table `SocioeconomicStudy`
+--
+
+DROP TABLE IF EXISTS `SocioeconomicStudy`;
+
+CREATE TABLE `SocioeconomicStudy` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT
+) ENGINE=InnoDB COMMENT='SOCIOECONOMICO ';
 
 --
 -- Routines for database 'naandi'
