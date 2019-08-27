@@ -296,6 +296,7 @@ CREATE TABLE `Spouse` (
   `FullName` varchar(100) NOT NULL,
   `Age` int(11) NOT NULL,
   `CurrentOccupation` varchar(100) DEFAULT NULL,
+  `Comments`	varchar(300) DEFAULT NULL
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='Conyuge info';
 
@@ -334,6 +335,46 @@ CREATE TABLE `PreviousFoundation` (
 ) ENGINE=InnoDB COMMENT='No encontre traducción la ingles para esta tabla (DerivadaPor)';
 
 
+--
+-- Table structure for table `FamilyHealth`
+--
+
+DROP TABLE IF EXISTS `FamilyHealth`;
+
+CREATE TABLE `FamilyHealth` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `FamilyHealthStatus` varchar(300) DEFAULT NULL,
+  `DerechoHambienteAServiciosDeSalud` varchar(300) DEFAULT NULL,
+  `Tipo` varchar(300) DEFAULT NULL,
+  `EnfermedadesCronicasDegenerativas` varchar(300) DEFAULT NULL,
+  `ConsumoDeTabaco` varchar(300) DEFAULT NULL,
+  `ConsumoDeAlcohol` varchar(300) DEFAULT NULL,
+  `ConsumoDeDrogas` varchar(300) DEFAULT NULL,
+  `Comments` varchar(300) DEFAULT NULL
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Salud familiar no tengo la traduccion correcta para algunas columnas';
+
+
+--
+-- Table structure for table `FamilyMembers`
+--
+
+DROP TABLE IF EXISTS `FamilyMembers`;
+
+CREATE TABLE `FamilyMembers` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `FullName` varchar(50) NOT NULL,
+  `Age` int(11) NOT NULL,
+  `MaritalStatusId` int(11) NOT NULL,
+  `RelationshipId` int(11) NOT NULL,
+  `Education` varchar(100) DEFAULT NULL,
+  `CurrentOccupation` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `FK_FamilyMembers_MaritalStatus` (`MaritalStatusId`),
+  CONSTRAINT `FK_FamilyMembers_MaritalStatus` FOREIGN KEY (`MaritalStatusId`) REFERENCES `MaritalStatus` (`Id`),
+  KEY `FK_FamilyMembers_Relationship` (`RelationshipId`),
+  CONSTRAINT `FK_FamilyMembers_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`)
+) ENGINE=InnoDB COMMENT='Composicion Familiar';
 
 --
 -- Routines for database 'naandi'
