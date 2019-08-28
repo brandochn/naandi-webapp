@@ -376,7 +376,59 @@ CREATE TABLE `FamilyMembers` (
   CONSTRAINT `FK_FamilyMembers_MaritalStatus` FOREIGN KEY (`MaritalStatusId`) REFERENCES `MaritalStatus` (`Id`),
   KEY `FK_FamilyMembers_Relationship` (`RelationshipId`),
   CONSTRAINT `FK_FamilyMembers_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`)
-) ENGINE=InnoDB COMMENT='Composicion Familiar';
+) ENGINE=InnoDB COMMENT='Composicion Familiar no tengo la traduccion correcta para algunas columnas';
+
+
+--
+-- Table structure for table `TypesOfHouses`
+--
+
+DROP TABLE IF EXISTS `TypesOfHouses`;
+
+CREATE TABLE `TypesOfHouses` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(50) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Tipo de vivienda';
+
+
+
+--
+-- Table structure for table `District`
+--
+
+DROP TABLE IF EXISTS `District`;
+
+CREATE TABLE `District` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `TypeOfDistrict` varchar(100) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Tipo de vivienda';
+
+--
+-- Table structure for table `HouseLayout`
+--
+
+DROP TABLE IF EXISTS `HouseLayout`;
+
+CREATE TABLE `HouseLayout` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Bedroom` varchar(100) NOT NULL,
+  `Dinningroom` varchar(100) NOT NULL,
+  `Kitchen` varchar(100) NOT NULL,
+  `Livingroom` varchar(100) NOT NULL,
+  `Patio` varchar(100) NOT NULL,
+  `Garage` varchar(100) NOT NULL,
+  `Backyard` varchar(100) NOT NULL,
+  `Other` varchar(100) NOT NULL,
+  `Ground` varchar(100) NOT NULL,
+  `Walls` varchar(100) NOT NULL,
+  `Roof` varchar(100) NOT NULL,
+  `Description` varchar(400) NOT NULL,
+  `Furniture` varchar(100) NOT NULL,
+  `CharacteristicsOfFurniture` varchar(400) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Tipo de vivienda';
 
 --
 -- Table structure for table `SocioeconomicStudy`
@@ -385,8 +437,18 @@ CREATE TABLE `FamilyMembers` (
 DROP TABLE IF EXISTS `SocioeconomicStudy`;
 
 CREATE TABLE `SocioeconomicStudy` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT
-) ENGINE=InnoDB COMMENT='SOCIOECONOMICO ';
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Vivienda` varchar(100) DEFAULT NULL,
+  `NombrePropietario` varchar(100) DEFAULT NULL,
+  `MedioAdquisicion` varchar(100) DEFAULT NULL,
+  `TypesOfHousesId` int(11) DEFAULT NULL,
+  `HouseLayoutId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `FK_SocioeconomicStudy_TypesOfHouses` (`TypesOfHousesId`),
+  CONSTRAINT `FK_SocioeconomicStudy_TypesOfHouses` FOREIGN KEY (`TypesOfHousesId`) REFERENCES `TypesOfHouses` (`Id`),
+  KEY `FK_SocioeconomicStudy_HouseLayout` (`HouseLayoutId`),
+  CONSTRAINT `FK_SocioeconomicStudy_HouseLayout` FOREIGN KEY (`HouseLayoutId`) REFERENCES `HouseLayout` (`Id`)
+) ENGINE=InnoDB COMMENT='SOCIOECONOMICO no tengo la traduccion correcta para algunas columnas';
 
 --
 -- Routines for database 'naandi'
