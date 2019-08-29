@@ -402,8 +402,23 @@ DROP TABLE IF EXISTS `District`;
 CREATE TABLE `District` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `TypeOfDistrict` varchar(100) NOT NULL,
+  `AguaPotable` varchar(100) NOT NULL,
+  `Telefono` varchar(10) NOT NULL,
+  `Electricidad` varchar(100) NOT NULL,
+  `Drenaje` varchar(100) NOT NULL,
+  `Hospital` varchar(100) NOT NULL,
+  `Correo` varchar(100) NOT NULL,
+  `Escuela` varchar(100) NOT NULL,
+  `Policia` varchar(100) NOT NULL,
+  `AlumbradoPublico` varchar(100) NOT NULL,
+  `ViasDeAcceso` varchar(100) NOT NULL,
+  `TransportePublico` varchar(100) NOT NULL,
+  `AseoPublico` varchar(100) NOT NULL,
+  `Iglesia` varchar(100) NOT NULL,
+  `Otros` varchar(100) NOT NULL,
+  `Description` varchar(100) NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB COMMENT='Tipo de vivienda';
+) ENGINE=InnoDB COMMENT='COLONIA, no tengo la traduccion correcta para algunas columnas';
 
 --
 -- Table structure for table `HouseLayout`
