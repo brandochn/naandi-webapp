@@ -445,6 +445,54 @@ CREATE TABLE `HouseLayout` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='Tipo de vivienda';
 
+
+
+--
+-- Table structure for table `EconomicSituation`
+--
+
+DROP TABLE IF EXISTS `EconomicSituation`;
+
+CREATE TABLE `EconomicSituation` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `NivelSocioEconomico` varchar(100),
+  `Ahorros` money,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='SITUACIÓN ECONÓMICA no tengo la traduccion correcta para algunas columnas';
+
+
+--
+-- Table structure for table `Patrimony `
+--
+
+DROP TABLE IF EXISTS `Patrimony`;
+
+CREATE TABLE `Patrimony` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(100),
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Patrimonio familiar';
+
+--
+-- Table structure for table `EconomicSituationPatrimonyRelation`
+--
+
+DROP TABLE IF EXISTS `EconomicSituationPatrimonyRelation`;
+
+CREATE TABLE `EconomicSituationPatrimonyRelation` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `EconomicSituationId` int(11) NOT NULL ,
+  `PatrimonyId`  int(11) NOT NULL,
+  `Value` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `EconomicSituationId_PatrimonyId` (`EconomicSituationId`,`PatrimonyId`),
+  KEY `FK_EconomicSituationPatrimonyRelation_Patrimony` (`PatrimonyId`),
+  CONSTRAINT `FK_EconomicSituationPatrimonyRelation_Patrimony` FOREIGN KEY (`PatrimonyId`) REFERENCES `Patrimony` (`Id`),
+  KEY `FK_EconomicSituationPatrimonyRelation_EconomicSituation` (`EconomicSituationId`),
+  CONSTRAINT `FK_EconomicSituationPatrimonyRelation_EconomicSituation` FOREIGN KEY (`EconomicSituationId`) REFERENCES `EconomicSituation` (`Id`)
+) ENGINE=InnoDB;
+
+
 --
 -- Table structure for table `SocioeconomicStudy`
 --
