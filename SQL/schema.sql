@@ -514,6 +514,68 @@ CREATE TABLE `SocioeconomicStudy` (
 ) ENGINE=InnoDB COMMENT='SOCIOECONOMICO no tengo la traduccion correcta para algunas columnas';
 
 --
+-- Table structure for table `FamilyNutrition`
+--
+
+DROP TABLE IF EXISTS `FamilyNutrition`;
+
+CREATE TABLE `FamilyNutrition` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Comments` varchar(400),
+  `FoodAllergy` varchar(200),
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='ALIMENTACION FAMILIAR';
+
+
+--
+-- Table structure for table `Food `
+--
+
+DROP TABLE IF EXISTS `Food`;
+
+CREATE TABLE `Food` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(100),
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Alimentos';
+
+--
+-- Table structure for table `FamilyNutritionFoodRelation`
+--
+
+DROP TABLE IF EXISTS `FamilyNutritionFoodRelation`;
+
+CREATE TABLE `FamilyNutritionFoodRelation` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `FamilyNutritionId` int(11) NOT NULL ,
+  `FoodId`  int(11) NOT NULL,
+  `Frequency` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `FamilyNutritionId_FoodId` (`FamilyNutritionId`,`FoodId`),
+  KEY `FK_FamilyNutritionFoodRelation_Food` (`FoodId`),
+  CONSTRAINT `FK_FamilyNutritionFoodRelation_Food` FOREIGN KEY (`FoodId`) REFERENCES `Food` (`Id`),
+  KEY `FK_FamilyNutritionFoodRelation_FamilyNutrition` (`FamilyNutritionId`),
+  CONSTRAINT `FK_FamilyNutritionFoodRelation_FamilyNutrition` FOREIGN KEY (`FamilyNutritionId`) REFERENCES `FamilyNutrition` (`Id`)
+) ENGINE=InnoDB;
+
+
+--
+-- Table structure for table `BenefitsProvided`
+--
+
+DROP TABLE IF EXISTS `BenefitsProvided`;
+
+CREATE TABLE `BenefitsProvided` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Institucion` varchar(100),
+  `ApoyoRecibido` varchar(200),
+  `Monto` money,
+  `Periodo` datetime,
+  `RedesDeApoyoFamiliares` varchar(400),
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Apoyos y Servicios Otorgados no tengo la traduccion correcta para algunas columnas';
+
+--
 -- Routines for database 'naandi'
 --
 
