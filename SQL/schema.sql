@@ -352,7 +352,7 @@ CREATE TABLE `FamilyHealth` (
   `ConsumoDeDrogas` varchar(300) DEFAULT NULL,
   `Comments` varchar(400) DEFAULT NULL
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB COMMENT='Salud familiar no tengo la traduccion correcta para algunas columnas';
+) ENGINE=InnoDB COMMENT='Salud familiar no tengo la traducción correcta para algunas columnas';
 
 
 --
@@ -376,7 +376,7 @@ CREATE TABLE `FamilyMembers` (
   CONSTRAINT `FK_FamilyMembers_MaritalStatus` FOREIGN KEY (`MaritalStatusId`) REFERENCES `MaritalStatus` (`Id`),
   KEY `FK_FamilyMembers_Relationship` (`RelationshipId`),
   CONSTRAINT `FK_FamilyMembers_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`)
-) ENGINE=InnoDB COMMENT='Composicion Familiar no tengo la traduccion correcta para algunas columnas';
+) ENGINE=InnoDB COMMENT='Composicion Familiar no tengo la traducción correcta para algunas columnas';
 
 
 --
@@ -418,7 +418,7 @@ CREATE TABLE `District` (
   `Otros` varchar(100) NOT NULL,
   `Description` varchar(100) NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB COMMENT='COLONIA, no tengo la traduccion correcta para algunas columnas';
+) ENGINE=InnoDB COMMENT='COLONIA, no tengo la traducción correcta para algunas columnas';
 
 --
 -- Table structure for table `HouseLayout`
@@ -458,7 +458,7 @@ CREATE TABLE `EconomicSituation` (
   `NivelSocioEconomico` varchar(100),
   `Ahorros` money,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB COMMENT='SITUACIÓN ECONÓMICA no tengo la traduccion correcta para algunas columnas';
+) ENGINE=InnoDB COMMENT='SITUACIÓN ECONÓMICA no tengo la traducción correcta para algunas columnas';
 
 
 --
@@ -511,7 +511,7 @@ CREATE TABLE `SocioeconomicStudy` (
   CONSTRAINT `FK_SocioeconomicStudy_TypesOfHouses` FOREIGN KEY (`TypesOfHousesId`) REFERENCES `TypesOfHouses` (`Id`),
   KEY `FK_SocioeconomicStudy_HouseLayout` (`HouseLayoutId`),
   CONSTRAINT `FK_SocioeconomicStudy_HouseLayout` FOREIGN KEY (`HouseLayoutId`) REFERENCES `HouseLayout` (`Id`)
-) ENGINE=InnoDB COMMENT='SOCIOECONOMICO no tengo la traduccion correcta para algunas columnas';
+) ENGINE=InnoDB COMMENT='SOCIOECONOMICO no tengo la traducción correcta para algunas columnas';
 
 --
 -- Table structure for table `FamilyNutrition`
@@ -573,7 +573,19 @@ CREATE TABLE `BenefitsProvided` (
   `Periodo` datetime,
   `RedesDeApoyoFamiliares` varchar(400),
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB COMMENT='Apoyos y Servicios Otorgados no tengo la traduccion correcta para algunas columnas';
+) ENGINE=InnoDB COMMENT='Apoyos y Servicios Otorgados no tengo la traducción correcta para algunas columnas';
+
+--
+-- Table structure for table `TipoMovimiento`
+--
+
+DROP TABLE IF EXISTS `TipoMovimiento`;
+
+CREATE TABLE `TipoMovimiento` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(50) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Tipo de movimiento (Ingreso o Egreso) no tengo la traducción correcta al ingles para esta tabla';
 
 --
 -- Routines for database 'naandi'
