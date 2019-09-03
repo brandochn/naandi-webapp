@@ -588,6 +588,33 @@ CREATE TABLE `TipoMovimiento` (
 ) ENGINE=InnoDB COMMENT='Tipo de movimiento (Ingreso o Egreso) no tengo la traducción correcta al ingles para esta tabla';
 
 --
+-- Table structure for table `Movimiento`
+--
+
+DROP TABLE IF EXISTS `Movimiento`;
+
+CREATE TABLE `Movimiento` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(50) NOT NULL,
+  `TipoMovimientoId` int,
+  PRIMARY KEY (`Id`),
+   KEY `FK_Movimiento_TipoMovimiento` (`TipoMovimientoId`),
+  CONSTRAINT `FK_Movimiento_TipoMovimiento` FOREIGN KEY (`TipoMovimientoId`) REFERENCES `TipoMovimiento` (`Id`),
+) ENGINE=InnoDB COMMENT='Movimiento (conceptos de movimientos de Ingreso o Egreso) no tengo la traducción correcta al ingles para esta tabla';
+
+--
+-- Table structure for table `IngresosEgresosMensuales`
+--
+
+DROP TABLE IF EXISTS `IngresosEgresosMensuales`;
+
+CREATE TABLE `IngresosEgresosMensuales` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Comments` varchar(400) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='INGRESOS Y EGRESOS  MENSUALES no tengo la traducción correcta al ingles para esta tabla';
+
+--
 -- Routines for database 'naandi'
 --
 
