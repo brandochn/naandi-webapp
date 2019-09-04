@@ -363,20 +363,34 @@ DROP TABLE IF EXISTS `FamilyMembers`;
 
 CREATE TABLE `FamilyMembers` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `FamilyInteraction` varchar(400) DEFAULT NULL,
+  `Comments` varchar(400) DEFAULT NULL
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Composicion Familiar no tengo la traducción correcta para algunas columnas';
+
+--
+-- Table structure for table `FamilyMembersDetails`
+--
+
+DROP TABLE IF EXISTS `FamilyMembersDetails`;
+
+CREATE TABLE `FamilyMembersDetails` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `FullName` varchar(50) NOT NULL,
   `Age` int(11) NOT NULL,
   `MaritalStatusId` int(11) NOT NULL,
   `RelationshipId` int(11) NOT NULL,
   `Education` varchar(100) DEFAULT NULL,
   `CurrentOccupation` varchar(100) DEFAULT NULL,
-  `FamilyInteraction` varchar(400) DEFAULT NULL,
-  `Comments` varchar(400) DEFAULT NULL
+  `FamilyMembersId` int(11) NOT NULL
   PRIMARY KEY (`Id`),
-  KEY `FK_FamilyMembers_MaritalStatus` (`MaritalStatusId`),
-  CONSTRAINT `FK_FamilyMembers_MaritalStatus` FOREIGN KEY (`MaritalStatusId`) REFERENCES `MaritalStatus` (`Id`),
-  KEY `FK_FamilyMembers_Relationship` (`RelationshipId`),
-  CONSTRAINT `FK_FamilyMembers_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`)
-) ENGINE=InnoDB COMMENT='Composicion Familiar no tengo la traducción correcta para algunas columnas';
+  KEY `FK_FamilyMembersDetails_MaritalStatus` (`MaritalStatusId`),
+  CONSTRAINT `FK_FamilyMembersDetails_MaritalStatus` FOREIGN KEY (`MaritalStatusId`) REFERENCES `MaritalStatus` (`Id`),
+  KEY `FK_FamilyMembersDetails_Relationship` (`RelationshipId`),
+  CONSTRAINT `FK_FamilyMembersDetails_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`),
+  KEY `FK_FamilyMembersDetails_FamilyMembers` (`FamilyMembersId`),
+  CONSTRAINT `FK_FamilyMembersDetails_FamilyMembers` FOREIGN KEY (`FamilyMembersId`) REFERENCES `FamilyMembers` (`Id`)
+) ENGINE=InnoDB COMMENT='Detalles de Composicion Familiar';
 
 
 --
@@ -613,6 +627,68 @@ CREATE TABLE `IngresosEgresosMensuales` (
   `Comments` varchar(400) NOT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='INGRESOS Y EGRESOS  MENSUALES no tengo la traducción correcta al ingles para esta tabla';
+
+--
+-- Table structure for table `IngresosEgresosMensualesMovimientoRelation`
+--
+
+DROP TABLE IF EXISTS `IngresosEgresosMensualesMovimientoRelation`;
+
+CREATE TABLE `IngresosEgresosMensualesMovimientoRelation` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `IngresosEgresosMensualesId` int(11) NOT NULL ,
+  `MovimientoId`  int(11) NOT NULL,
+  `Monto` money NOT NULL DEFAULT 0,
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `IngresosEgresosMensualesId_MovimientoId` (`IngresosEgresosMensualesId`,`MovimientoId`),
+  KEY `FK_IngresosEgresosMensualesMovimientoRelation_Movimiento` (`MovimientoId`),
+  CONSTRAINT `FK_IngresosEgresosMensualesMovimientoRelation_Movimiento` FOREIGN KEY (`MovimientoId`) REFERENCES `Movimiento` (`Id`),
+  KEY `FK_IngresosEgresosMensualesMovimientoRelation_IngresosEgresosMensuales` (`IngresosEgresosMensualesId`),
+  CONSTRAINT `FK_IngresosEgresosMensualesMovimientoRelation_IngresosEgresosMensuales` FOREIGN KEY (`IngresosEgresosMensualesId`) REFERENCES `IngresosEgresosMensuales` (`Id`)
+) ENGINE=InnoDB;
+
+--
+-- Table structure for table `InvestigacionFamiliar`
+--
+
+DROP TABLE IF EXISTS `InvestigacionFamiliar`;
+
+CREATE TABLE `InvestigacionFamiliar` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `CreationDate` datetime NOT NULL,
+  `CreationTime` time NOT NULL,
+  `Family` varchar(100) NOT NULL,
+  `RequestReasons` varchar(300) NOT NULL,
+  `SituationsOfDomesticViolence` varchar(200) DEFAULT NULL,
+  `FamilyExpectations` varchar(300) DEFAULT NULL,
+  `FamilyDiagnostic` varchar(300) DEFAULT NULL,
+  `CaseStudyConclusion` varchar(300) DEFAULT NULL,
+  `Recommendations` varchar(300) DEFAULT NULL,
+  `VisualSupports` varchar(300) DEFAULT NULL,
+  `Sketch` varchar(300) DEFAULT NULL,
+  `MinorId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `FK_InvestigacionFamiliar_Minor` (`MinorId`),
+  CONSTRAINT `FK_InvestigacionFamiliar_Minor` FOREIGN KEY (`MinorId`) REFERENCES `Minor` (`Id`)
+) ENGINE=InnoDB COMMENT='Investigacion Familiar no tengo la traducción correcta al ingles para esta tabla';
+
+--
+-- Table structure for table `FamilyMembersInvestigacionFamiliarRelation`
+--
+
+DROP TABLE IF EXISTS `FamilyMembersInvestigacionFamiliarRelation`;
+
+CREATE TABLE `FamilyMembersInvestigacionFamiliarRelation` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `FamilyMembersId` int(11) NOT NULL ,
+  `InvestigacionFamiliarId`  int(11) NOT NULL,
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `FamilyMembersId_InvestigacionFamiliarId` (`FamilyMembersId`,`InvestigacionFamiliarId`),
+  KEY `FK_FamilyMembersInvestigacionFamiliarRelation_InvestigacionFamiliar` (`InvestigacionFamiliarId`),
+  CONSTRAINT `FK_FamilyMembersInvestigacionFamiliarRelation_InvestigacionFamiliar` FOREIGN KEY (`InvestigacionFamiliarId`) REFERENCES `InvestigacionFamiliar` (`Id`),
+  KEY `FK_FamilyMembersInvestigacionFamiliarRelation_FamilyMembers` (`FamilyMembersId`),
+  CONSTRAINT `FK_FamilyMembersInvestigacionFamiliarRelation_FamilyMembers` FOREIGN KEY (`FamilyMembersId`) REFERENCES `FamilyMembers` (`Id`)
+) ENGINE=InnoDB;
 
 --
 -- Routines for database 'naandi'
