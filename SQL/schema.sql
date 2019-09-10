@@ -296,7 +296,7 @@ CREATE TABLE `Spouse` (
   `FullName` varchar(100) NOT NULL,
   `Age` int(11) NOT NULL,
   `CurrentOccupation` varchar(100) DEFAULT NULL,
-  `Comments`	varchar(300) DEFAULT NULL
+  `Comments`	varchar(300) DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='Conyuge info';
 
@@ -330,7 +330,7 @@ CREATE TABLE `PreviousFoundation` (
   `Otro` varchar(300) DEFAULT NULL,
   `InstitucionAnterior` varchar(300) DEFAULT NULL,
   `TiempoDeEstadia` varchar(300) DEFAULT NULL,
-  `MotivoDeEgreso` varchar(300) DEFAULT NULL
+  `MotivoDeEgreso` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='No encontre traducción la ingles para esta tabla (DerivadaPor)';
 
@@ -350,7 +350,7 @@ CREATE TABLE `FamilyHealth` (
   `ConsumoDeTabaco` varchar(300) DEFAULT NULL,
   `ConsumoDeAlcohol` varchar(300) DEFAULT NULL,
   `ConsumoDeDrogas` varchar(300) DEFAULT NULL,
-  `Comments` varchar(400) DEFAULT NULL
+  `Comments` varchar(400) DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='Salud familiar no tengo la traducción correcta para algunas columnas';
 
@@ -364,7 +364,7 @@ DROP TABLE IF EXISTS `FamilyMembers`;
 CREATE TABLE `FamilyMembers` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `FamilyInteraction` varchar(400) DEFAULT NULL,
-  `Comments` varchar(400) DEFAULT NULL
+  `Comments` varchar(400) DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='Composicion Familiar no tengo la traducción correcta para algunas columnas';
 
@@ -382,7 +382,7 @@ CREATE TABLE `FamilyMembersDetails` (
   `RelationshipId` int(11) NOT NULL,
   `Education` varchar(100) DEFAULT NULL,
   `CurrentOccupation` varchar(100) DEFAULT NULL,
-  `FamilyMembersId` int(11) NOT NULL
+  `FamilyMembersId` int(11) NOT NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_FamilyMembersDetails_MaritalStatus` (`MaritalStatusId`),
   CONSTRAINT `FK_FamilyMembersDetails_MaritalStatus` FOREIGN KEY (`MaritalStatusId`) REFERENCES `MaritalStatus` (`Id`),
@@ -470,7 +470,7 @@ DROP TABLE IF EXISTS `EconomicSituation`;
 CREATE TABLE `EconomicSituation` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `NivelSocioEconomico` varchar(100),
-  `Ahorros` money,
+  `Ahorros`   decimal(13, 2),
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='SITUACIÓN ECONÓMICA no tengo la traducción correcta para algunas columnas';
 
@@ -583,7 +583,7 @@ CREATE TABLE `BenefitsProvided` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `Institucion` varchar(100),
   `ApoyoRecibido` varchar(200),
-  `Monto` money,
+  `Monto`   decimal(13, 2),
   `Periodo` datetime,
   `RedesDeApoyoFamiliares` varchar(400),
   PRIMARY KEY (`Id`)
@@ -610,10 +610,10 @@ DROP TABLE IF EXISTS `Movimiento`;
 CREATE TABLE `Movimiento` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(50) NOT NULL,
-  `TipoMovimientoId` int,
+  `TipoMovimientoId` int(11),
   PRIMARY KEY (`Id`),
    KEY `FK_Movimiento_TipoMovimiento` (`TipoMovimientoId`),
-  CONSTRAINT `FK_Movimiento_TipoMovimiento` FOREIGN KEY (`TipoMovimientoId`) REFERENCES `TipoMovimiento` (`Id`),
+  CONSTRAINT `FK_Movimiento_TipoMovimiento` FOREIGN KEY (`TipoMovimientoId`) REFERENCES `TipoMovimiento` (`Id`)
 ) ENGINE=InnoDB COMMENT='Movimiento (conceptos de movimientos de Ingreso o Egreso) no tengo la traducción correcta al ingles para esta tabla';
 
 --
@@ -638,13 +638,13 @@ CREATE TABLE `IngresosEgresosMensualesMovimientoRelation` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `IngresosEgresosMensualesId` int(11) NOT NULL ,
   `MovimientoId`  int(11) NOT NULL,
-  `Monto` money NOT NULL DEFAULT 0,
+  `Monto`   decimal(13, 2) NOT NULL DEFAULT 0,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `IngresosEgresosMensualesId_MovimientoId` (`IngresosEgresosMensualesId`,`MovimientoId`),
   KEY `FK_IngresosEgresosMensualesMovimientoRelation_Movimiento` (`MovimientoId`),
   CONSTRAINT `FK_IngresosEgresosMensualesMovimientoRelation_Movimiento` FOREIGN KEY (`MovimientoId`) REFERENCES `Movimiento` (`Id`),
-  KEY `FK_IngresosEgresosMensualesMovimientoRelation_IngresosEgresosMensuales` (`IngresosEgresosMensualesId`),
-  CONSTRAINT `FK_IngresosEgresosMensualesMovimientoRelation_IngresosEgresosMensuales` FOREIGN KEY (`IngresosEgresosMensualesId`) REFERENCES `IngresosEgresosMensuales` (`Id`)
+  KEY `FK_IngresosEgresosMensualesMovimientoRelation_IngEgrMens` (`IngresosEgresosMensualesId`),
+  CONSTRAINT `FK_IngresosEgresosMensualesMovimientoRelation_IngEgrMens` FOREIGN KEY (`IngresosEgresosMensualesId`) REFERENCES `IngresosEgresosMensuales` (`Id`)
 ) ENGINE=InnoDB;
 
 --
@@ -684,8 +684,8 @@ CREATE TABLE `FamilyMembersInvestigacionFamiliarRelation` (
   `InvestigacionFamiliarId`  int(11) NOT NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `FamilyMembersId_InvestigacionFamiliarId` (`FamilyMembersId`,`InvestigacionFamiliarId`),
-  KEY `FK_FamilyMembersInvestigacionFamiliarRelation_InvestigacionFamiliar` (`InvestigacionFamiliarId`),
-  CONSTRAINT `FK_FamilyMembersInvestigacionFamiliarRelation_InvestigacionFamiliar` FOREIGN KEY (`InvestigacionFamiliarId`) REFERENCES `InvestigacionFamiliar` (`Id`),
+  KEY `FK_FamilyMembersInvesFamRelation_InvestigacionFam` (`InvestigacionFamiliarId`),
+  CONSTRAINT `FK_FamilyMembersInvesFamRelation_InvestigacionFam` FOREIGN KEY (`InvestigacionFamiliarId`) REFERENCES `InvestigacionFamiliar` (`Id`),
   KEY `FK_FamilyMembersInvestigacionFamiliarRelation_FamilyMembers` (`FamilyMembersId`),
   CONSTRAINT `FK_FamilyMembersInvestigacionFamiliarRelation_FamilyMembers` FOREIGN KEY (`FamilyMembersId`) REFERENCES `FamilyMembers` (`Id`)
 ) ENGINE=InnoDB;
@@ -728,7 +728,7 @@ BEGIN
 	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
 
 	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS'Data';
+	SELECT JSONData AS 'Data';
 	
 	SELECT
 	JSON_EXTRACT(Data, '$.Id') INTO RegistrationRequestId
@@ -1202,4 +1202,77 @@ BEGIN
  END WHILE;
  
  END ;;
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateAddress`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateAddress`(
+	IN `JSONData` LONGTEXT,
+  OUT `AddressId` INT,
+	OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+   
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+    
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+	
+	SELECT
+	JSON_EXTRACT(Data, '$.Address.Id') INTO AddressId
+	FROM JSON_TABLE;
+ 
+	
+	IF AddressId = 0 THEN							
+		
+		INSERT INTO Address(Street ,HouseNumber ,PoBox ,PhoneNumber ,City ,ZIP ,State ,Neighborhood ,Reference)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Street'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.HouseNumber'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.PoBox'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.PhoneNumber'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.City'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Zip'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.State'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Neighborhood'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Reference'))
+		FROM JSON_TABLE;
+		SET AddressId = LAST_INSERT_ID();
+	
+	ELSE
+		
+		SELECT  EXISTS(SELECT 1 FROM Address WHERE Id = AddressId) INTO rowExists;
+		
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'Address not found';
+		ELSE			
+						
+			UPDATE Address
+			SET
+				Street = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Address.Street')) FROM JSON_TABLE)
+				,HouseNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.HouseNumber')) FROM JSON_TABLE)
+				,PoBox =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.PoBox')) FROM JSON_TABLE)
+				,PhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.PhoneNumber')) FROM JSON_TABLE)
+				,City = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.City')) FROM JSON_TABLE)
+				,ZIP = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Zip')) FROM JSON_TABLE)
+				,State = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.State')) FROM JSON_TABLE)
+				,Neighborhood = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Neighborhood')) FROM JSON_TABLE)
+				,Reference = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Reference'))  FROM JSON_TABLE)
+			WHERE Id = AddressId;
+		END IF;
+	END IF;
+END ;;
 DELIMITER ;
