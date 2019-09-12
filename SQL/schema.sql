@@ -667,9 +667,12 @@ CREATE TABLE `InvestigacionFamiliar` (
   `VisualSupports` varchar(300) DEFAULT NULL,
   `Sketch` varchar(300) DEFAULT NULL,
   `MinorId` int(11) DEFAULT NULL,
+  `LegalGuardianId` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_InvestigacionFamiliar_Minor` (`MinorId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_Minor` FOREIGN KEY (`MinorId`) REFERENCES `Minor` (`Id`)
+  CONSTRAINT `FK_InvestigacionFamiliar_Minor` FOREIGN KEY (`MinorId`) REFERENCES `Minor` (`Id`),
+  KEY `FK_InvestigacionFamiliar_LegalGuardian` (`LegalGuardianId`),
+  CONSTRAINT `FK_InvestigacionFamiliar_LegalGuardian` FOREIGN KEY (`LegalGuardianId`) REFERENCES `LegalGuardian` (`Id`)
 ) ENGINE=InnoDB COMMENT='Investigacion Familiar no tengo la traducción correcta al ingles para esta tabla';
 
 --
@@ -1272,6 +1275,81 @@ BEGIN
 				,Neighborhood = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Neighborhood')) FROM JSON_TABLE)
 				,Reference = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Reference'))  FROM JSON_TABLE)
 			WHERE Id = AddressId;
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateLegalGuardian`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateLegalGuardian`(
+	IN `JSONData` LONGTEXT,
+  OUT `LegalGuardianId` INT,
+	OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+   
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+    
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+	
+	SELECT
+	JSON_EXTRACT(Data, '$.LegalGuardian.Id') INTO LegalGuardianId
+	FROM JSON_TABLE;
+ 
+	
+	IF LegalGuardianId = 0 THEN							
+		
+		INSERT INTO LegalGuardian(`FullName` ,`Age` ,`PlaceOfBirth` ,`MaritalStatusId` ,`Education` ,`CurrentOccupation`  ,`RelationshipId` ,`AddressId` ,`CellPhoneNumber`, `PhoneNumber`, `Errand`)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.FullName'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Age'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.MaritalStatusId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Education'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.CurrentOccupation'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.RelationshipId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.AddressId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.CellPhoneNumber'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.PhoneNumber'))
+      ,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Errand'))
+		FROM JSON_TABLE;
+		SET LegalGuardianId = LAST_INSERT_ID();
+	
+	ELSE
+		
+		SELECT  EXISTS(SELECT 1 FROM LegalGuardian WHERE Id = LegalGuardianId) INTO rowExists;
+		
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'LegalGuardian not found';
+		ELSE			
+						
+			UPDATE LegalGuardian
+			SET
+				FullName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.LegalGuardian.FullName')) FROM JSON_TABLE)
+				,Age = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Age')) FROM JSON_TABLE)
+				,MaritalStatusId =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.MaritalStatusId')) FROM JSON_TABLE)
+				,Education = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Education')) FROM JSON_TABLE)
+				,CurrentOccupation = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.CurrentOccupation')) FROM JSON_TABLE)
+				,RelationshipId = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.RelationshipId')) FROM JSON_TABLE)
+				,AddressId = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.AddressId')) FROM JSON_TABLE)
+				,CellPhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.CellPhoneNumber')) FROM JSON_TABLE)
+				,PhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.PhoneNumber'))  FROM JSON_TABLE)
+        ,Errand = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Errand'))  FROM JSON_TABLE)
+			WHERE Id = LegalGuardianId;
 		END IF;
 	END IF;
 END ;;
