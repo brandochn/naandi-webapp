@@ -1354,3 +1354,335 @@ BEGIN
 	END IF;
 END ;;
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateSpouse`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateSpouse`(
+	IN  `JSONData` LONGTEXT,
+    OUT `SpouseId` INT,
+	OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+   
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+    
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+	
+	SELECT
+	JSON_EXTRACT(Data, '$.Spouse.Id') INTO SpouseId
+	FROM JSON_TABLE;
+ 
+	
+	IF SpouseId = 0 THEN							
+		
+		INSERT INTO Spouse(`FullName` ,`Age` ,`CurrentOccupation` ,`Comments`)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.FullName'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.Age'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.CurrentOccupation'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.Comments'))
+		FROM JSON_TABLE;
+		SET SpouseId = LAST_INSERT_ID();
+	
+	ELSE
+		
+		SELECT  EXISTS(SELECT 1 FROM Spouse WHERE Id = SpouseId) INTO rowExists;
+		
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'Spouse not found';
+		ELSE			
+						
+			UPDATE Spouse
+			SET
+				FullName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Spouse.FullName')) FROM JSON_TABLE)
+				,Age = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.Age')) FROM JSON_TABLE)
+				,CurrentOccupation =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.CurrentOccupation')) FROM JSON_TABLE)
+				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.Comments')) FROM JSON_TABLE)
+			WHERE Id = SpouseId;
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateMinor`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateMinor`(
+	IN  `JSONData` LONGTEXT,
+    OUT `MinorId` INT,
+	OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+   
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+    
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+	
+	SELECT
+	JSON_EXTRACT(Data, '$.Minor.Id') INTO MinorId
+	FROM JSON_TABLE;
+ 
+	
+	IF MinorId = 0 THEN							
+		
+		INSERT INTO Minor (FullName, DateOfBirth, PlaceOfBirth, Age, Education, CurrentOccupation)
+		SELECT
+			JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.FullName'))
+			,CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.DateOfBirth')) AS datetime)
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.PlaceOfBirth'))
+			,JSON_EXTRACT(Data, '$.Minor.Age')
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.Education'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.CurrentOccupation'))
+		FROM JSON_TABLE;
+		SET MinorId = LAST_INSERT_ID();
+	
+	ELSE
+		
+		SELECT  EXISTS(SELECT 1 FROM Minor WHERE Id = MinorId) INTO rowExists;
+		
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'Minor not found';
+		ELSE			
+						
+			UPDATE Minor
+			SET
+				FullName =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.FullName')) FROM JSON_TABLE)
+				,DateOfBirth =       (SELECT CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.DateOfBirth')) AS datetime) FROM JSON_TABLE) 
+				,PlaceOfBirth =      (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.PlaceOfBirth')) FROM JSON_TABLE)
+				,Age =               (SELECT JSON_EXTRACT(Data, '$.Minor.Age') FROM JSON_TABLE)
+				,Education =         (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.Education')) FROM JSON_TABLE)
+				,CurrentOccupation = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.CurrentOccupation')) FROM JSON_TABLE)
+			WHERE Id = MinorId;
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateFormalEducation`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFormalEducation`(
+	IN  `JSONData` LONGTEXT,
+    OUT `FormalEducationId` INT,
+	OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+   
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+    
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+	
+	SELECT
+	JSON_EXTRACT(Data, '$.FormalEducation.Id') INTO FormalEducationId
+	FROM JSON_TABLE;
+ 
+	
+	IF FormalEducationId = 0 THEN							
+		
+		INSERT INTO FormalEducation (CanItRead, CanItWrite, IsItStudyingNow, CurrentGrade, ReasonsToStopStudying)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.CanItRead'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.CanItWrite'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.IsItStudyingNow'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.CurrentGrade'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.ReasonsToStopStudying'))
+		FROM JSON_TABLE;
+		SET FormalEducationId = LAST_INSERT_ID();
+	
+	ELSE
+		
+		SELECT  EXISTS(SELECT 1 FROM FormalEducation WHERE Id = FormalEducationId) INTO rowExists;
+		
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'FormalEducation not found';
+		ELSE			
+						
+			UPDATE FormalEducation
+			SET
+				 CanItRead = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.CanItRead')) FROM JSON_TABLE)
+				,CanItWrite = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.CanItWrite')) FROM JSON_TABLE)
+				,IsItStudyingNow = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.IsItStudyingNow')) FROM JSON_TABLE)
+				,CurrentGrade =   (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.CurrentGrade')) FROM JSON_TABLE)
+				,ReasonsToStopStudying = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.ReasonsToStopStudying')) FROM JSON_TABLE)
+			WHERE Id = FormalEducationId;
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `AddOrUpdatePreviousFoundation`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdatePreviousFoundation`(
+	IN  `JSONData` LONGTEXT,
+    OUT `PreviousFoundationId` INT,
+	OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+   
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+    
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+	
+	SELECT
+	JSON_EXTRACT(Data, '$.PreviousFoundation.Id') INTO PreviousFoundationId
+	FROM JSON_TABLE;
+ 
+	
+	IF PreviousFoundationId = 0 THEN							
+		
+		INSERT INTO PreviousFoundation(`Familiar` ,`Procuraduria` ,`Dif` ,`Otro`,`InstitucionAnterior`,`TiempoDeEstadia`,`MotivoDeEgreso`)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Familiar'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Procuraduria'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Dif'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Otro'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.InstitucionAnterior'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.TiempoDeEstadia'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.MotivoDeEgreso'))
+		FROM JSON_TABLE;
+		SET PreviousFoundationId = LAST_INSERT_ID();
+	
+	ELSE
+		
+		SELECT  EXISTS(SELECT 1 FROM PreviousFoundation WHERE Id = PreviousFoundationId) INTO rowExists;
+		
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'PreviousFoundation not found';
+		ELSE			
+						
+			UPDATE PreviousFoundation
+			SET
+				Familiar = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.PreviousFoundation.Familiar')) FROM JSON_TABLE)
+				,Procuraduria = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Procuraduria')) FROM JSON_TABLE)
+				,Dif =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Dif')) FROM JSON_TABLE)
+				,Otro = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Otro')) FROM JSON_TABLE)
+				,InstitucionAnterior = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.InstitucionAnterior')) FROM JSON_TABLE)
+				,TiempoDeEstadia = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.TiempoDeEstadia')) FROM JSON_TABLE)
+				,MotivoDeEgreso = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.MotivoDeEgreso')) FROM JSON_TABLE)
+			WHERE Id = PreviousFoundationId;
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyHealth`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyHealth`(
+	IN  `JSONData` LONGTEXT,
+    OUT `FamilyHealthId` INT,
+	OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+   
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+    
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+	
+	SELECT
+	JSON_EXTRACT(Data, '$.FamilyHealth.Id') INTO FamilyHealthId
+	FROM JSON_TABLE;
+ 
+	
+	IF FamilyHealthId = 0 THEN							
+		
+		INSERT INTO FamilyHealth
+		(`FamilyHealthStatus` ,`DerechoHambienteAServiciosDeSalud` ,`Tipo` ,`EnfermedadesCronicasDegenerativas`,`ConsumoDeTabaco`,`ConsumoDeAlcohol`,`ConsumoDeDrogas`, `Comments`)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.FamilyHealthStatus'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.DerechoHambienteAServiciosDeSalud'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.Tipo'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.EnfermedadesCronicasDegenerativas'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.ConsumoDeTabaco'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.ConsumoDeAlcohol'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.ConsumoDeDrogas'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.Comments'))
+		FROM JSON_TABLE;
+		SET FamilyHealthId = LAST_INSERT_ID();
+	
+	ELSE
+		
+		SELECT  EXISTS(SELECT 1 FROM FamilyHealth WHERE Id = FamilyHealthId) INTO rowExists;
+		
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'FamilyHealth not found';
+		ELSE			
+						
+			UPDATE FamilyHealth
+			SET
+				FamilyHealthStatus = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.FamilyHealth.FamilyHealthStatus')) FROM JSON_TABLE)
+				,DerechoHambienteAServiciosDeSalud = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.DerechoHambienteAServiciosDeSalud')) FROM JSON_TABLE)
+				,Tipo =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.Tipo')) FROM JSON_TABLE)
+				,EnfermedadesCronicasDegenerativas = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.EnfermedadesCronicasDegenerativas')) FROM JSON_TABLE)
+				,ConsumoDeTabaco = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.ConsumoDeTabaco')) FROM JSON_TABLE)
+				,ConsumoDeAlcohol = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.ConsumoDeAlcohol')) FROM JSON_TABLE)
+				,ConsumoDeDrogas = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.ConsumoDeDrogas')) FROM JSON_TABLE)
+				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.Comments')) FROM JSON_TABLE)
+			WHERE Id = FamilyHealthId;
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;
