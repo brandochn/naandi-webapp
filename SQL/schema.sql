@@ -1686,3 +1686,87 @@ BEGIN
 	END IF;
 END ;;
 DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyMembers`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyMembers`(
+	IN  `JSONData` LONGTEXT,
+    OUT `FamilyMembersId` INT,
+	OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+   
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+    
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+	
+	SELECT
+	JSON_EXTRACT(Data, '$.FamilyMembers.Id') INTO FamilyMembersId
+	FROM JSON_TABLE;
+ 
+	
+	IF FamilyMembersId = 0 THEN							
+		
+		INSERT INTO FamilyMembers (`FamilyInteraction` ,`Comments`)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyInteraction'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.Comments'))			
+		FROM JSON_TABLE;
+		SET FamilyMembersId = LAST_INSERT_ID();
+
+		INSERT INTO FamilyMembersDetails (`FullName` ,`Age`,`MaritalStatusId`,`RelationshipId`,`Education`,`CurrentOccupation`,`FamilyMembersId`)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.FullName'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.Age'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.MaritalStatusId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.RelationshipId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.Education'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.CurrentOccupation'))
+			,FamilyMembersId
+		FROM JSON_TABLE;
+	
+	ELSE
+		
+		SELECT  EXISTS(SELECT 1 FROM FamilyMembers WHERE Id = FamilyMembersId) INTO rowExists;
+		
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'FamilyMembers not found';
+		ELSE			
+						
+			UPDATE FamilyMembers
+			SET
+				FamilyInteraction = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.FamilyMembers.FamilyInteraction')) FROM JSON_TABLE)
+				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.Comments')) FROM JSON_TABLE)				
+			WHERE Id = FamilyMembersId;
+
+			DELETE FROM FamilyMembersDetails fmd  WHERE fmd.FamilyMembersId = FamilyMembersId;
+
+			INSERT INTO FamilyMembersDetails (`FullName` ,`Age`,`MaritalStatusId`,`RelationshipId`,`Education`,`CurrentOccupation`,`FamilyMembersId`)
+			SELECT
+				JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.FullName'))
+				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.Age'))			
+				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.MaritalStatusId'))
+				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.RelationshipId'))
+				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.Education'))
+				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.CurrentOccupation'))
+				,FamilyMembersId
+			FROM JSON_TABLE;
+
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;
