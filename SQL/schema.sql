@@ -406,6 +406,17 @@ CREATE TABLE `TypesOfHouses` (
 ) ENGINE=InnoDB COMMENT='Tipo de vivienda';
 
 
+--
+-- Table structure for table `TipoDeMobiliario`
+--
+
+DROP TABLE IF EXISTS `TipoDeMobiliario`;
+
+CREATE TABLE `TipoDeMobiliario` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(50) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Tipo de Mobiliario, no tengo la traducción correcta para esta tabla';
 
 --
 -- Table structure for table `District`
@@ -454,10 +465,12 @@ CREATE TABLE `HouseLayout` (
   `Walls` varchar(100) NOT NULL,
   `Roof` varchar(100) NOT NULL,
   `Description` varchar(400) NOT NULL,
-  `Furniture` varchar(100) NOT NULL,
+  `TipoDeMobiliarioId` INT NULL,
   `CharacteristicsOfFurniture` varchar(400) NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB COMMENT='Tipo de vivienda';
+  PRIMARY KEY (`Id`),
+  KEY `FK_HouseLayout_TipoDeMobiliario` (`TipoDeMobiliarioId`),
+  CONSTRAINT `FK_HouseLayout_TipoDeMobiliario` FOREIGN KEY (`TipoDeMobiliarioId`) REFERENCES `TipoDeMobiliario` (`Id`)
+) ENGINE=InnoDB COMMENT='Distribución de la vivienda';
 
 
 
@@ -1753,7 +1766,7 @@ BEGIN
 				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.Comments')) FROM JSON_TABLE)				
 			WHERE Id = FamilyMembersId;
 
-			DELETE FROM FamilyMembersDetails fmd  WHERE fmd.FamilyMembersId = FamilyMembersId;
+			DELETE FROM FamilyMembersDetails  WHERE `FamilyMembersId` = FamilyMembersId;
 
 			INSERT INTO FamilyMembersDetails (`FullName` ,`Age`,`MaritalStatusId`,`RelationshipId`,`Education`,`CurrentOccupation`,`FamilyMembersId`)
 			SELECT

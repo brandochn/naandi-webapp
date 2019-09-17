@@ -52,3 +52,22 @@ INSERT INTO `StatesOfMexico` VALUES (1,'01','Aguascalientes','Ags.',1),(2,'02','
 /*!40000 ALTER TABLE `StatesOfMexico` ENABLE KEYS */;
 UNLOCK TABLES;
 
+--
+-- Dumping data for table `TypesOfHouses`
+--
+
+LOCK TABLES `TypesOfHouses` WRITE;
+/*!40000 ALTER TABLE `TypesOfHouses` DISABLE KEYS */;
+INSERT INTO `TypesOfHouses` VALUES (1,'Casa'),(2,'Departamento'),(3,'Vecindad'),(4,'Otro');
+/*!40000 ALTER TABLE `TypesOfHouses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `TipoDeMobiliario`
+--
+
+LOCK TABLES `TipoDeMobiliario` WRITE;
+/*!40000 ALTER TABLE `TipoDeMobiliario` DISABLE KEYS */;
+INSERT INTO `TipoDeMobiliario` VALUES (1,'Equipado'),(2,'Básico'),(3,'Austero');
+/*!40000 ALTER TABLE `TipoDeMobiliario` ENABLE KEYS */;
+UNLOCK TABLES;
