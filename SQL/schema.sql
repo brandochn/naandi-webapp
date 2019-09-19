@@ -419,6 +419,18 @@ CREATE TABLE `TipoDeMobiliario` (
 ) ENGINE=InnoDB COMMENT='Tipo de Mobiliario, no tengo la traducción correcta para esta tabla';
 
 --
+-- Table structure for table `TypeOfDistrict`
+--
+
+DROP TABLE IF EXISTS `TypeOfDistrict`;
+
+CREATE TABLE `TypeOfDistrict` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(50) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Tipo de colonia';
+
+--
 -- Table structure for table `District`
 --
 
@@ -426,7 +438,7 @@ DROP TABLE IF EXISTS `District`;
 
 CREATE TABLE `District` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `TypeOfDistrict` varchar(100) NOT NULL,
+  `TypeOfDistrictId` varchar(100) NOT NULL,
   `AguaPotable` varchar(100) NOT NULL,
   `Telefono` varchar(10) NOT NULL,
   `Electricidad` varchar(100) NOT NULL,
@@ -442,7 +454,9 @@ CREATE TABLE `District` (
   `Iglesia` varchar(100) NOT NULL,
   `Otros` varchar(100) NOT NULL,
   `Description` varchar(100) NOT NULL,
-  PRIMARY KEY (`Id`)
+  PRIMARY KEY (`Id`),
+  KEY `FK_District_TypeOfDistrict` (`TypeOfDistrictId`),
+  CONSTRAINT `FK_District_TypeOfDistrict` FOREIGN KEY (`TypeOfDistrictId`) REFERENCES `TypeOfDistrict` (`Id`)
 ) ENGINE=InnoDB COMMENT='COLONIA, no tengo la traducción correcta para algunas columnas';
 
 --
@@ -473,7 +487,6 @@ CREATE TABLE `HouseLayout` (
 ) ENGINE=InnoDB COMMENT='Distribución de la vivienda';
 
 
-
 --
 -- Table structure for table `EconomicSituation`
 --
@@ -482,8 +495,7 @@ DROP TABLE IF EXISTS `EconomicSituation`;
 
 CREATE TABLE `EconomicSituation` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `NivelSocioEconomico` varchar(100),
-  `Ahorros`   decimal(13, 2),
+  `NivelSocioEconomico` varchar(200),
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='SITUACIÓN ECONÓMICA no tengo la traducción correcta para algunas columnas';
 
@@ -1887,6 +1899,171 @@ BEGIN
 				,CharacteristicsOfFurniture =  	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.CharacteristicsOfFurniture')) FROM JSON_TABLE)
 			WHERE Id = HouseLayoutId;
 		
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateDistrict`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateDistrict`(
+	  IN  `JSONData` LONGTEXT,
+      OUT `DistrictId` INT,
+	  OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+   
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+    
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+	
+	SELECT
+	JSON_EXTRACT(Data, '$.District.Id') INTO DistrictId
+	FROM JSON_TABLE;
+ 
+	
+	IF DistrictId = 0 THEN						
+		
+		INSERT INTO District (`TypeOfDistrictId` ,`AguaPotable`, `Telefono`, `Electricidad`, `Drenaje`,`Hospital`,`Correo`,`Escuela`,`Policia`,`AlumbradoPublico`,`ViasDeAcceso`,`TransportePublico`,`AseoPublico`,`Iglesia`,`Otros`,`Description`)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.TypeOfDistrictId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.AguaPotable'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Telefono'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Electricidad'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Drenaje'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Hospital'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Correo'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Escuela'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Policia'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.AlumbradoPublico'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.ViasDeAcceso'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.TransportePublico'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.AseoPublico'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Iglesia'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Otros'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Description'))
+		FROM JSON_TABLE;
+		SET DistrictId = LAST_INSERT_ID();
+
+	ELSE
+		
+		SELECT  EXISTS(SELECT 1 FROM District WHERE Id = DistrictId) INTO rowExists;
+		
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'District not found';
+		ELSE		
+						
+			UPDATE District
+				SET
+				 TypeOfDistrictId = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.TypeOfDistrictId')) FROM JSON_TABLE)
+				,AguaPotable =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.AguaPotable')) FROM JSON_TABLE)
+				,Telefono = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Telefono')) FROM JSON_TABLE)
+				,Electricidad = 		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Electricidad')) FROM JSON_TABLE)
+				,Drenaje =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Drenaje')) FROM JSON_TABLE)
+				,Hospital = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Hospital')) FROM JSON_TABLE)
+				,Correo = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Correo')) FROM JSON_TABLE)
+				,Escuela =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Escuela')) FROM JSON_TABLE)
+				,Policia = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Policia')) FROM JSON_TABLE)
+				,AlumbradoPublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.AlumbradoPublico')) FROM JSON_TABLE)
+				,ViasDeAcceso =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.ViasDeAcceso')) FROM JSON_TABLE)
+				,TransportePublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.TransportePublico')) FROM JSON_TABLE)
+				,AseoPublico = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.AseoPublico')) FROM JSON_TABLE)
+				,Iglesia =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Iglesia')) FROM JSON_TABLE)
+				,Otros = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Otros')) FROM JSON_TABLE)
+				,Description = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Description')) FROM JSON_TABLE)				
+			WHERE Id = DistrictId;
+			
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateEconomicSituation`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateEconomicSituation`(
+	  IN  `JSONData` LONGTEXT,
+      OUT `EconomicSituationId` INT,
+	  OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+   
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+    
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+	
+	SELECT
+	JSON_EXTRACT(Data, '$.EconomicSituation.Id') INTO EconomicSituationId
+	FROM JSON_TABLE;
+ 
+	
+	IF EconomicSituationId = 0 THEN						
+		
+		INSERT INTO EconomicSituation (`NivelSocioEconomico`)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.NivelSocioEconomico'))
+		FROM JSON_TABLE;
+		SET EconomicSituationId = LAST_INSERT_ID();
+
+		---TODO: Findout the logic about how we should insert on this table EconomicSituationPatrimonyRelation
+
+
+
+	ELSE
+		
+		SELECT  EXISTS(SELECT 1 FROM EconomicSituation WHERE Id = EconomicSituationId) INTO rowExists;
+		
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'EconomicSituation not found';
+		ELSE		
+						
+			UPDATE EconomicSituation
+				SET
+				 TypeOfEconomicSituationId = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.TypeOfEconomicSituationId')) FROM JSON_TABLE)
+				,AguaPotable =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.AguaPotable')) FROM JSON_TABLE)
+				,Telefono = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Telefono')) FROM JSON_TABLE)
+				,Electricidad = 		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Electricidad')) FROM JSON_TABLE)
+				,Drenaje =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Drenaje')) FROM JSON_TABLE)
+				,Hospital = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Hospital')) FROM JSON_TABLE)
+				,Correo = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Correo')) FROM JSON_TABLE)
+				,Escuela =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Escuela')) FROM JSON_TABLE)
+				,Policia = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Policia')) FROM JSON_TABLE)
+				,AlumbradoPublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.AlumbradoPublico')) FROM JSON_TABLE)
+				,ViasDeAcceso =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.ViasDeAcceso')) FROM JSON_TABLE)
+				,TransportePublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.TransportePublico')) FROM JSON_TABLE)
+				,AseoPublico = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.AseoPublico')) FROM JSON_TABLE)
+				,Iglesia =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Iglesia')) FROM JSON_TABLE)
+				,Otros = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Otros')) FROM JSON_TABLE)
+				,Description = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Description')) FROM JSON_TABLE)				
+			WHERE Id = EconomicSituationId;
+			
 		END IF;
 	END IF;
 END ;;

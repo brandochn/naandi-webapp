@@ -71,3 +71,23 @@ LOCK TABLES `TipoDeMobiliario` WRITE;
 INSERT INTO `TipoDeMobiliario` VALUES (1,'Equipado'),(2,'Básico'),(3,'Austero');
 /*!40000 ALTER TABLE `TipoDeMobiliario` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping data for table `TypeOfDistrict`
+--
+
+LOCK TABLES `TypeOfDistrict` WRITE;
+/*!40000 ALTER TABLE `TypeOfDistrict` DISABLE KEYS */;
+INSERT INTO `TypeOfDistrict` VALUES (1,'Urbana'),(2,'Rural'),(3,'Periferia'),(4,'Otro');
+/*!40000 ALTER TABLE `TypeOfDistrict` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `Patrimony`
+--
+
+LOCK TABLES `Patrimony` WRITE;
+/*!40000 ALTER TABLE `Patrimony` DISABLE KEYS */;
+INSERT INTO `Patrimony` VALUES (1,'Automóvil'),(2,'Modelo'),(3,'CasaHabitación'),(4,'CasaHabitaciónUbicación'),(5,'Terreno'),(6,'TerrenoUbicación'),(7,'Otros'),(8,'Ahorros'),(9,'FrecuenciaDeAhorro');
+/*!40000 ALTER TABLE `Patrimony` ENABLE KEYS */;
+UNLOCK TABLES;
