@@ -88,6 +88,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `Patrimony` WRITE;
 /*!40000 ALTER TABLE `Patrimony` DISABLE KEYS */;
-INSERT INTO `Patrimony` VALUES (1,'Automóvil'),(2,'Modelo'),(3,'CasaHabitación'),(4,'CasaHabitaciónUbicación'),(5,'Terreno'),(6,'TerrenoUbicación'),(7,'Otros'),(8,'Ahorros'),(9,'FrecuenciaDeAhorro');
+INSERT INTO `Patrimony` VALUES (1,'Automovil'),(2,'Modelo'),(3,'CasaHabitacion'),(4,'CasaHabitacionUbicacion'),(5,'Terreno'),(6,'TerrenoUbicacion'),(7,'Otros'),(8,'Ahorros'),(9,'FrecuenciaDeAhorro');
 /*!40000 ALTER TABLE `Patrimony` ENABLE KEYS */;
 UNLOCK TABLES;

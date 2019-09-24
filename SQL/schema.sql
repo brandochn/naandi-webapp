@@ -2031,9 +2031,51 @@ BEGIN
 		FROM JSON_TABLE;
 		SET EconomicSituationId = LAST_INSERT_ID();
 
-		---TODO: Findout the logic about how we should insert on this table EconomicSituationPatrimonyRelation
+		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
+		SELECT EconomicSituationId
+		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'Automovil')
+		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Automovil')) FROM JSON_TABLE);
+		
+		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
+		SELECT EconomicSituationId
+		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'Modelo')
+		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Modelo')) FROM JSON_TABLE);
 
+		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
+		SELECT EconomicSituationId
+		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'CasaHabitacion')
+		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.CasaHabitacion')) FROM JSON_TABLE);
 
+		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
+		SELECT EconomicSituationId
+		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'CasaHabitacionUbicacion')
+		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.CasaHabitacionUbicacion')) FROM JSON_TABLE);
+
+		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
+		SELECT EconomicSituationId
+		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'Terreno')
+		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Terreno')) FROM JSON_TABLE);
+
+		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
+		SELECT EconomicSituationId
+		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'TerrenoUbicacion')
+		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.TerrenoUbicacion')) FROM JSON_TABLE);
+
+		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
+		SELECT EconomicSituationId
+		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'Otros')
+		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Otros')) FROM JSON_TABLE);
+
+		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
+		SELECT EconomicSituationId
+		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'Ahorros')
+		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Ahorros')) FROM JSON_TABLE);
+
+		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
+		SELECT EconomicSituationId
+		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'FrecuenciaDeAhorro')
+		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.FrecuenciaDeAhorro')) FROM JSON_TABLE);
+		
 
 	ELSE
 		
