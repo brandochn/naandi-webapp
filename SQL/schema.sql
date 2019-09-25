@@ -438,7 +438,7 @@ DROP TABLE IF EXISTS `District`;
 
 CREATE TABLE `District` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `TypeOfDistrictId` varchar(100) NOT NULL,
+  `TypeOfDistrictId` int(11) NOT NULL,
   `AguaPotable` varchar(100) NOT NULL,
   `Telefono` varchar(10) NOT NULL,
   `Electricidad` varchar(100) NOT NULL,
@@ -579,6 +579,18 @@ CREATE TABLE `Food` (
 ) ENGINE=InnoDB COMMENT='Alimentos';
 
 --
+-- Table structure for table `Frequency `
+--
+
+DROP TABLE IF EXISTS `Frequency`;
+
+CREATE TABLE `Frequency` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(100),
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Frecuencia de Alimentos';
+
+--
 -- Table structure for table `FamilyNutritionFoodRelation`
 --
 
@@ -588,13 +600,15 @@ CREATE TABLE `FamilyNutritionFoodRelation` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `FamilyNutritionId` int(11) NOT NULL ,
   `FoodId`  int(11) NOT NULL,
-  `Frequency` varchar(100) NOT NULL DEFAULT '',
+  `FrequencyId` int(11) NOT NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `FamilyNutritionId_FoodId` (`FamilyNutritionId`,`FoodId`),
   KEY `FK_FamilyNutritionFoodRelation_Food` (`FoodId`),
   CONSTRAINT `FK_FamilyNutritionFoodRelation_Food` FOREIGN KEY (`FoodId`) REFERENCES `Food` (`Id`),
   KEY `FK_FamilyNutritionFoodRelation_FamilyNutrition` (`FamilyNutritionId`),
-  CONSTRAINT `FK_FamilyNutritionFoodRelation_FamilyNutrition` FOREIGN KEY (`FamilyNutritionId`) REFERENCES `FamilyNutrition` (`Id`)
+  CONSTRAINT `FK_FamilyNutritionFoodRelation_FamilyNutrition` FOREIGN KEY (`FamilyNutritionId`) REFERENCES `FamilyNutrition` (`Id`),
+  KEY `FK_FamilyNutritionFoodRelation_Frequency` (`FrequencyId`),
+  CONSTRAINT `FK_FamilyNutritionFoodRelation_Frequency` FOREIGN KEY (`FrequencyId`) REFERENCES `Frequency` (`Id`)
 ) ENGINE=InnoDB;
 
 
@@ -2088,23 +2102,53 @@ BEGIN
 						
 			UPDATE EconomicSituation
 				SET
-				 TypeOfEconomicSituationId = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.TypeOfEconomicSituationId')) FROM JSON_TABLE)
-				,AguaPotable =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.AguaPotable')) FROM JSON_TABLE)
-				,Telefono = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Telefono')) FROM JSON_TABLE)
-				,Electricidad = 		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Electricidad')) FROM JSON_TABLE)
-				,Drenaje =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Drenaje')) FROM JSON_TABLE)
-				,Hospital = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Hospital')) FROM JSON_TABLE)
-				,Correo = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Correo')) FROM JSON_TABLE)
-				,Escuela =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Escuela')) FROM JSON_TABLE)
-				,Policia = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Policia')) FROM JSON_TABLE)
-				,AlumbradoPublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.AlumbradoPublico')) FROM JSON_TABLE)
-				,ViasDeAcceso =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.ViasDeAcceso')) FROM JSON_TABLE)
-				,TransportePublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.TransportePublico')) FROM JSON_TABLE)
-				,AseoPublico = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.AseoPublico')) FROM JSON_TABLE)
-				,Iglesia =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Iglesia')) FROM JSON_TABLE)
-				,Otros = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Otros')) FROM JSON_TABLE)
-				,Description = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Description')) FROM JSON_TABLE)				
+				NivelSocioEconomico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.NivelSocioEconomico')) FROM JSON_TABLE)							
 			WHERE Id = EconomicSituationId;
+
+			UPDATE EconomicSituationPatrimonyRelation espr
+			JOIN Patrimony p on p.Id = espr.PatrimonyId
+			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Automovil')) FROM JSON_TABLE)
+			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'Automovil';
+
+			UPDATE EconomicSituationPatrimonyRelation espr
+			JOIN Patrimony p on p.Id = espr.PatrimonyId
+			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Modelo')) FROM JSON_TABLE)
+			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'Modelo';
+
+			UPDATE EconomicSituationPatrimonyRelation espr
+			JOIN Patrimony p on p.Id = espr.PatrimonyId
+			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.CasaHabitacion')) FROM JSON_TABLE)
+			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'CasaHabitacion';
+			
+			UPDATE EconomicSituationPatrimonyRelation espr
+			JOIN Patrimony p on p.Id = espr.PatrimonyId
+			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.CasaHabitacionUbicacion')) FROM JSON_TABLE)
+			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'CasaHabitacionUbicacion';
+			
+			UPDATE EconomicSituationPatrimonyRelation espr
+			JOIN Patrimony p on p.Id = espr.PatrimonyId
+			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Terreno')) FROM JSON_TABLE)
+			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'Terreno';
+			
+			UPDATE EconomicSituationPatrimonyRelation espr
+			JOIN Patrimony p on p.Id = espr.PatrimonyId
+			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.TerrenoUbicacion')) FROM JSON_TABLE)
+			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'TerrenoUbicacion';
+			
+			UPDATE EconomicSituationPatrimonyRelation espr
+			JOIN Patrimony p on p.Id = espr.PatrimonyId
+			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Otros')) FROM JSON_TABLE)
+			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'Otros';
+
+			UPDATE EconomicSituationPatrimonyRelation espr
+			JOIN Patrimony p on p.Id = espr.PatrimonyId
+			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Ahorros')) FROM JSON_TABLE)
+			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'Ahorros';
+			
+			UPDATE EconomicSituationPatrimonyRelation espr
+			JOIN Patrimony p on p.Id = espr.PatrimonyId
+			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.FrecuenciaDeAhorro')) FROM JSON_TABLE)
+			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'FrecuenciaDeAhorro';
 			
 		END IF;
 	END IF;

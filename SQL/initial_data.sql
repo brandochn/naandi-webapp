@@ -91,3 +91,23 @@ LOCK TABLES `Patrimony` WRITE;
 INSERT INTO `Patrimony` VALUES (1,'Automovil'),(2,'Modelo'),(3,'CasaHabitacion'),(4,'CasaHabitacionUbicacion'),(5,'Terreno'),(6,'TerrenoUbicacion'),(7,'Otros'),(8,'Ahorros'),(9,'FrecuenciaDeAhorro');
 /*!40000 ALTER TABLE `Patrimony` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping data for table `Food`
+--
+
+LOCK TABLES `Food` WRITE;
+/*!40000 ALTER TABLE `Food` DISABLE KEYS */;
+INSERT INTO `Food` VALUES (1,'Leche'),(2,'Huevo'),(3,'Carne'),(4,'Verduras'),(5,'Pollo'),(6,'Pastas'),(7,'Cereales y leguminosas'),(8,'Pescado y Mariscos'),(9,'Soya'),(10,'Tortillas'),(11,'Fruta');
+/*!40000 ALTER TABLE `Food` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `Frequency`
+--
+
+LOCK TABLES `Frequency` WRITE;
+/*!40000 ALTER TABLE `Frequency` DISABLE KEYS */;
+INSERT INTO `Frequency` VALUES (1,'Diario'),(2,'Cada 3er día'),(3,'Cada 8 días'),(4,'Cada 15 días');
+/*!40000 ALTER TABLE `Frequency` ENABLE KEYS */;
+UNLOCK TABLES;
