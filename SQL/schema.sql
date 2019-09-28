@@ -2154,3 +2154,139 @@ BEGIN
 	END IF;
 END ;;
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `foreach_array_item`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `foreach_array_item`(
+        in_array JSON,
+        in_id INT,
+        in_callback VARCHAR(100)
+    )
+    MODIFIES SQL DATA
+    COMMENT 'Iterate an array and for each item invoke a callback procedure'
+BEGIN
+    DECLARE i INT UNSIGNED
+        DEFAULT 0;
+    DECLARE v_count INT UNSIGNED
+        DEFAULT JSON_LENGTH(in_array);
+    DECLARE v_current_item BLOB
+        DEFAULT NULL;
+
+    -- loop from 0 to the last item
+    WHILE i < v_count DO
+        -- get the current item and build an SQL statement
+        -- to pass it to a callback procedure
+        SET v_current_item :=
+            JSON_EXTRACT(in_array, CONCAT('$[', i, ']'));
+        SET @sql_array_callback :=
+            CONCAT('CALL ', in_callback, '(', in_id, ', ', v_current_item, ');');
+        
+        PREPARE stmt_array_callback FROM @sql_array_callback;
+        EXECUTE stmt_array_callback;
+        DEALLOCATE PREPARE stmt_array_callback;
+
+        SET i := i + 1;
+    END WHILE;
+END;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyNutritionFoodRelation`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyNutritionFoodRelation`(
+	In  FamilyNutritionId INT,
+    IN  ArrayItem BLOB,
+	OUT ErrorMessage VARCHAR(2000)
+)
+BEGIN
+
+  	DECLARE Data LONGTEXT DEFAULT CAST(ArrayItem as CHAR CHARACTER SET utf8mb4);
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE,
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+
+		IF FamilyNutritionId = 0 THEN
+			INSERT INTO FamilyNutritionFoodRelation (`FamilyNutritionId`, `FoodId`, `FrequencyId`)
+			SELECT FamilyNutritionId
+			,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutritionFoodRelation.FoodId')))
+			,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutritionFoodRelation.FrequencyId')));
+		ELSE
+			UPDATE FamilyNutritionFoodRelation fnfr
+			JOIN Food f on f.Id = fnfr.FoodId
+			JOIN Frequency fq on fq.Id = fnfr.FrequencyId
+			SET 
+				`FoodId` = 		 (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutritionFoodRelation.FoodId')))
+				,`FrequencyId` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutritionFoodRelation.FrequencyId')))
+			WHERE fnfr.FamilyNutritionId = FamilyNutritionId;
+		END IF;
+
+END ;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyNutrition`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyNutrition`(
+	  IN  `JSONData` LONGTEXT,
+      OUT `FamilyNutritionId` INT,
+	  OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE,
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+
+	SELECT
+	JSON_EXTRACT(Data, '$.FamilyNutrition.Id') INTO FamilyNutritionId
+	FROM JSON_TABLE;
+
+	IF FamilyNutritionId = 0 THEN
+
+		INSERT INTO FamilyNutrition (`Comments`, `FoodAllergy`)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutrition.Comments'))
+       		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutrition.FoodAllergy'))
+		FROM JSON_TABLE;
+		SET FamilyNutritionId = LAST_INSERT_ID();
+
+		CALL `foreach_array_item`(JSON_EXTRACT(Data, '$.FamilyNutrition.FamilyNutritionFoodRelation'), FamilyNutritionId, `AddOrUpdateFamilyNutritionFoodRelation`);
+
+	ELSE
+
+		SELECT  EXISTS(SELECT 1 FROM FamilyNutrition WHERE Id = FamilyNutritionId) INTO rowExists;
+
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'FamilyNutrition not found';
+		ELSE
+
+			UPDATE FamilyNutrition
+				SET
+				`Comments` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutrition.Comments')) FROM JSON_TABLE)
+				,`FoodAllergy` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutrition.FoodAllergy')) FROM JSON_TABLE)
+			WHERE Id = FamilyNutritionId;
+
+			CALL `foreach_array_item`(JSON_EXTRACT(Data, '$.FamilyNutrition.FamilyNutritionFoodRelation'), FamilyNutritionId, `AddOrUpdateFamilyNutritionFoodRelation`);		
+
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;
