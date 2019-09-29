@@ -2282,3 +2282,157 @@ BEGIN
 	END IF;
 END ;;
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateBenefitsProvided`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateBenefitsProvided`(
+	IN `JSONData` LONGTEXT,
+  OUT `BenefitsProvidedId` INT,
+	OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+   
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+    
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+	
+	SELECT
+	JSON_EXTRACT(Data, '$.BenefitsProvided.Id') INTO BenefitsProvidedId
+	FROM JSON_TABLE;
+ 
+	
+	IF BenefitsProvidedId = 0 THEN							
+		
+		INSERT INTO BenefitsProvided(Institucion ,ApoyoRecibido ,Monto ,Periodo ,RedesDeApoyoFamiliares)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.BenefitsProvided.Institucion'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.BenefitsProvided.ApoyoRecibido'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.BenefitsProvided.Monto'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.BenefitsProvided.Periodo'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.BenefitsProvided.RedesDeApoyoFamiliares'))
+		FROM JSON_TABLE;
+		SET BenefitsProvidedId = LAST_INSERT_ID();
+	
+	ELSE
+		
+		SELECT  EXISTS(SELECT 1 FROM BenefitsProvided WHERE Id = BenefitsProvidedId) INTO rowExists;
+		
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'BenefitsProvided not found';
+		ELSE			
+						
+			UPDATE BenefitsProvided
+			SET
+				Institucion = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.BenefitsProvided.Institucion')) FROM JSON_TABLE)
+				,ApoyoRecibido = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.BenefitsProvided.ApoyoRecibido')) FROM JSON_TABLE)
+				,Monto =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.BenefitsProvided.Monto')) FROM JSON_TABLE)
+				,Periodo = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.BenefitsProvided.Periodo')) FROM JSON_TABLE)
+				,RedesDeApoyoFamiliares = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.BenefitsProvided.RedesDeApoyoFamiliares')) FROM JSON_TABLE)				
+			WHERE Id = BenefitsProvidedId;
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `AddIngresosEgresosMensualesMovimientoRelation`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddIngresosEgresosMensualesMovimientoRelation`(
+	In  IngresosEgresosMensualesId INT,
+  IN  ArrayItem BLOB,
+	OUT ErrorMessage VARCHAR(2000)
+)
+BEGIN
+
+  DECLARE Data LONGTEXT DEFAULT CAST(ArrayItem as CHAR CHARACTER SET utf8mb4);
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE,
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+		
+	INSERT INTO IngresosEgresosMensualesMovimientoRelation (`IngresosEgresosMensualesId`, `MovimientoId`, `Monto`)
+	SELECT IngresosEgresosMensualesId
+	,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IngresosEgresosMensualesMovimientoRelation.MovimientoId')))
+	,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IngresosEgresosMensualesMovimientoRelation.Monto')));		
+
+END ;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateIngresosEgresosMensuales`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateIngresosEgresosMensuales`(
+	IN  `JSONData` LONGTEXT,
+    OUT `IngresosEgresosMensualesId` INT,
+	OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE,
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+
+	SELECT
+	JSON_EXTRACT(Data, '$.IngresosEgresosMensuales.Id') INTO IngresosEgresosMensualesId
+	FROM JSON_TABLE;
+
+	IF IngresosEgresosMensualesId = 0 THEN
+
+		INSERT INTO IngresosEgresosMensuales (`Comments`)
+		SELECT
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IngresosEgresosMensuales.Comments'))
+		FROM JSON_TABLE;
+		SET IngresosEgresosMensualesId = LAST_INSERT_ID();
+
+		CALL `foreach_array_item`(JSON_EXTRACT(Data, '$.IngresosEgresosMensuales.IngresosEgresosMensualesMovimientoRelation'), IngresosEgresosMensualesId, `AddIngresosEgresosMensualesMovimientoRelation`);
+
+	ELSE
+
+		SELECT  EXISTS(SELECT 1 FROM IngresosEgresosMensuales WHERE Id = IngresosEgresosMensualesId) INTO rowExists;
+
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'IngresosEgresosMensuales not found';
+		ELSE
+
+			UPDATE IngresosEgresosMensuales
+				SET
+				`Comments` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IngresosEgresosMensuales.Comments')) FROM JSON_TABLE)
+			WHERE Id = IngresosEgresosMensualesId;
+
+			DELETE FROM IngresosEgresosMensualesMovimientoRelation WHERE `IngresosEgresosMensualesId` = IngresosEgresosMensualesId;
+
+			CALL `foreach_array_item`(JSON_EXTRACT(Data, '$.IngresosEgresosMensuales.IngresosEgresosMensualesMovimientoRelation'), IngresosEgresosMensualesId, `AddIngresosEgresosMensualesMovimientoRelation`);		
+
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;

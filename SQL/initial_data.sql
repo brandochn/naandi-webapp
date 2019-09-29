@@ -111,3 +111,37 @@ LOCK TABLES `Frequency` WRITE;
 INSERT INTO `Frequency` VALUES (1,'Diario'),(2,'Cada 3er día'),(3,'Cada 8 días'),(4,'Cada 15 días');
 /*!40000 ALTER TABLE `Frequency` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping data for table `TipoMovimiento`
+--
+
+LOCK TABLES `TipoMovimiento` WRITE;
+/*!40000 ALTER TABLE `TipoMovimiento` DISABLE KEYS */;
+INSERT INTO `TipoMovimiento` VALUES (1,'Ingreso'),(2,'Egreso');
+/*!40000 ALTER TABLE `TipoMovimiento` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `Movimiento`
+--
+
+LOCK TABLES `Movimiento` WRITE;
+/*!40000 ALTER TABLE `Movimiento` DISABLE KEYS */;
+INSERT INTO `Movimiento` 
+VALUES (1,'Ingresos del tutor',1)
+,(2,'Ingreso 2',1)
+,(3,'Otros ingresos',1)
+,(4,'Alimentos',2)
+,(5,'Vivienda',2)
+,(6,'Servicios',2)
+,(7,'Ropa y calzado',2)
+,(8,'Educación',2)
+,(9,'Recreación',2)
+,(10,'Transporte',2)
+,(11,'Salud',2)
+,(12,'Deudas',2)
+,(13,'Ahorro',2)
+,(14,'Otros',2);
+/*!40000 ALTER TABLE `Movimiento` ENABLE KEYS */;
+UNLOCK TABLES;
