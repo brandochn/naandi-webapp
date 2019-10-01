@@ -276,13 +276,16 @@ CREATE TABLE `LegalGuardian` (
   `CellPhoneNumber` varchar(12) DEFAULT NULL,
   `PhoneNumber` varchar(12) DEFAULT NULL,
   `Errand` varchar(100) DEFAULT NULL COMMENT 'Recados', 
+  `SpouseId` int(11) NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_LegalGuardian_MaritalStatus` (`MaritalStatusId`),
   KEY `FK_LegalGuardian_Relationship` (`RelationshipId`),
   KEY `FK_LegalGuardian_Address` (`AddressId`),
+  KEY `FK_LegalGuardian_Spouse` (SpouseId),
   CONSTRAINT `FK_LegalGuardian_Address` FOREIGN KEY (`AddressId`) REFERENCES `Address` (`Id`),
   CONSTRAINT `FK_LegalGuardian_MaritalStatus` FOREIGN KEY (`MaritalStatusId`) REFERENCES `MaritalStatus` (`Id`),
-  CONSTRAINT `FK_LegalGuardian_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`)
+  CONSTRAINT `FK_LegalGuardian_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`),
+  CONSTRAINT `FK_LegalGuardian_Spouse` FOREIGN KEY (`SpouseId`) REFERENCES `Spouse` ( `Id`)
 ) ENGINE=InnoDB COMMENT='Tutor legal info';
 
 --
@@ -317,7 +320,7 @@ CREATE TABLE `FormalEducation` (
 ) ENGINE=InnoDB COMMENT='Escolaridad';
 
 --
--- Table structure for table `DerivadaPor`
+-- Table structure for table `PreviousFoundation`
 --
 
 DROP TABLE IF EXISTS `PreviousFoundation`;
@@ -707,11 +710,20 @@ CREATE TABLE `InvestigacionFamiliar` (
   `Sketch` varchar(300) DEFAULT NULL,
   `MinorId` int(11) DEFAULT NULL,
   `LegalGuardianId` int(11) DEFAULT NULL,
+  `FormalEducationÌd` int(11) DEFAULT NULL,
+  `PreviousFoundationId` int(11) DEFAULT NULL,
+  `FamilyHealthId` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_InvestigacionFamiliar_Minor` (`MinorId`),
   CONSTRAINT `FK_InvestigacionFamiliar_Minor` FOREIGN KEY (`MinorId`) REFERENCES `Minor` (`Id`),
   KEY `FK_InvestigacionFamiliar_LegalGuardian` (`LegalGuardianId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_LegalGuardian` FOREIGN KEY (`LegalGuardianId`) REFERENCES `LegalGuardian` (`Id`)
+  CONSTRAINT `FK_InvestigacionFamiliar_LegalGuardian` FOREIGN KEY (`LegalGuardianId`) REFERENCES `LegalGuardian` (`Id`),
+  KEY `FK_InvestigacionFamiliar_FormalEducation` (`FormalEducationÌd`),
+  CONSTRAINT `FK_InvestigacionFamiliar_FormalEducation` FOREIGN KEY (`FormalEducationÌd`) REFERENCES `FormalEducation` (`Id`),
+  KEY `FK_InvestigacionFamiliar_PreviousFoundation` (`PreviousFoundationId`),
+  CONSTRAINT `FK_InvestigacionFamiliar_PreviousFoundation` FOREIGN KEY (`PreviousFoundationId`) REFERENCES `PreviousFoundation` (`Id`),
+  KEY `FK_InvestigacionFamiliar_FamilyHealth` (`FamilyHealthId`),
+  CONSTRAINT `FK_InvestigacionFamiliar_FamilyHealth` FOREIGN KEY (`FamilyHealthId`) REFERENCES `FamilyHealth` (`Id`)
 ) ENGINE=InnoDB COMMENT='Investigacion Familiar no tengo la traducción correcta al ingles para esta tabla';
 
 --
@@ -1324,8 +1336,9 @@ DROP PROCEDURE IF EXISTS `AddOrUpdateLegalGuardian`;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateLegalGuardian`(
-	IN `JSONData` LONGTEXT,
-  OUT `LegalGuardianId` INT,
+	IN  `JSONData` LONGTEXT,
+	IN  `SpouseId` INT,
+    OUT `LegalGuardianId` INT,
 	OUT `ErrorMessage` VARCHAR(2000)
 )
 BEGIN
@@ -1352,7 +1365,7 @@ BEGIN
 	
 	IF LegalGuardianId = 0 THEN							
 		
-		INSERT INTO LegalGuardian(`FullName` ,`Age` ,`PlaceOfBirth` ,`MaritalStatusId` ,`Education` ,`CurrentOccupation`  ,`RelationshipId` ,`AddressId` ,`CellPhoneNumber`, `PhoneNumber`, `Errand`)
+		INSERT INTO LegalGuardian(`FullName` ,`Age` ,`PlaceOfBirth` ,`MaritalStatusId` ,`Education` ,`CurrentOccupation`  ,`RelationshipId` ,`AddressId` ,`CellPhoneNumber`, `PhoneNumber`, `Errand`, `SpouseId`)
 		SELECT
 			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.FullName'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Age'))
@@ -1363,7 +1376,8 @@ BEGIN
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.AddressId'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.CellPhoneNumber'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.PhoneNumber'))
-      ,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Errand'))
+      		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Errand'))
+			SpouseId
 		FROM JSON_TABLE;
 		SET LegalGuardianId = LAST_INSERT_ID();
 	
@@ -1387,7 +1401,8 @@ BEGIN
 				,AddressId = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.AddressId')) FROM JSON_TABLE)
 				,CellPhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.CellPhoneNumber')) FROM JSON_TABLE)
 				,PhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.PhoneNumber'))  FROM JSON_TABLE)
-        ,Errand = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Errand'))  FROM JSON_TABLE)
+                ,Errand = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Errand'))  FROM JSON_TABLE),
+				,SpouseId = SpouseId
 			WHERE Id = LegalGuardianId;
 		END IF;
 	END IF;
