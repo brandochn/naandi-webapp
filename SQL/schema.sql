@@ -69,6 +69,21 @@ CREATE TABLE `Job` (
   CONSTRAINT `FK_Job_Address` FOREIGN KEY (`AddressId`) REFERENCES `Address` (`Id`)
 ) ENGINE=InnoDB COMMENT='DATOS LABORALES';
 
+--
+-- Table structure for table `FormalEducation`
+--
+
+DROP TABLE IF EXISTS `FormalEducation`;
+
+CREATE TABLE `FormalEducation` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `CanItRead` tinyint(1)  DEFAULT 0,
+  `CanItWrite` tinyint(1) DEFAULT 0,
+  `IsItStudyingNow` tinyint(1) DEFAULT 0,
+  `CurrentGrade` varchar(50) DEFAULT NULL,
+  `ReasonsToStopStudying` varchar(300) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Escolaridad';
 
 --
 -- Table structure for table `Minor`
@@ -84,7 +99,10 @@ CREATE TABLE `Minor` (
   `Age` int(11) NOT NULL,
   `Education` varchar(100) DEFAULT NULL,
   `CurrentOccupation` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`Id`)
+  `FormalEducationÌd` int(11) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `FK_Minor_FormalEducation` (`FormalEducationÌd`),
+  CONSTRAINT `FK_Minor_FormalEducation` FOREIGN KEY (`FormalEducationÌd`) REFERENCES `FormalEducation` (`Id`)
 ) ENGINE=InnoDB;
 
 --
@@ -258,6 +276,21 @@ CREATE TABLE `StatesOfMexico` (
 ) ENGINE=InnoDB COMMENT='Estados de la República Mexicana';
 
 --
+-- Table structure for table `Spouse`
+--
+
+DROP TABLE IF EXISTS `Spouse`;
+
+CREATE TABLE `Spouse` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `FullName` varchar(100) NOT NULL,
+  `Age` int(11) NOT NULL,
+  `CurrentOccupation` varchar(100) DEFAULT NULL,
+  `Comments`	varchar(300) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Conyuge info';
+
+--
 -- Table structure for table `LegalGuardian`
 --
 
@@ -287,37 +320,6 @@ CREATE TABLE `LegalGuardian` (
   CONSTRAINT `FK_LegalGuardian_Relationship` FOREIGN KEY (`RelationshipId`) REFERENCES `Relationship` (`Id`),
   CONSTRAINT `FK_LegalGuardian_Spouse` FOREIGN KEY (`SpouseId`) REFERENCES `Spouse` ( `Id`)
 ) ENGINE=InnoDB COMMENT='Tutor legal info';
-
---
--- Table structure for table `Spouse`
---
-
-DROP TABLE IF EXISTS `Spouse`;
-
-CREATE TABLE `Spouse` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `FullName` varchar(100) NOT NULL,
-  `Age` int(11) NOT NULL,
-  `CurrentOccupation` varchar(100) DEFAULT NULL,
-  `Comments`	varchar(300) DEFAULT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB COMMENT='Conyuge info';
-
---
--- Table structure for table `FormalEducation`
---
-
-DROP TABLE IF EXISTS `FormalEducation`;
-
-CREATE TABLE `FormalEducation` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `CanItRead` tinyint(1)  DEFAULT 0,
-  `CanItWrite` tinyint(1) DEFAULT 0,
-  `IsItStudyingNow` tinyint(1) DEFAULT 0,
-  `CurrentGrade` varchar(50) DEFAULT NULL,
-  `ReasonsToStopStudying` varchar(300) DEFAULT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB COMMENT='Escolaridad';
 
 --
 -- Table structure for table `PreviousFoundation`
@@ -708,41 +710,41 @@ CREATE TABLE `InvestigacionFamiliar` (
   `Recommendations` varchar(300) DEFAULT NULL,
   `VisualSupports` varchar(300) DEFAULT NULL,
   `Sketch` varchar(300) DEFAULT NULL,
-  `MinorId` int(11) DEFAULT NULL,
   `LegalGuardianId` int(11) DEFAULT NULL,
-  `FormalEducationÌd` int(11) DEFAULT NULL,
+  `MinorId` int(11) DEFAULT NULL,
   `PreviousFoundationId` int(11) DEFAULT NULL,
   `FamilyHealthId` int(11) DEFAULT NULL,
+  `FamilyMembersId` int(11) DEFAULT NULL,
+  `SocioeconomicStudyId` int(11) DEFAULT NULL,
+  `DistrictId` int(11) DEFAULT NULL,
+  `EconomicSituationId` int(11) DEFAULT NULL,
+  `FamilyNutritionId` int(11) DEFAULT NULL,
+  `BenefitsProvidedId` int(11) DEFAULT NULL,
+  `IngresosEgresosMensualesId` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_InvestigacionFamiliar_Minor` (`MinorId`),
   CONSTRAINT `FK_InvestigacionFamiliar_Minor` FOREIGN KEY (`MinorId`) REFERENCES `Minor` (`Id`),
   KEY `FK_InvestigacionFamiliar_LegalGuardian` (`LegalGuardianId`),
   CONSTRAINT `FK_InvestigacionFamiliar_LegalGuardian` FOREIGN KEY (`LegalGuardianId`) REFERENCES `LegalGuardian` (`Id`),
-  KEY `FK_InvestigacionFamiliar_FormalEducation` (`FormalEducationÌd`),
-  CONSTRAINT `FK_InvestigacionFamiliar_FormalEducation` FOREIGN KEY (`FormalEducationÌd`) REFERENCES `FormalEducation` (`Id`),
   KEY `FK_InvestigacionFamiliar_PreviousFoundation` (`PreviousFoundationId`),
   CONSTRAINT `FK_InvestigacionFamiliar_PreviousFoundation` FOREIGN KEY (`PreviousFoundationId`) REFERENCES `PreviousFoundation` (`Id`),
   KEY `FK_InvestigacionFamiliar_FamilyHealth` (`FamilyHealthId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_FamilyHealth` FOREIGN KEY (`FamilyHealthId`) REFERENCES `FamilyHealth` (`Id`)
+  CONSTRAINT `FK_InvestigacionFamiliar_FamilyHealth` FOREIGN KEY (`FamilyHealthId`) REFERENCES `FamilyHealth` (`Id`),
+  KEY `FK_InvestigacionFamiliar_FamilyMembers` (`FamilyMembersId`),
+  CONSTRAINT `FK_InvestigacionFamiliar_FamilyMembers` FOREIGN KEY (`FamilyMembersId`) REFERENCES `FamilyMembers` (`Id`),
+  KEY `FK_InvestigacionFamiliar_SocioeconomicStudy` (`SocioeconomicStudyId`),
+  CONSTRAINT `FK_InvestigacionFamiliar_SocioeconomicStudy` FOREIGN KEY (`SocioeconomicStudyId`) REFERENCES `SocioeconomicStudy` (`Id`),
+  KEY `FK_InvestigacionFamiliar_District` (`DistrictId`),
+  CONSTRAINT `FK_InvestigacionFamiliar_District` FOREIGN KEY (`DistrictId`) REFERENCES `District` (`Id`),
+  KEY `FK_InvestigacionFamiliar_EconomicSituation` (`EconomicSituationId`),
+  CONSTRAINT `FK_InvestigacionFamiliar_EconomicSituation` FOREIGN KEY (`EconomicSituationId`) REFERENCES `EconomicSituation` (`Id`),
+  KEY `FK_InvestigacionFamiliar_FamilyNutrition` (`FamilyNutritionId`),
+  CONSTRAINT `FK_InvestigacionFamiliar_FamilyNutrition` FOREIGN KEY (`FamilyNutritionId`) REFERENCES `FamilyNutrition` (`Id`),
+  KEY `FK_InvestigacionFamiliar_BenefitsProvided` (`BenefitsProvidedId`),
+  CONSTRAINT `FK_InvestigacionFamiliar_BenefitsProvided` FOREIGN KEY (`BenefitsProvidedId`) REFERENCES `BenefitsProvided` (`Id`),
+  KEY `FK_InvestigacionFamiliar_IngresosEgresosMensuales` (`IngresosEgresosMensualesId`),
+  CONSTRAINT `FK_InvestigacionFamiliar_IngresosEgresosMensuales` FOREIGN KEY (`IngresosEgresosMensualesId`) REFERENCES `IngresosEgresosMensuales` (`Id`)
 ) ENGINE=InnoDB COMMENT='Investigacion Familiar no tengo la traducción correcta al ingles para esta tabla';
-
---
--- Table structure for table `FamilyMembersInvestigacionFamiliarRelation`
---
-
-DROP TABLE IF EXISTS `FamilyMembersInvestigacionFamiliarRelation`;
-
-CREATE TABLE `FamilyMembersInvestigacionFamiliarRelation` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `FamilyMembersId` int(11) NOT NULL ,
-  `InvestigacionFamiliarId`  int(11) NOT NULL,
-  PRIMARY KEY (`Id`),
-  UNIQUE KEY `FamilyMembersId_InvestigacionFamiliarId` (`FamilyMembersId`,`InvestigacionFamiliarId`),
-  KEY `FK_FamilyMembersInvesFamRelation_InvestigacionFam` (`InvestigacionFamiliarId`),
-  CONSTRAINT `FK_FamilyMembersInvesFamRelation_InvestigacionFam` FOREIGN KEY (`InvestigacionFamiliarId`) REFERENCES `InvestigacionFamiliar` (`Id`),
-  KEY `FK_FamilyMembersInvestigacionFamiliarRelation_FamilyMembers` (`FamilyMembersId`),
-  CONSTRAINT `FK_FamilyMembersInvestigacionFamiliarRelation_FamilyMembers` FOREIGN KEY (`FamilyMembersId`) REFERENCES `FamilyMembers` (`Id`)
-) ENGINE=InnoDB;
 
 --
 -- Routines for database 'naandi'
@@ -1401,7 +1403,7 @@ BEGIN
 				,AddressId = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.AddressId')) FROM JSON_TABLE)
 				,CellPhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.CellPhoneNumber')) FROM JSON_TABLE)
 				,PhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.PhoneNumber'))  FROM JSON_TABLE)
-                ,Errand = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Errand'))  FROM JSON_TABLE),
+                ,Errand = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Errand'))  FROM JSON_TABLE)
 				,SpouseId = SpouseId
 			WHERE Id = LegalGuardianId;
 		END IF;
