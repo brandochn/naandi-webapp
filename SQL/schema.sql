@@ -692,12 +692,12 @@ CREATE TABLE `IngresosEgresosMensualesMovimientoRelation` (
 ) ENGINE=InnoDB;
 
 --
--- Table structure for table `InvestigacionFamiliar`
+-- Table structure for table `FamilyResearch`
 --
 
-DROP TABLE IF EXISTS `InvestigacionFamiliar`;
+DROP TABLE IF EXISTS `FamilyResearch`;
 
-CREATE TABLE `InvestigacionFamiliar` (
+CREATE TABLE `FamilyResearch` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `CreationDate` datetime NOT NULL,
   `CreationTime` time NOT NULL,
@@ -722,29 +722,29 @@ CREATE TABLE `InvestigacionFamiliar` (
   `BenefitsProvidedId` int(11) DEFAULT NULL,
   `IngresosEgresosMensualesId` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
-  KEY `FK_InvestigacionFamiliar_Minor` (`MinorId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_Minor` FOREIGN KEY (`MinorId`) REFERENCES `Minor` (`Id`),
-  KEY `FK_InvestigacionFamiliar_LegalGuardian` (`LegalGuardianId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_LegalGuardian` FOREIGN KEY (`LegalGuardianId`) REFERENCES `LegalGuardian` (`Id`),
-  KEY `FK_InvestigacionFamiliar_PreviousFoundation` (`PreviousFoundationId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_PreviousFoundation` FOREIGN KEY (`PreviousFoundationId`) REFERENCES `PreviousFoundation` (`Id`),
-  KEY `FK_InvestigacionFamiliar_FamilyHealth` (`FamilyHealthId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_FamilyHealth` FOREIGN KEY (`FamilyHealthId`) REFERENCES `FamilyHealth` (`Id`),
-  KEY `FK_InvestigacionFamiliar_FamilyMembers` (`FamilyMembersId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_FamilyMembers` FOREIGN KEY (`FamilyMembersId`) REFERENCES `FamilyMembers` (`Id`),
-  KEY `FK_InvestigacionFamiliar_SocioeconomicStudy` (`SocioeconomicStudyId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_SocioeconomicStudy` FOREIGN KEY (`SocioeconomicStudyId`) REFERENCES `SocioeconomicStudy` (`Id`),
-  KEY `FK_InvestigacionFamiliar_District` (`DistrictId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_District` FOREIGN KEY (`DistrictId`) REFERENCES `District` (`Id`),
-  KEY `FK_InvestigacionFamiliar_EconomicSituation` (`EconomicSituationId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_EconomicSituation` FOREIGN KEY (`EconomicSituationId`) REFERENCES `EconomicSituation` (`Id`),
-  KEY `FK_InvestigacionFamiliar_FamilyNutrition` (`FamilyNutritionId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_FamilyNutrition` FOREIGN KEY (`FamilyNutritionId`) REFERENCES `FamilyNutrition` (`Id`),
-  KEY `FK_InvestigacionFamiliar_BenefitsProvided` (`BenefitsProvidedId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_BenefitsProvided` FOREIGN KEY (`BenefitsProvidedId`) REFERENCES `BenefitsProvided` (`Id`),
-  KEY `FK_InvestigacionFamiliar_IngresosEgresosMensuales` (`IngresosEgresosMensualesId`),
-  CONSTRAINT `FK_InvestigacionFamiliar_IngresosEgresosMensuales` FOREIGN KEY (`IngresosEgresosMensualesId`) REFERENCES `IngresosEgresosMensuales` (`Id`)
-) ENGINE=InnoDB COMMENT='Investigacion Familiar no tengo la traducción correcta al ingles para esta tabla';
+  KEY `FK_FamilyResearch_Minor` (`MinorId`),
+  CONSTRAINT `FK_FamilyResearch_Minor` FOREIGN KEY (`MinorId`) REFERENCES `Minor` (`Id`),
+  KEY `FK_FamilyResearch_LegalGuardian` (`LegalGuardianId`),
+  CONSTRAINT `FK_FamilyResearch_LegalGuardian` FOREIGN KEY (`LegalGuardianId`) REFERENCES `LegalGuardian` (`Id`),
+  KEY `FK_FamilyResearch_PreviousFoundation` (`PreviousFoundationId`),
+  CONSTRAINT `FK_FamilyResearch_PreviousFoundation` FOREIGN KEY (`PreviousFoundationId`) REFERENCES `PreviousFoundation` (`Id`),
+  KEY `FK_FamilyResearch_FamilyHealth` (`FamilyHealthId`),
+  CONSTRAINT `FK_FamilyResearch_FamilyHealth` FOREIGN KEY (`FamilyHealthId`) REFERENCES `FamilyHealth` (`Id`),
+  KEY `FK_FamilyResearch_FamilyMembers` (`FamilyMembersId`),
+  CONSTRAINT `FK_FamilyResearch_FamilyMembers` FOREIGN KEY (`FamilyMembersId`) REFERENCES `FamilyMembers` (`Id`),
+  KEY `FK_FamilyResearch_SocioeconomicStudy` (`SocioeconomicStudyId`),
+  CONSTRAINT `FK_FamilyResearch_SocioeconomicStudy` FOREIGN KEY (`SocioeconomicStudyId`) REFERENCES `SocioeconomicStudy` (`Id`),
+  KEY `FK_FamilyResearch_District` (`DistrictId`),
+  CONSTRAINT `FK_FamilyResearch_District` FOREIGN KEY (`DistrictId`) REFERENCES `District` (`Id`),
+  KEY `FK_FamilyResearch_EconomicSituation` (`EconomicSituationId`),
+  CONSTRAINT `FK_FamilyResearch_EconomicSituation` FOREIGN KEY (`EconomicSituationId`) REFERENCES `EconomicSituation` (`Id`),
+  KEY `FK_FamilyResearch_FamilyNutrition` (`FamilyNutritionId`),
+  CONSTRAINT `FK_FamilyResearch_FamilyNutrition` FOREIGN KEY (`FamilyNutritionId`) REFERENCES `FamilyNutrition` (`Id`),
+  KEY `FK_FamilyResearch_BenefitsProvided` (`BenefitsProvidedId`),
+  CONSTRAINT `FK_FamilyResearch_BenefitsProvided` FOREIGN KEY (`BenefitsProvidedId`) REFERENCES `BenefitsProvided` (`Id`),
+  KEY `FK_FamilyResearch_IngresosEgresosMensuales` (`IngresosEgresosMensualesId`),
+  CONSTRAINT `FK_FamilyResearch_IngresosEgresosMensuales` FOREIGN KEY (`IngresosEgresosMensualesId`) REFERENCES `IngresosEgresosMensuales` (`Id`)
+) ENGINE=InnoDB COMMENT='Investigacion Familiar no tengo la traducción correcta al ingles para algunas columnas';
 
 --
 -- Routines for database 'naandi'
@@ -2449,6 +2449,115 @@ BEGIN
 
 			CALL `foreach_array_item`(JSON_EXTRACT(Data, '$.IngresosEgresosMensuales.IngresosEgresosMensualesMovimientoRelation'), IngresosEgresosMensualesId, `AddIngresosEgresosMensualesMovimientoRelation`);		
 
+		END IF;
+	END IF;
+END ;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyResearch`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyResearch`(
+	IN `JSONData` LONGTEXT,
+	OUT `FamilyResearchId` INT,
+	OUT `ErrorMessage` VARCHAR(2000)
+)
+BEGIN
+   
+	DECLARE rowExists INT;
+
+	DECLARE exit handler for SQLEXCEPTION
+	BEGIN
+		 ROLLBACK;
+		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
+		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+	END;
+    
+	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
+
+	CREATE TEMPORARY TABLE JSON_TABLE
+	SELECT JSONData AS 'Data';
+	
+	SELECT
+	JSON_EXTRACT(Data, '$.FamilyResearch.Id') INTO FamilyResearchId
+	FROM JSON_TABLE;
+ 
+	
+	IF FamilyResearchId = 0 THEN							
+		
+		INSERT INTO FamilyResearch
+		(
+			CreationDate 
+			,CreationTime 
+			,Family 
+			,RequestReasons 
+			,SituationsOfDomesticViolence 
+			,FamilyExpectations 
+			,FamilyDiagnostic 
+			,CaseStudyConclusion 
+			,Recommendations
+			,VisualSupports
+			,Sketch
+			,LegalGuardianId
+			,MinorId
+			,PreviousFoundationId
+			,FamilyHealthId
+			,FamilyMembersId
+			,SocioeconomicStudyId
+			,DistrictId
+			,EconomicSituationId
+			,FamilyNutritionId
+			,BenefitsProvidedId
+			,IngresosEgresosMensualesId
+		)
+		SELECT
+			 UTC_DATE()
+			,UTC_TIME()
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.Family'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.RequestReasons'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.SituationsOfDomesticViolence'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.FamilyExpectations'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.FamilyDiagnostic'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.CaseStudyConclusion'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.Recommendations'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.VisualSupports'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.Sketch'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.LegalGuardianId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.MinorId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.PreviousFoundationId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.FamilyHealthId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.FamilyMembersId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.SocioeconomicStudyId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.DistrictId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.EconomicSituationId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.FamilyNutritionId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.BenefitsProvidedId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.IngresosEgresosMensualesId'))
+		FROM JSON_TABLE;
+		SET FamilyResearchId = LAST_INSERT_ID();
+	
+	ELSE
+		
+		SELECT  EXISTS(SELECT 1 FROM FamilyResearch WHERE Id = FamilyResearchId) INTO rowExists;
+		
+		IF rowExists = 0 THEN
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'FamilyResearch not found';
+		ELSE			
+						
+			UPDATE FamilyResearch
+			SET
+				 `Family` =                        (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.Family')) FROM JSON_TABLE)
+				,`RequestReasons` =                (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.RequestReasons')) FROM JSON_TABLE)
+				,`SituationsOfDomesticViolence` =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.SituationsOfDomesticViolence')) FROM JSON_TABLE)
+				,`FamilyExpectations` =            (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.FamilyExpectations')) FROM JSON_TABLE)
+				,`FamilyDiagnostic` =              (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.FamilyDiagnostic')) FROM JSON_TABLE)
+				,`CaseStudyConclusion` =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.CaseStudyConclusion')) FROM JSON_TABLE)
+				,`Recommendations` =               (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.Recommendations')) FROM JSON_TABLE)
+				,`VisualSupports` =                (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.VisualSupports')) FROM JSON_TABLE)
+				,`Sketch` =                        (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyResearch.Sketch')) FROM JSON_TABLE)
+			WHERE Id = FamilyResearchId;
 		END IF;
 	END IF;
 END ;;
