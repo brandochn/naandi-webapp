@@ -19,5 +19,7 @@ namespace Naandi.Shared.Models
         public string CellPhoneNumber { get; set; }
         public string PhoneNumber { get; set; }
         public string Errand { get; set; }
+        public int SpouseId { get; set; }
+        public Spouse Spouse {get; set;}
     }
 }

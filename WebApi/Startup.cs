@@ -32,6 +32,7 @@ namespace WebApi
             services.AddTransient(_ => new ApplicationDbContext(Configuration["ConnectionString"]));
 
             services.AddScoped<IRegistrationRequest, RegistrationRequestRepository>();
+            services.AddScoped<IFamilyResearch, FamilyResearchRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

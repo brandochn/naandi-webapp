@@ -1361,25 +1361,37 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.LegalGuardian.Id') INTO LegalGuardianId
+	JSON_EXTRACT(Data, '$.id') INTO LegalGuardianId
 	FROM JSON_TABLE;
  
 	
 	IF LegalGuardianId = 0 THEN							
 		
-		INSERT INTO LegalGuardian(`FullName` ,`Age` ,`PlaceOfBirth` ,`MaritalStatusId` ,`Education` ,`CurrentOccupation`  ,`RelationshipId` ,`AddressId` ,`CellPhoneNumber`, `PhoneNumber`, `Errand`, `SpouseId`)
+		INSERT INTO LegalGuardian(`FullName` 
+			,`Age` 
+			,`PlaceOfBirth` 
+			,`MaritalStatusId` 
+			,`Education` 
+			,`CurrentOccupation`  
+			,`RelationshipId` 
+			,`AddressId` 
+			,`CellPhoneNumber`
+			,`PhoneNumber`
+			,`Errand`
+			,`SpouseId`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.FullName'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Age'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.MaritalStatusId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Education'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.CurrentOccupation'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.RelationshipId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.AddressId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.CellPhoneNumber'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.PhoneNumber'))
-      		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Errand'))
-			SpouseId
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.fullname'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.age'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.placeofbirth'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.maritalstatusid'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.education'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.currentoccupation'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.relationshipid'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.addressid'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.cellphonenumber'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.phonenumber'))
+      		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.errand'))
+			,SpouseId
 		FROM JSON_TABLE;
 		SET LegalGuardianId = LAST_INSERT_ID();
 	
@@ -1394,16 +1406,17 @@ BEGIN
 						
 			UPDATE LegalGuardian
 			SET
-				FullName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.LegalGuardian.FullName')) FROM JSON_TABLE)
-				,Age = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Age')) FROM JSON_TABLE)
-				,MaritalStatusId =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.MaritalStatusId')) FROM JSON_TABLE)
-				,Education = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Education')) FROM JSON_TABLE)
-				,CurrentOccupation = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.CurrentOccupation')) FROM JSON_TABLE)
-				,RelationshipId = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.RelationshipId')) FROM JSON_TABLE)
-				,AddressId = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.AddressId')) FROM JSON_TABLE)
-				,CellPhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.CellPhoneNumber')) FROM JSON_TABLE)
-				,PhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.PhoneNumber'))  FROM JSON_TABLE)
-                ,Errand = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardian.Errand'))  FROM JSON_TABLE)
+				FullName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.fullname')) FROM JSON_TABLE)
+				,Age = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.age')) FROM JSON_TABLE)
+				,PlaceOfBirth = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.placeofbirth')) FROM JSON_TABLE)
+				,MaritalStatusId =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.maritalstatusid')) FROM JSON_TABLE)
+				,Education = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.education')) FROM JSON_TABLE)
+				,CurrentOccupation = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.currentoccupation')) FROM JSON_TABLE)
+				,RelationshipId = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.relationshipid')) FROM JSON_TABLE)
+				,AddressId = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.addressid')) FROM JSON_TABLE)
+				,CellPhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.cellphonenumber')) FROM JSON_TABLE)
+				,PhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.phonenumber'))  FROM JSON_TABLE)
+                ,Errand = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.errand'))  FROM JSON_TABLE)
 				,SpouseId = SpouseId
 			WHERE Id = LegalGuardianId;
 		END IF;
@@ -1437,7 +1450,7 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.Spouse.Id') INTO SpouseId
+	JSON_EXTRACT(Data, '$.id') INTO SpouseId
 	FROM JSON_TABLE;
  
 	
@@ -1445,10 +1458,10 @@ BEGIN
 		
 		INSERT INTO Spouse(`FullName` ,`Age` ,`CurrentOccupation` ,`Comments`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.FullName'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.Age'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.CurrentOccupation'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.Comments'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.fullname'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.age'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.currentoccupation'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.comments'))
 		FROM JSON_TABLE;
 		SET SpouseId = LAST_INSERT_ID();
 	
@@ -1463,10 +1476,10 @@ BEGIN
 						
 			UPDATE Spouse
 			SET
-				FullName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Spouse.FullName')) FROM JSON_TABLE)
-				,Age = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.Age')) FROM JSON_TABLE)
-				,CurrentOccupation =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.CurrentOccupation')) FROM JSON_TABLE)
-				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Spouse.Comments')) FROM JSON_TABLE)
+				FullName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.fullname')) FROM JSON_TABLE)
+				,Age = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.age')) FROM JSON_TABLE)
+				,CurrentOccupation =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.currentoccupation')) FROM JSON_TABLE)
+				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.comments')) FROM JSON_TABLE)
 			WHERE Id = SpouseId;
 		END IF;
 	END IF;
