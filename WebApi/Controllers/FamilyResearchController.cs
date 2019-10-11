@@ -31,6 +31,11 @@ namespace WebApi.Controllers
                 return BadRequest("LegalGuardian cannot be null or empty");
             }
 
+            if (familyResearch.LegalGuardian.Address == null)
+            {
+                return BadRequest("Address cannot be null or empty");
+            }
+
             try
             {
                 familyResearchRepository.Add(familyResearch);

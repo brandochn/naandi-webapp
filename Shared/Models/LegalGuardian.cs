@@ -8,7 +8,7 @@ namespace Naandi.Shared.Models
         public string FullName { get; set; }
         public int Age { get; set; }
         public string PlaceOfBirth { get; set; }
-        public MaritalStatus Maritalstatus { get; set; }
+        public MaritalStatus MaritalStatus { get; set; }
         public int MaritalStatusId { get; set; }
         public string Education { get; set; }
         public string CurrentOccupation { get; set; }

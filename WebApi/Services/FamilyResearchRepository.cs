@@ -20,9 +20,10 @@ namespace WebApi.Services
         public void Add(FamilyResearch familyResearch)
         {
             int? spouseId = AddOrUpdateSpouse(familyResearch.LegalGuardian.Spouse);
-            familyResearch.LegalGuardian.SpouseId = spouseId ?? 0;
 
-            int? legalGuardianId = AddOrUpdateLegalGuardian(familyResearch.LegalGuardian);
+            int? addressId = AddOrUpdateAddress(familyResearch.LegalGuardian.Address);
+
+            int? legalGuardianId = AddOrUpdateLegalGuardian(familyResearch.LegalGuardian, spouseId, addressId);
         }
 
         private int? AddOrUpdateSpouse(Spouse spouse)
@@ -36,9 +37,7 @@ namespace WebApi.Services
 
             JsonSerializerOptions options = new JsonSerializerOptions
             {
-                IgnoreNullValues = true,
-                WriteIndented = true,
-                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+                IgnoreNullValues = true
             };
 
             var serializedResult = JsonSerializer.Serialize(spouse, typeof(Spouse), options)
@@ -93,7 +92,7 @@ namespace WebApi.Services
             return spouseId;
         }
 
-        private int? AddOrUpdateLegalGuardian(LegalGuardian legalGuardian)
+        private int? AddOrUpdateLegalGuardian(LegalGuardian legalGuardian, int? spouseId, int? addressId)
         {
             int legalGuardianId;
 
@@ -104,9 +103,7 @@ namespace WebApi.Services
 
             JsonSerializerOptions options = new JsonSerializerOptions
             {
-                IgnoreNullValues = true,
-                WriteIndented = true,
-                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+                IgnoreNullValues = true
             };
 
             var serializedResult = JsonSerializer.Serialize(legalGuardian, typeof(LegalGuardian), options)
@@ -132,7 +129,15 @@ namespace WebApi.Services
                     ParameterName = "SpouseId",
                     Direction = System.Data.ParameterDirection.Input,
                     MySqlDbType = MySqlDbType.Int32,
-                    Value = legalGuardian.SpouseId == 0 ? (int?)null : legalGuardian.SpouseId
+                    Value = spouseId
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "AddressId",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = addressId
                 });
 
                 cmd.Parameters.Add(new MySqlParameter()
@@ -167,6 +172,72 @@ namespace WebApi.Services
             }
 
             return legalGuardianId;
+        }
+
+         private int? AddOrUpdateAddress(Address address)
+        {
+            int addressId;
+
+            if (address == null)
+            {
+                return null;
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true
+            };
+
+            var serializedResult = JsonSerializer.Serialize(address, typeof(Address), options)
+                .ConvertJsonSpecialCharactersToAscii();
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "AddOrUpdateAddress";
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "JSONData",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.LongText,
+                    Value = serializedResult
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "AddressId",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = 0
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "ErrorMessage",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.VarChar,
+                    Value = string.Empty
+                });
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                var errorMessage = cmd.Parameters["ErrorMessage"].Value as string;
+                if (string.IsNullOrEmpty(errorMessage) == false)
+                {
+                    if (errorMessage.Contains("45000"))
+                    {
+                        throw new BusinessLogicException(errorMessage);
+                    }
+                    throw new Exception(errorMessage);
+                }
+
+                addressId = Convert.ToInt32(cmd.Parameters["AddressId"].Value);
+            }
+
+            return addressId;
         }
     }
 }

@@ -754,8 +754,8 @@ DROP PROCEDURE IF EXISTS `AddOrUpdateRegistrationRequest`;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateRegistrationRequest`(
-	IN `JSONData` LONGTEXT,
-	OUT `ErrorMessage` VARCHAR(2000)
+	IN JSONData LONGTEXT,
+	OUT ErrorMessage VARCHAR(2000)
 )
 BEGIN
    
@@ -1265,9 +1265,9 @@ DROP PROCEDURE IF EXISTS `AddOrUpdateAddress`;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateAddress`(
-	IN `JSONData` LONGTEXT,
-  OUT `AddressId` INT,
-	OUT `ErrorMessage` VARCHAR(2000)
+	IN  JSONData LONGTEXT,
+    OUT AddressId INT,
+	OUT ErrorMessage VARCHAR(2000)
 )
 BEGIN
    
@@ -1287,7 +1287,7 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.Address.Id') INTO AddressId
+	JSON_EXTRACT(Data, '$.Id') INTO AddressId
 	FROM JSON_TABLE;
  
 	
@@ -1295,15 +1295,15 @@ BEGIN
 		
 		INSERT INTO Address(Street ,HouseNumber ,PoBox ,PhoneNumber ,City ,ZIP ,State ,Neighborhood ,Reference)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Street'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.HouseNumber'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.PoBox'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.PhoneNumber'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.City'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Zip'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.State'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Neighborhood'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Reference'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Street'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseNumber'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PoBox'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PhoneNumber'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.City'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Zip'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.State'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Neighborhood'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Reference'))
 		FROM JSON_TABLE;
 		SET AddressId = LAST_INSERT_ID();
 	
@@ -1318,15 +1318,15 @@ BEGIN
 						
 			UPDATE Address
 			SET
-				Street = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Address.Street')) FROM JSON_TABLE)
-				,HouseNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.HouseNumber')) FROM JSON_TABLE)
-				,PoBox =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.PoBox')) FROM JSON_TABLE)
-				,PhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.PhoneNumber')) FROM JSON_TABLE)
-				,City = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.City')) FROM JSON_TABLE)
-				,ZIP = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Zip')) FROM JSON_TABLE)
-				,State = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.State')) FROM JSON_TABLE)
-				,Neighborhood = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Neighborhood')) FROM JSON_TABLE)
-				,Reference = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Address.Reference'))  FROM JSON_TABLE)
+				 `Street` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Street')) FROM JSON_TABLE)
+				,`HouseNumber` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseNumber')) FROM JSON_TABLE)
+				,`PoBox` =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PoBox')) FROM JSON_TABLE)
+				,`PhoneNumber` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PhoneNumber')) FROM JSON_TABLE)
+				,`City` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.City')) FROM JSON_TABLE)
+				,`ZIP` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Zip')) FROM JSON_TABLE)
+				,`State` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.State')) FROM JSON_TABLE)
+				,`Neighborhood` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Neighborhood')) FROM JSON_TABLE)
+				,`Reference` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Reference'))  FROM JSON_TABLE)
 			WHERE Id = AddressId;
 		END IF;
 	END IF;
@@ -1338,10 +1338,11 @@ DROP PROCEDURE IF EXISTS `AddOrUpdateLegalGuardian`;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateLegalGuardian`(
-	IN  `JSONData` LONGTEXT,
-	IN  `SpouseId` INT,
-    OUT `LegalGuardianId` INT,
-	OUT `ErrorMessage` VARCHAR(2000)
+	IN  JSONData LONGTEXT,
+	IN  SpouseId INT,
+	IN  AddressId INT,
+    OUT LegalGuardianId INT,
+	OUT ErrorMessage VARCHAR(2000)
 )
 BEGIN
    
@@ -1361,7 +1362,7 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.id') INTO LegalGuardianId
+	JSON_EXTRACT(Data, '$.Id') INTO LegalGuardianId
 	FROM JSON_TABLE;
  
 	
@@ -1380,17 +1381,17 @@ BEGIN
 			,`Errand`
 			,`SpouseId`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.fullname'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.age'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.placeofbirth'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.maritalstatusid'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.education'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.currentoccupation'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.relationshipid'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.addressid'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.cellphonenumber'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.phonenumber'))
-      		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.errand'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FullName'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Age'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PlaceOfBirth'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MaritalStatusId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Education'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RelationshipId'))
+			,AddressId
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CellPhoneNumber'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PhoneNumber'))
+      		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Errand'))
 			,SpouseId
 		FROM JSON_TABLE;
 		SET LegalGuardianId = LAST_INSERT_ID();
@@ -1406,18 +1407,18 @@ BEGIN
 						
 			UPDATE LegalGuardian
 			SET
-				FullName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.fullname')) FROM JSON_TABLE)
-				,Age = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.age')) FROM JSON_TABLE)
-				,PlaceOfBirth = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.placeofbirth')) FROM JSON_TABLE)
-				,MaritalStatusId =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.maritalstatusid')) FROM JSON_TABLE)
-				,Education = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.education')) FROM JSON_TABLE)
-				,CurrentOccupation = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.currentoccupation')) FROM JSON_TABLE)
-				,RelationshipId = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.relationshipid')) FROM JSON_TABLE)
-				,AddressId = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.addressid')) FROM JSON_TABLE)
-				,CellPhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.cellphonenumber')) FROM JSON_TABLE)
-				,PhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.phonenumber'))  FROM JSON_TABLE)
-                ,Errand = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.errand'))  FROM JSON_TABLE)
-				,SpouseId = SpouseId
+				 `FullName` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.FullName')) FROM JSON_TABLE)
+				,`Age` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Age')) FROM JSON_TABLE)
+				,`PlaceOfBirth` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PlaceOfBirth')) FROM JSON_TABLE)
+				,`MaritalStatusId` =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MaritalStatusId')) FROM JSON_TABLE)
+				,`Education` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Education')) FROM JSON_TABLE)
+				,`CurrentOccupation` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation')) FROM JSON_TABLE)
+				,`RelationshipId` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RelationshipId')) FROM JSON_TABLE)
+				,`AddressId` = AddressId
+				,`CellPhoneNumber` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CellPhoneNumber')) FROM JSON_TABLE)
+				,`PhoneNumber`= (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PhoneNumber'))  FROM JSON_TABLE)
+                ,`Errand` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Errand'))  FROM JSON_TABLE)
+				,`SpouseId` = SpouseId
 			WHERE Id = LegalGuardianId;
 		END IF;
 	END IF;
@@ -1428,9 +1429,9 @@ DROP PROCEDURE IF EXISTS `AddOrUpdateSpouse`;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateSpouse`(
-	IN  `JSONData` LONGTEXT,
-    OUT `SpouseId` INT,
-	OUT `ErrorMessage` VARCHAR(2000)
+	IN  JSONData LONGTEXT,
+    OUT SpouseId INT,
+	OUT ErrorMessage VARCHAR(2000)
 )
 BEGIN
    
@@ -1450,7 +1451,7 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.id') INTO SpouseId
+	JSON_EXTRACT(Data, '$.Id') INTO SpouseId
 	FROM JSON_TABLE;
  
 	
@@ -1458,10 +1459,10 @@ BEGIN
 		
 		INSERT INTO Spouse(`FullName` ,`Age` ,`CurrentOccupation` ,`Comments`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.fullname'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.age'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.currentoccupation'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.comments'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FullName'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Age'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments'))
 		FROM JSON_TABLE;
 		SET SpouseId = LAST_INSERT_ID();
 	
@@ -1476,10 +1477,10 @@ BEGIN
 						
 			UPDATE Spouse
 			SET
-				FullName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.fullname')) FROM JSON_TABLE)
-				,Age = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.age')) FROM JSON_TABLE)
-				,CurrentOccupation =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.currentoccupation')) FROM JSON_TABLE)
-				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.comments')) FROM JSON_TABLE)
+				 `FullName` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.FullName')) FROM JSON_TABLE)
+				,`Age` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Age')) FROM JSON_TABLE)
+				,`CurrentOccupation` =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation')) FROM JSON_TABLE)
+				,`Comments` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments')) FROM JSON_TABLE)
 			WHERE Id = SpouseId;
 		END IF;
 	END IF;
@@ -1490,9 +1491,9 @@ DROP PROCEDURE IF EXISTS `AddOrUpdateMinor`;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateMinor`(
-	IN  `JSONData` LONGTEXT,
-    OUT `MinorId` INT,
-	OUT `ErrorMessage` VARCHAR(2000)
+	IN  JSONData LONGTEXT,
+    OUT MinorId INT,
+	OUT ErrorMessage VARCHAR(2000)
 )
 BEGIN
    
@@ -1518,7 +1519,7 @@ BEGIN
 	
 	IF MinorId = 0 THEN							
 		
-		INSERT INTO Minor (FullName, DateOfBirth, PlaceOfBirth, Age, Education, CurrentOccupation)
+		INSERT INTO Minor (`FullName`, `DateOfBirth`, `PlaceOfBirth`, `Age`, `Education`, `CurrentOccupation`)
 		SELECT
 			JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.FullName'))
 			,CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.DateOfBirth')) AS datetime)
@@ -1540,12 +1541,12 @@ BEGIN
 						
 			UPDATE Minor
 			SET
-				FullName =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.FullName')) FROM JSON_TABLE)
-				,DateOfBirth =       (SELECT CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.DateOfBirth')) AS datetime) FROM JSON_TABLE) 
-				,PlaceOfBirth =      (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.PlaceOfBirth')) FROM JSON_TABLE)
-				,Age =               (SELECT JSON_EXTRACT(Data, '$.Minor.Age') FROM JSON_TABLE)
-				,Education =         (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.Education')) FROM JSON_TABLE)
-				,CurrentOccupation = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.CurrentOccupation')) FROM JSON_TABLE)
+				 `FullName` =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.FullName')) FROM JSON_TABLE)
+				,`DateOfBirth` =       (SELECT CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.DateOfBirth')) AS datetime) FROM JSON_TABLE) 
+				,`PlaceOfBirth` =      (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.PlaceOfBirth')) FROM JSON_TABLE)
+				,`Age` =               (SELECT JSON_EXTRACT(Data, '$.Minor.Age') FROM JSON_TABLE)
+				,`Education` =         (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.Education')) FROM JSON_TABLE)
+				,`CurrentOccupation` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.CurrentOccupation')) FROM JSON_TABLE)
 			WHERE Id = MinorId;
 		END IF;
 	END IF;
@@ -1556,9 +1557,9 @@ DROP PROCEDURE IF EXISTS `AddOrUpdateFormalEducation`;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFormalEducation`(
-	IN  `JSONData` LONGTEXT,
-    OUT `FormalEducationId` INT,
-	OUT `ErrorMessage` VARCHAR(2000)
+	IN  JSONData LONGTEXT,
+    OUT FormalEducationId INT,
+	OUT ErrorMessage VARCHAR(2000)
 )
 BEGIN
    

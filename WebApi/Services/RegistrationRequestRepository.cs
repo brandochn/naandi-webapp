@@ -25,8 +25,7 @@ namespace WebApi.Services
 
             JsonSerializerOptions options = new JsonSerializerOptions
             {
-                IgnoreNullValues = true,
-                WriteIndented = true
+                IgnoreNullValues = true
             };
 
             var serializedResult = JsonSerializer.Serialize(registrationRequest, typeof(RegistrationRequest), options)
