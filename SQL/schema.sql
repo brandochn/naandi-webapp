@@ -1520,7 +1520,7 @@ BEGIN
 	
 	IF MinorId = 0 THEN							
 		
-		INSERT INTO Minor (`FullName`, `DateOfBirth`, `PlaceOfBirth`, `Age`, `Education`, `CurrentOccupation` ,'FormalEducationId')
+		INSERT INTO Minor (`FullName`, `DateOfBirth`, `PlaceOfBirth`, `Age`, `Education`, `CurrentOccupation` ,`FormalEducationId`)
 		SELECT
 			JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FullName'))
 			,CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DateOfBirth')) AS datetime)
@@ -1625,9 +1625,9 @@ DROP PROCEDURE IF EXISTS `AddOrUpdatePreviousFoundation`;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdatePreviousFoundation`(
-	IN  `JSONData` LONGTEXT,
-    OUT `PreviousFoundationId` INT,
-	OUT `ErrorMessage` VARCHAR(2000)
+	IN  JSONData LONGTEXT,
+    OUT PreviousFoundationId INT,
+	OUT ErrorMessage VARCHAR(2000)
 )
 BEGIN
    
@@ -1647,7 +1647,7 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.PreviousFoundation.Id') INTO PreviousFoundationId
+	JSON_EXTRACT(Data, '$.Id') INTO PreviousFoundationId
 	FROM JSON_TABLE;
  
 	
@@ -1655,13 +1655,13 @@ BEGIN
 		
 		INSERT INTO PreviousFoundation(`Familiar` ,`Procuraduria` ,`Dif` ,`Otro`,`InstitucionAnterior`,`TiempoDeEstadia`,`MotivoDeEgreso`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Familiar'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Procuraduria'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Dif'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Otro'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.InstitucionAnterior'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.TiempoDeEstadia'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.MotivoDeEgreso'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Familiar'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Procuraduria'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Dif'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Otro'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.InstitucionAnterior'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TiempoDeEstadia'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MotivoDeEgreso'))
 		FROM JSON_TABLE;
 		SET PreviousFoundationId = LAST_INSERT_ID();
 	
@@ -1676,13 +1676,13 @@ BEGIN
 						
 			UPDATE PreviousFoundation
 			SET
-				Familiar = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.PreviousFoundation.Familiar')) FROM JSON_TABLE)
-				,Procuraduria = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Procuraduria')) FROM JSON_TABLE)
-				,Dif =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Dif')) FROM JSON_TABLE)
-				,Otro = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.Otro')) FROM JSON_TABLE)
-				,InstitucionAnterior = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.InstitucionAnterior')) FROM JSON_TABLE)
-				,TiempoDeEstadia = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.TiempoDeEstadia')) FROM JSON_TABLE)
-				,MotivoDeEgreso = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundation.MotivoDeEgreso')) FROM JSON_TABLE)
+				Familiar = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Familiar')) FROM JSON_TABLE)
+				,Procuraduria = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Procuraduria')) FROM JSON_TABLE)
+				,Dif =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Dif')) FROM JSON_TABLE)
+				,Otro = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Otro')) FROM JSON_TABLE)
+				,InstitucionAnterior = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.InstitucionAnterior')) FROM JSON_TABLE)
+				,TiempoDeEstadia = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TiempoDeEstadia')) FROM JSON_TABLE)
+				,MotivoDeEgreso = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MotivoDeEgreso')) FROM JSON_TABLE)
 			WHERE Id = PreviousFoundationId;
 		END IF;
 	END IF;
@@ -1693,9 +1693,9 @@ DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyHealth`;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyHealth`(
-	IN  `JSONData` LONGTEXT,
-    OUT `FamilyHealthId` INT,
-	OUT `ErrorMessage` VARCHAR(2000)
+	IN  JSONData LONGTEXT,
+    OUT FamilyHealthId INT,
+	OUT ErrorMessage VARCHAR(2000)
 )
 BEGIN
    
@@ -1715,7 +1715,7 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.FamilyHealth.Id') INTO FamilyHealthId
+	JSON_EXTRACT(Data, '$.Id') INTO FamilyHealthId
 	FROM JSON_TABLE;
  
 	
@@ -1724,14 +1724,14 @@ BEGIN
 		INSERT INTO FamilyHealth
 		(`FamilyHealthStatus` ,`DerechoHambienteAServiciosDeSalud` ,`Tipo` ,`EnfermedadesCronicasDegenerativas`,`ConsumoDeTabaco`,`ConsumoDeAlcohol`,`ConsumoDeDrogas`, `Comments`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.FamilyHealthStatus'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.DerechoHambienteAServiciosDeSalud'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.Tipo'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.EnfermedadesCronicasDegenerativas'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.ConsumoDeTabaco'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.ConsumoDeAlcohol'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.ConsumoDeDrogas'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.Comments'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealthStatus'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DerechoHambienteAServiciosDeSalud'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Tipo'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EnfermedadesCronicasDegenerativas'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ConsumoDeTabaco'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ConsumoDeAlcohol'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ConsumoDeDrogas'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments'))
 		FROM JSON_TABLE;
 		SET FamilyHealthId = LAST_INSERT_ID();
 	
@@ -1746,14 +1746,14 @@ BEGIN
 						
 			UPDATE FamilyHealth
 			SET
-				FamilyHealthStatus = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.FamilyHealth.FamilyHealthStatus')) FROM JSON_TABLE)
+				FamilyHealthStatus = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.FamilyHealthStatus')) FROM JSON_TABLE)
 				,DerechoHambienteAServiciosDeSalud = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.DerechoHambienteAServiciosDeSalud')) FROM JSON_TABLE)
-				,Tipo =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.Tipo')) FROM JSON_TABLE)
-				,EnfermedadesCronicasDegenerativas = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.EnfermedadesCronicasDegenerativas')) FROM JSON_TABLE)
-				,ConsumoDeTabaco = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.ConsumoDeTabaco')) FROM JSON_TABLE)
-				,ConsumoDeAlcohol = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.ConsumoDeAlcohol')) FROM JSON_TABLE)
-				,ConsumoDeDrogas = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.ConsumoDeDrogas')) FROM JSON_TABLE)
-				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.Comments')) FROM JSON_TABLE)
+				,Tipo =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Tipo')) FROM JSON_TABLE)
+				,EnfermedadesCronicasDegenerativas = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EnfermedadesCronicasDegenerativas')) FROM JSON_TABLE)
+				,ConsumoDeTabaco = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ConsumoDeTabaco')) FROM JSON_TABLE)
+				,ConsumoDeAlcohol = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ConsumoDeAlcohol')) FROM JSON_TABLE)
+				,ConsumoDeDrogas = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ConsumoDeDrogas')) FROM JSON_TABLE)
+				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments')) FROM JSON_TABLE)
 			WHERE Id = FamilyHealthId;
 		END IF;
 	END IF;

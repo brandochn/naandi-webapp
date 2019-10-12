@@ -28,6 +28,10 @@ namespace WebApi.Services
             int? formalEducationId = AddOrUpdateFormalEducation(familyResearch.Minor.FormalEducation);
 
             int? minorId = AddOrUpdateMinor(familyResearch.Minor, formalEducationId);
+
+            int? previousFoundationId = AddOrUpdatePreviousFoundation(familyResearch.PreviousFoundation);
+
+            int? familyHealthId = AddOrUpdateFamilyHealth(familyResearch.FamilyHealth);
         }
 
         private int? AddOrUpdateSpouse(Spouse spouse)
@@ -382,6 +386,138 @@ namespace WebApi.Services
             }
 
             return minorId;
+        }
+
+        private int? AddOrUpdatePreviousFoundation(PreviousFoundation previousFoundation)
+        {
+            int previousFoundationId;
+
+            if (previousFoundation == null)
+            {
+                return null;
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true
+            };
+
+            var serializedResult = JsonSerializer.Serialize(previousFoundation, typeof(PreviousFoundation), options)
+                .ConvertJsonSpecialCharactersToAscii();
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "AddOrUpdatePreviousFoundation";
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "JSONData",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.LongText,
+                    Value = serializedResult
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "PreviousFoundationId",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = 0
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "ErrorMessage",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.VarChar,
+                    Value = string.Empty
+                });
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                var errorMessage = cmd.Parameters["ErrorMessage"].Value as string;
+                if (string.IsNullOrEmpty(errorMessage) == false)
+                {
+                    if (errorMessage.Contains("45000"))
+                    {
+                        throw new BusinessLogicException(errorMessage);
+                    }
+                    throw new Exception(errorMessage);
+                }
+
+                previousFoundationId = Convert.ToInt32(cmd.Parameters["PreviousFoundationId"].Value);
+            }
+
+            return previousFoundationId;
+        }
+
+        private int? AddOrUpdateFamilyHealth(FamilyHealth familyHealth)
+        {
+            int familyHealthId;
+
+            if (familyHealth == null)
+            {
+                return null;
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true
+            };
+
+            var serializedResult = JsonSerializer.Serialize(familyHealth, typeof(FamilyHealth), options)
+                .ConvertJsonSpecialCharactersToAscii();
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "AddOrUpdateFamilyHealth";
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "JSONData",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.LongText,
+                    Value = serializedResult
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "FamilyHealthId",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = 0
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "ErrorMessage",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.VarChar,
+                    Value = string.Empty
+                });
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                var errorMessage = cmd.Parameters["ErrorMessage"].Value as string;
+                if (string.IsNullOrEmpty(errorMessage) == false)
+                {
+                    if (errorMessage.Contains("45000"))
+                    {
+                        throw new BusinessLogicException(errorMessage);
+                    }
+                    throw new Exception(errorMessage);
+                }
+
+                familyHealthId = Convert.ToInt32(cmd.Parameters["FamilyHealthId"].Value);
+            }
+
+            return familyHealthId;
         }
     }
 }
