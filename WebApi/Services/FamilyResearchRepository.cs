@@ -24,6 +24,10 @@ namespace WebApi.Services
             int? addressId = AddOrUpdateAddress(familyResearch.LegalGuardian.Address);
 
             int? legalGuardianId = AddOrUpdateLegalGuardian(familyResearch.LegalGuardian, spouseId, addressId);
+
+            int? formalEducationId = AddOrUpdateFormalEducation(familyResearch.Minor.FormalEducation);
+
+            int? minorId = AddOrUpdateMinor(familyResearch.Minor, formalEducationId);
         }
 
         private int? AddOrUpdateSpouse(Spouse spouse)
@@ -174,7 +178,7 @@ namespace WebApi.Services
             return legalGuardianId;
         }
 
-         private int? AddOrUpdateAddress(Address address)
+        private int? AddOrUpdateAddress(Address address)
         {
             int addressId;
 
@@ -238,6 +242,146 @@ namespace WebApi.Services
             }
 
             return addressId;
+        }
+
+        private int? AddOrUpdateFormalEducation(FormalEducation formalEducation)
+        {
+            int formalEducationId;
+
+            if (formalEducation == null)
+            {
+                return null;
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true
+            };
+
+            var serializedResult = JsonSerializer.Serialize(formalEducation, typeof(FormalEducation), options)
+                .ConvertJsonSpecialCharactersToAscii();
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "AddOrUpdateFormalEducation";
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "JSONData",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.LongText,
+                    Value = serializedResult
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "FormalEducationId",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = 0
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "ErrorMessage",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.VarChar,
+                    Value = string.Empty
+                });
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                var errorMessage = cmd.Parameters["ErrorMessage"].Value as string;
+                if (string.IsNullOrEmpty(errorMessage) == false)
+                {
+                    if (errorMessage.Contains("45000"))
+                    {
+                        throw new BusinessLogicException(errorMessage);
+                    }
+                    throw new Exception(errorMessage);
+                }
+
+                formalEducationId = Convert.ToInt32(cmd.Parameters["FormalEducationId"].Value);
+            }
+
+            return formalEducationId;
+        }
+
+        private int? AddOrUpdateMinor(Minor minor, int? formalEducationId)
+        {
+            int minorId;
+
+            if (minor == null)
+            {
+                return null;
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true
+            };
+
+            var serializedResult = JsonSerializer.Serialize(minor, typeof(Minor), options)
+                .ConvertJsonSpecialCharactersToAscii();
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "AddOrUpdateMinor";
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "JSONData",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.LongText,
+                    Value = serializedResult
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "FormalEducationId",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = formalEducationId
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "MinorId",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = 0
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "ErrorMessage",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.VarChar,
+                    Value = string.Empty
+                });
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                var errorMessage = cmd.Parameters["ErrorMessage"].Value as string;
+                if (string.IsNullOrEmpty(errorMessage) == false)
+                {
+                    if (errorMessage.Contains("45000"))
+                    {
+                        throw new BusinessLogicException(errorMessage);
+                    }
+                    throw new Exception(errorMessage);
+                }
+
+                minorId = Convert.ToInt32(cmd.Parameters["MinorId"].Value);
+            }
+
+            return minorId;
         }
     }
 }

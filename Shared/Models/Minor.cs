@@ -12,5 +12,7 @@ namespace Naandi.Shared.Models
         public int Age { get; set; }
         public string Education { get; set; }
         public string CurrentOccupation { get; set; }
+        public int FormalEducationId { get; set; }
+        public FormalEducation FormalEducation  {get; set;}
     }
 }

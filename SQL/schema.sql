@@ -99,10 +99,10 @@ CREATE TABLE `Minor` (
   `Age` int(11) NOT NULL,
   `Education` varchar(100) DEFAULT NULL,
   `CurrentOccupation` varchar(100) DEFAULT NULL,
-  `FormalEducationÌd` int(11) DEFAULT NULL,
+  `FormalEducationId` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id`),
-  KEY `FK_Minor_FormalEducation` (`FormalEducationÌd`),
-  CONSTRAINT `FK_Minor_FormalEducation` FOREIGN KEY (`FormalEducationÌd`) REFERENCES `FormalEducation` (`Id`)
+  KEY `FK_Minor_FormalEducation` (`FormalEducationId`),
+  CONSTRAINT `FK_Minor_FormalEducation` FOREIGN KEY (`FormalEducationId`) REFERENCES `FormalEducation` (`Id`)
 ) ENGINE=InnoDB;
 
 --
@@ -1492,6 +1492,7 @@ DROP PROCEDURE IF EXISTS `AddOrUpdateMinor`;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateMinor`(
 	IN  JSONData LONGTEXT,
+	IN  FormalEducationId INT,
     OUT MinorId INT,
 	OUT ErrorMessage VARCHAR(2000)
 )
@@ -1513,20 +1514,21 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.Minor.Id') INTO MinorId
+	JSON_EXTRACT(Data, '$.Id') INTO MinorId
 	FROM JSON_TABLE;
  
 	
 	IF MinorId = 0 THEN							
 		
-		INSERT INTO Minor (`FullName`, `DateOfBirth`, `PlaceOfBirth`, `Age`, `Education`, `CurrentOccupation`)
+		INSERT INTO Minor (`FullName`, `DateOfBirth`, `PlaceOfBirth`, `Age`, `Education`, `CurrentOccupation` ,'FormalEducationId')
 		SELECT
-			JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.FullName'))
-			,CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.DateOfBirth')) AS datetime)
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.PlaceOfBirth'))
-			,JSON_EXTRACT(Data, '$.Minor.Age')
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.Education'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.CurrentOccupation'))
+			JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FullName'))
+			,CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DateOfBirth')) AS datetime)
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PlaceOfBirth'))
+			,JSON_EXTRACT(Data, '$.Age')
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Education'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation'))
+			,FormalEducationId
 		FROM JSON_TABLE;
 		SET MinorId = LAST_INSERT_ID();
 	
@@ -1547,6 +1549,7 @@ BEGIN
 				,`Age` =               (SELECT JSON_EXTRACT(Data, '$.Minor.Age') FROM JSON_TABLE)
 				,`Education` =         (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.Education')) FROM JSON_TABLE)
 				,`CurrentOccupation` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.CurrentOccupation')) FROM JSON_TABLE)
+				,`FormalEducationId` =  FormalEducationId
 			WHERE Id = MinorId;
 		END IF;
 	END IF;
@@ -1579,7 +1582,7 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.FormalEducation.Id') INTO FormalEducationId
+	JSON_EXTRACT(Data, '$.Id') INTO FormalEducationId
 	FROM JSON_TABLE;
  
 	
@@ -1587,11 +1590,11 @@ BEGIN
 		
 		INSERT INTO FormalEducation (CanItRead, CanItWrite, IsItStudyingNow, CurrentGrade, ReasonsToStopStudying)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.CanItRead'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.CanItWrite'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.IsItStudyingNow'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.CurrentGrade'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.ReasonsToStopStudying'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItRead'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItWrite'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IsItStudyingNow'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentGrade'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ReasonsToStopStudying'))
 		FROM JSON_TABLE;
 		SET FormalEducationId = LAST_INSERT_ID();
 	
@@ -1606,11 +1609,11 @@ BEGIN
 						
 			UPDATE FormalEducation
 			SET
-				 CanItRead = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.CanItRead')) FROM JSON_TABLE)
-				,CanItWrite = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.CanItWrite')) FROM JSON_TABLE)
-				,IsItStudyingNow = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.IsItStudyingNow')) FROM JSON_TABLE)
-				,CurrentGrade =   (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.CurrentGrade')) FROM JSON_TABLE)
-				,ReasonsToStopStudying = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FormalEducation.ReasonsToStopStudying')) FROM JSON_TABLE)
+				 CanItRead = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItRead')) FROM JSON_TABLE)
+				,CanItWrite = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItWrite')) FROM JSON_TABLE)
+				,IsItStudyingNow = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IsItStudyingNow')) FROM JSON_TABLE)
+				,CurrentGrade =   (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentGrade')) FROM JSON_TABLE)
+				,ReasonsToStopStudying = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ReasonsToStopStudying')) FROM JSON_TABLE)
 			WHERE Id = FormalEducationId;
 		END IF;
 	END IF;

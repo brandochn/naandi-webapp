@@ -36,6 +36,11 @@ namespace WebApi.Controllers
                 return BadRequest("Address cannot be null or empty");
             }
 
+            if (familyResearch.Minor == null)
+            {
+                return BadRequest("Minor cannot be null or empty");
+            }
+
             try
             {
                 familyResearchRepository.Add(familyResearch);
