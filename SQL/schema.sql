@@ -715,7 +715,7 @@ CREATE TABLE `FamilyResearch` (
   `PreviousFoundationId` int(11) DEFAULT NULL,
   `FamilyHealthId` int(11) DEFAULT NULL,
   `FamilyMembersId` int(11) DEFAULT NULL,
-  `SocioeconomicStudyId` int(11) DEFAULT NULL,
+  `SocioEconomicStudyId` int(11) DEFAULT NULL,
   `DistrictId` int(11) DEFAULT NULL,
   `EconomicSituationId` int(11) DEFAULT NULL,
   `FamilyNutritionId` int(11) DEFAULT NULL,
@@ -1094,8 +1094,8 @@ set vClassCode ='';
 
     SELECT (CASE WHEN col1 = col2 THEN col1 ELSE concat(col1,col2)  END) into vClassName
     FROM(
-    SELECT CONCAT(UCASE(MID(ColumnName1,1,1)),LCASE(MID(ColumnName1,2))) as col1,
-    CONCAT(UCASE(MID(ColumnName2,1,1)),LCASE(MID(ColumnName2,2))) as col2
+    SELECT ColumnName1 as col1,
+		   ColumnName2 as col2
     FROM
     (SELECT SUBSTRING_INDEX(pTableName, '_', -1) as ColumnName2,
         SUBSTRING_INDEX(pTableName, '_', 1) as ColumnName1) A) B;
@@ -1140,8 +1140,8 @@ set vClassCode ='';
             else 'UNKNOWN_' + DATA_TYPE
         end ColumnType
     FROM(
-    select CONCAT(UCASE(MID(ColumnName1,1,1)),LCASE(MID(ColumnName1,2))) as col1,
-    CONCAT(UCASE(MID(ColumnName2,1,1)),LCASE(MID(ColumnName2,2))) as col2, DATA_TYPE
+    select ColumnName1 as col1,
+           ColumnName2 as col2, DATA_TYPE
     from
     (SELECT SUBSTRING_INDEX(COLUMN_NAME, '_', -1) as ColumnName2,
     SUBSTRING_INDEX(COLUMN_NAME, '_', 1) as ColumnName1,
