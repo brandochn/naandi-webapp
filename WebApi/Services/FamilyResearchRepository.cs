@@ -32,6 +32,8 @@ namespace WebApi.Services
             int? previousFoundationId = AddOrUpdatePreviousFoundation(familyResearch.PreviousFoundation);
 
             int? familyHealthId = AddOrUpdateFamilyHealth(familyResearch.FamilyHealth);
+
+            int? familyMembersId = AddOrUpdateFamilyMembers(familyResearch.FamilyMembers);
         }
 
         private int? AddOrUpdateSpouse(Spouse spouse)
@@ -518,6 +520,72 @@ namespace WebApi.Services
             }
 
             return familyHealthId;
+        }
+
+        private int? AddOrUpdateFamilyMembers(FamilyMembers FamilyMembers)
+        {
+            int familyMembersId;
+
+            if (FamilyMembers == null)
+            {
+                return null;
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true
+            };
+
+            var serializedResult = JsonSerializer.Serialize(FamilyMembers, typeof(FamilyMembers), options)
+                .ConvertJsonSpecialCharactersToAscii();
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "AddOrUpdateFamilyMembers";
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "JSONData",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.LongText,
+                    Value = serializedResult
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "FamilyMembersId",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = 0
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "ErrorMessage",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.VarChar,
+                    Value = string.Empty
+                });
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                var errorMessage = cmd.Parameters["ErrorMessage"].Value as string;
+                if (string.IsNullOrEmpty(errorMessage) == false)
+                {
+                    if (errorMessage.Contains("45000"))
+                    {
+                        throw new BusinessLogicException(errorMessage);
+                    }
+                    throw new Exception(errorMessage);
+                }
+
+                familyMembersId = Convert.ToInt32(cmd.Parameters["FamilyMembersId"].Value);
+            }
+
+            return familyMembersId;
         }
     }
 }

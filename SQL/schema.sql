@@ -1761,6 +1761,31 @@ END ;;
 DELIMITER ;
 
 
+DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyMembersDetails`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyMembersDetails`(
+	IN  FamilyMembersId INT,
+    IN  ArrayItem BLOB
+)
+BEGIN
+
+	DECLARE Data LONGTEXT DEFAULT CAST(ArrayItem as CHAR CHARACTER SET utf8mb4);
+		
+	INSERT INTO FamilyMembersDetails (`FullName` ,`Age`,`MaritalStatusId`,`RelationshipId`,`Education`,`CurrentOccupation`,`FamilyMembersId`)
+	SELECT
+		 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FullName'))
+		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Age'))			
+		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MaritalStatusId'))
+		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RelationshipId'))
+		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Education'))
+		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation'))
+		,FamilyMembersId;	
+
+END ;;
+DELIMITER ;
+
+
 DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyMembers`;
 
 DELIMITER ;;
@@ -1787,29 +1812,19 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.FamilyMembers.Id') INTO FamilyMembersId
+	JSON_EXTRACT(Data, '$.Id') INTO FamilyMembersId
 	FROM JSON_TABLE;
  
-	
 	IF FamilyMembersId = 0 THEN							
 		
 		INSERT INTO FamilyMembers (`FamilyInteraction` ,`Comments`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyInteraction'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.Comments'))			
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyInteraction'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments'))			
 		FROM JSON_TABLE;
 		SET FamilyMembersId = LAST_INSERT_ID();
 
-		INSERT INTO FamilyMembersDetails (`FullName` ,`Age`,`MaritalStatusId`,`RelationshipId`,`Education`,`CurrentOccupation`,`FamilyMembersId`)
-		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.FullName'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.Age'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.MaritalStatusId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.RelationshipId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.Education'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.CurrentOccupation'))
-			,FamilyMembersId
-		FROM JSON_TABLE;
+		CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.FamilyMembersDetails') FROM JSON_TABLE), FamilyMembersId, 'AddOrUpdateFamilyMembersDetails');
 	
 	ELSE
 		
@@ -1822,23 +1837,14 @@ BEGIN
 						
 			UPDATE FamilyMembers
 			SET
-				FamilyInteraction = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.FamilyMembers.FamilyInteraction')) FROM JSON_TABLE)
-				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.Comments')) FROM JSON_TABLE)				
+				FamilyInteraction = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.FamilyInteraction')) FROM JSON_TABLE)
+				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments')) FROM JSON_TABLE)				
 			WHERE Id = FamilyMembersId;
 
 			DELETE FROM FamilyMembersDetails  WHERE `FamilyMembersId` = FamilyMembersId;
 
-			INSERT INTO FamilyMembersDetails (`FullName` ,`Age`,`MaritalStatusId`,`RelationshipId`,`Education`,`CurrentOccupation`,`FamilyMembersId`)
-			SELECT
-				JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.FullName'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.Age'))			
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.MaritalStatusId'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.RelationshipId'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.Education'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembers.FamilyMembersDetails.CurrentOccupation'))
-				,FamilyMembersId
-			FROM JSON_TABLE;
-
+			CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.FamilyMembersDetails') FROM JSON_TABLE), FamilyMembersId, 'AddOrUpdateFamilyMembersDetails');
+			
 		END IF;
 	END IF;
 END ;;
@@ -2212,7 +2218,7 @@ BEGIN
         -- get the current item and build an SQL statement
         -- to pass it to a callback procedure
         SET v_current_item :=
-            JSON_EXTRACT(in_array, CONCAT('$[', i, ']'));
+            JSON_QUOTE(JSON_EXTRACT(in_array, CONCAT('$[', i, ']')));
         SET @sql_array_callback :=
             CONCAT('CALL ', in_callback, '(', in_id, ', ', v_current_item, ');');
         
@@ -2230,20 +2236,11 @@ DROP PROCEDURE IF EXISTS `AddFamilyNutritionFoodRelation`;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddFamilyNutritionFoodRelation`(
 	In  FamilyNutritionId INT,
-    IN  ArrayItem BLOB,
-	OUT ErrorMessage VARCHAR(2000)
+    IN  ArrayItem BLOB
 )
 BEGIN
 
   	DECLARE Data LONGTEXT DEFAULT CAST(ArrayItem as CHAR CHARACTER SET utf8mb4);
-
-	DECLARE exit handler for SQLEXCEPTION
-	BEGIN
-		 ROLLBACK;
-		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE,
-		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
-		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
-	END;
 		
 	INSERT INTO FamilyNutritionFoodRelation (`FamilyNutritionId`, `FoodId`, `FrequencyId`)
 	SELECT FamilyNutritionId
@@ -2386,20 +2383,11 @@ DROP PROCEDURE IF EXISTS `AddIngresosEgresosMensualesMovimientoRelation`;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddIngresosEgresosMensualesMovimientoRelation`(
 	In  IngresosEgresosMensualesId INT,
-  IN  ArrayItem BLOB,
-	OUT ErrorMessage VARCHAR(2000)
+    IN  ArrayItem BLOB
 )
 BEGIN
 
-  DECLARE Data LONGTEXT DEFAULT CAST(ArrayItem as CHAR CHARACTER SET utf8mb4);
-
-	DECLARE exit handler for SQLEXCEPTION
-	BEGIN
-		 ROLLBACK;
-		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE,
-		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
-		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
-	END;
+    DECLARE Data LONGTEXT DEFAULT CAST(ArrayItem as CHAR CHARACTER SET utf8mb4);
 		
 	INSERT INTO IngresosEgresosMensualesMovimientoRelation (`IngresosEgresosMensualesId`, `MovimientoId`, `Monto`)
 	SELECT IngresosEgresosMensualesId
