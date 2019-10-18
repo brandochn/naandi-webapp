@@ -4,5 +4,6 @@ namespace Naandi.Shared.Models
     {
         public int Id { get; set; }
         public string Nivelsocioeconomico { get; set; }
+        EconomicSituationPatrimonyRelation[] EconomicSituationPatrimonyRelation { get; set; }
     }
 }

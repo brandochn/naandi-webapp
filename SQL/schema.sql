@@ -1985,7 +1985,7 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.District.Id') INTO DistrictId
+	JSON_EXTRACT(Data, '$.Id') INTO DistrictId
 	FROM JSON_TABLE;
  
 	
@@ -1993,22 +1993,22 @@ BEGIN
 		
 		INSERT INTO District (`TypeOfDistrictId` ,`AguaPotable`, `Telefono`, `Electricidad`, `Drenaje`,`Hospital`,`Correo`,`Escuela`,`Policia`,`AlumbradoPublico`,`ViasDeAcceso`,`TransportePublico`,`AseoPublico`,`Iglesia`,`Otros`,`Description`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.TypeOfDistrictId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.AguaPotable'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Telefono'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Electricidad'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Drenaje'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Hospital'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Correo'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Escuela'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Policia'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.AlumbradoPublico'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.ViasDeAcceso'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.TransportePublico'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.AseoPublico'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Iglesia'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Otros'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Description'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TypeOfDistrictId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AguaPotable'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Telefono'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Electricidad'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Drenaje'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Hospital'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Correo'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Escuela'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Policia'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AlumbradoPublico'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ViasDeAcceso'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TransportePublico'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AseoPublico'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Iglesia'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Otros'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Description'))
 		FROM JSON_TABLE;
 		SET DistrictId = LAST_INSERT_ID();
 
@@ -2023,22 +2023,22 @@ BEGIN
 						
 			UPDATE District
 				SET
-				 TypeOfDistrictId = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.TypeOfDistrictId')) FROM JSON_TABLE)
-				,AguaPotable =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.AguaPotable')) FROM JSON_TABLE)
-				,Telefono = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Telefono')) FROM JSON_TABLE)
-				,Electricidad = 		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Electricidad')) FROM JSON_TABLE)
-				,Drenaje =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Drenaje')) FROM JSON_TABLE)
-				,Hospital = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Hospital')) FROM JSON_TABLE)
-				,Correo = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Correo')) FROM JSON_TABLE)
-				,Escuela =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Escuela')) FROM JSON_TABLE)
-				,Policia = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Policia')) FROM JSON_TABLE)
-				,AlumbradoPublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.AlumbradoPublico')) FROM JSON_TABLE)
-				,ViasDeAcceso =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.ViasDeAcceso')) FROM JSON_TABLE)
-				,TransportePublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.TransportePublico')) FROM JSON_TABLE)
-				,AseoPublico = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.AseoPublico')) FROM JSON_TABLE)
-				,Iglesia =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Iglesia')) FROM JSON_TABLE)
-				,Otros = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Otros')) FROM JSON_TABLE)
-				,Description = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.District.Description')) FROM JSON_TABLE)				
+				 TypeOfDistrictId = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TypeOfDistrictId')) FROM JSON_TABLE)
+				,AguaPotable =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AguaPotable')) FROM JSON_TABLE)
+				,Telefono = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Telefono')) FROM JSON_TABLE)
+				,Electricidad = 		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Electricidad')) FROM JSON_TABLE)
+				,Drenaje =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Drenaje')) FROM JSON_TABLE)
+				,Hospital = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Hospital')) FROM JSON_TABLE)
+				,Correo = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Correo')) FROM JSON_TABLE)
+				,Escuela =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Escuela')) FROM JSON_TABLE)
+				,Policia = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Policia')) FROM JSON_TABLE)
+				,AlumbradoPublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AlumbradoPublico')) FROM JSON_TABLE)
+				,ViasDeAcceso =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ViasDeAcceso')) FROM JSON_TABLE)
+				,TransportePublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TransportePublico')) FROM JSON_TABLE)
+				,AseoPublico = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AseoPublico')) FROM JSON_TABLE)
+				,Iglesia =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Iglesia')) FROM JSON_TABLE)
+				,Otros = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Otros')) FROM JSON_TABLE)
+				,Description = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Description')) FROM JSON_TABLE)				
 			WHERE Id = DistrictId;
 			
 		END IF;
@@ -2046,6 +2046,25 @@ BEGIN
 END ;;
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS `AddEconomicSituationPatrimonyRelation`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddEconomicSituationPatrimonyRelation`(
+	In  EconomicSituationId INT,
+    IN  ArrayItem BLOB
+)
+BEGIN
+
+	DECLARE Data LONGTEXT DEFAULT CAST(ArrayItem as CHAR CHARACTER SET utf8mb4);
+		
+	INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
+	SELECT
+		 EconomicSituationId
+		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PatrimonyId'))			
+		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Value'));
+		
+END ;;
+DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `AddOrUpdateEconomicSituation`;
 
@@ -2073,7 +2092,7 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.EconomicSituation.Id') INTO EconomicSituationId
+	JSON_EXTRACT(Data, '$.Id') INTO EconomicSituationId
 	FROM JSON_TABLE;
  
 	
@@ -2081,56 +2100,12 @@ BEGIN
 		
 		INSERT INTO EconomicSituation (`NivelSocioEconomico`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.NivelSocioEconomico'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.NivelSocioEconomico'))
 		FROM JSON_TABLE;
 		SET EconomicSituationId = LAST_INSERT_ID();
 
-		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
-		SELECT EconomicSituationId
-		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'Automovil')
-		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Automovil')) FROM JSON_TABLE);
+		CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.EconomicSituationPatrimonyRelation') FROM JSON_TABLE), EconomicSituationId, 'AddEconomicSituationPatrimonyRelation');
 		
-		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
-		SELECT EconomicSituationId
-		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'Modelo')
-		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Modelo')) FROM JSON_TABLE);
-
-		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
-		SELECT EconomicSituationId
-		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'CasaHabitacion')
-		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.CasaHabitacion')) FROM JSON_TABLE);
-
-		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
-		SELECT EconomicSituationId
-		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'CasaHabitacionUbicacion')
-		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.CasaHabitacionUbicacion')) FROM JSON_TABLE);
-
-		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
-		SELECT EconomicSituationId
-		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'Terreno')
-		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Terreno')) FROM JSON_TABLE);
-
-		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
-		SELECT EconomicSituationId
-		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'TerrenoUbicacion')
-		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.TerrenoUbicacion')) FROM JSON_TABLE);
-
-		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
-		SELECT EconomicSituationId
-		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'Otros')
-		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Otros')) FROM JSON_TABLE);
-
-		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
-		SELECT EconomicSituationId
-		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'Ahorros')
-		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Ahorros')) FROM JSON_TABLE);
-
-		INSERT INTO EconomicSituationPatrimonyRelation (`EconomicSituationId`, `PatrimonyId`, `Value`)
-		SELECT EconomicSituationId
-		,(SELECT `Id` FROM Patrimony WHERE `Name` = 'FrecuenciaDeAhorro')
-		,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.FrecuenciaDeAhorro')) FROM JSON_TABLE);
-		
-
 	ELSE
 		
 		SELECT  EXISTS(SELECT 1 FROM EconomicSituation WHERE Id = EconomicSituationId) INTO rowExists;
@@ -2142,54 +2117,13 @@ BEGIN
 						
 			UPDATE EconomicSituation
 				SET
-				NivelSocioEconomico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.NivelSocioEconomico')) FROM JSON_TABLE)							
+				NivelSocioEconomico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.NivelSocioEconomico')) FROM JSON_TABLE)							
 			WHERE Id = EconomicSituationId;
+			
+			DELETE FROM EconomicSituationPatrimonyRelation  WHERE `EconomicSituationId` = EconomicSituationId;
 
-			UPDATE EconomicSituationPatrimonyRelation espr
-			JOIN Patrimony p on p.Id = espr.PatrimonyId
-			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Automovil')) FROM JSON_TABLE)
-			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'Automovil';
-
-			UPDATE EconomicSituationPatrimonyRelation espr
-			JOIN Patrimony p on p.Id = espr.PatrimonyId
-			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Modelo')) FROM JSON_TABLE)
-			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'Modelo';
-
-			UPDATE EconomicSituationPatrimonyRelation espr
-			JOIN Patrimony p on p.Id = espr.PatrimonyId
-			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.CasaHabitacion')) FROM JSON_TABLE)
-			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'CasaHabitacion';
-			
-			UPDATE EconomicSituationPatrimonyRelation espr
-			JOIN Patrimony p on p.Id = espr.PatrimonyId
-			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.CasaHabitacionUbicacion')) FROM JSON_TABLE)
-			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'CasaHabitacionUbicacion';
-			
-			UPDATE EconomicSituationPatrimonyRelation espr
-			JOIN Patrimony p on p.Id = espr.PatrimonyId
-			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Terreno')) FROM JSON_TABLE)
-			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'Terreno';
-			
-			UPDATE EconomicSituationPatrimonyRelation espr
-			JOIN Patrimony p on p.Id = espr.PatrimonyId
-			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.TerrenoUbicacion')) FROM JSON_TABLE)
-			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'TerrenoUbicacion';
-			
-			UPDATE EconomicSituationPatrimonyRelation espr
-			JOIN Patrimony p on p.Id = espr.PatrimonyId
-			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Otros')) FROM JSON_TABLE)
-			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'Otros';
-
-			UPDATE EconomicSituationPatrimonyRelation espr
-			JOIN Patrimony p on p.Id = espr.PatrimonyId
-			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.Ahorros')) FROM JSON_TABLE)
-			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'Ahorros';
-			
-			UPDATE EconomicSituationPatrimonyRelation espr
-			JOIN Patrimony p on p.Id = espr.PatrimonyId
-			SET `Value` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation.FrecuenciaDeAhorro')) FROM JSON_TABLE)
-			WHERE espr.EconomicSituationId = EconomicSituationId AND p.`Name` = 'FrecuenciaDeAhorro';
-			
+			CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.EconomicSituationPatrimonyRelation') FROM JSON_TABLE), EconomicSituationId, 'AddEconomicSituationPatrimonyRelation');
+				
 		END IF;
 	END IF;
 END ;;
