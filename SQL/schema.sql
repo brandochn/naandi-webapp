@@ -538,12 +538,12 @@ CREATE TABLE `EconomicSituationPatrimonyRelation` (
 
 
 --
--- Table structure for table `SocioeconomicStudy`
+-- Table structure for table `SocioEconomicStudy`
 --
 
-DROP TABLE IF EXISTS `SocioeconomicStudy`;
+DROP TABLE IF EXISTS `SocioEconomicStudy`;
 
-CREATE TABLE `SocioeconomicStudy` (
+CREATE TABLE `SocioEconomicStudy` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `Vivienda` varchar(100) DEFAULT NULL,
   `NombrePropietario` varchar(100) DEFAULT NULL,
@@ -1850,12 +1850,12 @@ BEGIN
 END ;;
 DELIMITER ;
 
-DROP PROCEDURE IF EXISTS `AddOrUpdateSocioeconomicStudy`;
+DROP PROCEDURE IF EXISTS `AddOrUpdateSocioEconomicStudy`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateSocioeconomicStudy`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateSocioEconomicStudy`(
 	  IN  `JSONData` LONGTEXT,
-      OUT `SocioeconomicStudyId` INT,
+      OUT `SocioEconomicStudyId` INT,
 	  OUT `ErrorMessage` VARCHAR(2000)
 )
 BEGIN
@@ -1877,80 +1877,80 @@ BEGIN
 	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.SocioeconomicStudy.Id') INTO SocioeconomicStudyId
+	JSON_EXTRACT(Data, '$.Id') INTO SocioEconomicStudyId
 	FROM JSON_TABLE;
  
 	
-	IF SocioeconomicStudyId = 0 THEN						
+	IF SocioEconomicStudyId = 0 THEN						
 
 		INSERT INTO HouseLayout (`Bedroom` ,`Dinningroom`,`Kitchen`,`Livingroom`,`Patio`,`Garage`,`Backyard`,`Other`,`Ground`,`Walls`,`Roof`,`Description`,`TipoDeMobiliarioId`,`CharacteristicsOfFurniture`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Bedroom'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Dinningroom'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Kitchen'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Livingroom'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Patio'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Garage'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Backyard'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Other'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Ground'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Walls'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Roof'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Description'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.TipoDeMobiliarioId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.CharacteristicsOfFurniture'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Bedroom'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Dinningroom'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Kitchen'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Livingroom'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Patio'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Garage'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Backyard'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Other'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Ground'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Walls'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Roof'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Description'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.TipoDeMobiliarioId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.CharacteristicsOfFurniture'))
 		FROM JSON_TABLE;
 		SET HouseLayoutId = LAST_INSERT_ID();
 		
 		
-		INSERT INTO SocioeconomicStudy (`Vivienda` ,`NombrePropietario`, `MedioAdquisicion`, `TypesOfHousesId`, `HouseLayoutId`)
+		INSERT INTO SocioEconomicStudy (`Vivienda` ,`NombrePropietario`, `MedioAdquisicion`, `TypesOfHousesId`, `HouseLayoutId`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.Vivienda'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.NombrePropietario'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.MedioAdquisicion'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.TypesOfHousesId'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Vivienda'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.NombrePropietario'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MedioAdquisicion'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TypesOfHousesId'))
 			,HouseLayoutId
 		FROM JSON_TABLE;
-		SET SocioeconomicStudyId = LAST_INSERT_ID();
+		SET SocioEconomicStudyId = LAST_INSERT_ID();
 
 	ELSE
 		
-		SELECT  EXISTS(SELECT 1 FROM SocioeconomicStudy WHERE Id = SocioeconomicStudyId) INTO rowExists;
+		SELECT  EXISTS(SELECT 1 FROM SocioEconomicStudy WHERE Id = SocioEconomicStudyId) INTO rowExists;
 		
 		IF rowExists = 0 THEN
 			SIGNAL SQLSTATE '45000'
-			SET MESSAGE_TEXT = 'SocioeconomicStudy not found';
+			SET MESSAGE_TEXT = 'SocioEconomicStudy not found';
 		ELSE
 
 			SELECT hl.Id INTO HouseLayoutId
-			FROM SocioeconomicStudy ss
+			FROM SocioEconomicStudy ss
 			JOIN HouseLayout hl on ss.HouseLayoutId = hl.Id
-			WHERE ss.Id = SocioeconomicStudyId;			
+			WHERE ss.Id = SocioEconomicStudyId;			
 						
-			UPDATE SocioeconomicStudy
+			UPDATE SocioEconomicStudy
 				SET
-				 Vivienda = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.SocioeconomicStudy.Vivienda')) FROM JSON_TABLE)
-				,NombrePropietario = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.NombrePropietario')) FROM JSON_TABLE)
-				,MedioAdquisicion =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.MedioAdquisicion')) FROM JSON_TABLE)
-				,TypesOfHousesId = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.TypesOfHousesId')) FROM JSON_TABLE)
-			WHERE Id = SocioeconomicStudyId;
+				 Vivienda =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Vivienda')) FROM JSON_TABLE)
+				,NombrePropietario =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.NombrePropietario')) FROM JSON_TABLE)
+				,MedioAdquisicion =   (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MedioAdquisicion')) FROM JSON_TABLE)
+				,TypesOfHousesId =    (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TypesOfHousesId')) FROM JSON_TABLE)
+			WHERE Id = SocioEconomicStudyId;
 
 			UPDATE HouseLayout
 			SET
-				Bedroom =          				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Bedroom')) FROM JSON_TABLE)
-				,Dinningroom = 					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Dinningroom')) FROM JSON_TABLE)
-				,Kitchen =  					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Kitchen')) FROM JSON_TABLE)
-				,Livingroom =   				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Livingroom')) FROM JSON_TABLE)
-				,Patio = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Patio')) FROM JSON_TABLE)
-				,Garage =  						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Garage')) FROM JSON_TABLE)
-				,Backyard =   					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Backyard')) FROM JSON_TABLE)
-				,Other = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Other')) FROM JSON_TABLE)
-				,Ground =  						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Ground')) FROM JSON_TABLE)
-				,Walls =   						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Walls')) FROM JSON_TABLE)
-				,Roof = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Roof')) FROM JSON_TABLE)
-				,Description =  				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.Description')) FROM JSON_TABLE)
-				,TipoDeMobiliarioId =          	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.TipoDeMobiliarioId')) FROM JSON_TABLE)
-				,CharacteristicsOfFurniture =  	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudy.HouseLayout.CharacteristicsOfFurniture')) FROM JSON_TABLE)
+				Bedroom =          				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Bedroom')) FROM JSON_TABLE)
+				,Dinningroom = 					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Dinningroom')) FROM JSON_TABLE)
+				,Kitchen =  					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Kitchen')) FROM JSON_TABLE)
+				,Livingroom =   				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Livingroom')) FROM JSON_TABLE)
+				,Patio = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Patio')) FROM JSON_TABLE)
+				,Garage =  						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Garage')) FROM JSON_TABLE)
+				,Backyard =   					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Backyard')) FROM JSON_TABLE)
+				,Other = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Other')) FROM JSON_TABLE)
+				,Ground =  						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Ground')) FROM JSON_TABLE)
+				,Walls =   						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Walls')) FROM JSON_TABLE)
+				,Roof = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Roof')) FROM JSON_TABLE)
+				,Description =  				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Description')) FROM JSON_TABLE)
+				,TipoDeMobiliarioId =          	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.TipoDeMobiliarioId')) FROM JSON_TABLE)
+				,CharacteristicsOfFurniture =  	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.CharacteristicsOfFurniture')) FROM JSON_TABLE)
 			WHERE Id = HouseLayoutId;
 		
 		END IF;
