@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Naandi.Shared.Models
+﻿namespace Naandi.Shared.Models
 {
     public class EconomicSituationPatrimonyRelation
     {

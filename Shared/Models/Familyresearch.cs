@@ -31,7 +31,7 @@ namespace Naandi.Shared.Models
         public int DistrictId { get; set; }
         public District District { get; set; }
         public int EconomicSituationId { get; set; }
-        public Economicsituation Economicsituation { get; set; }
+        public EconomicSituation EconomicSituation { get; set; }
         public int FamilyNutritionId { get; set; }
         public FamilyNutrition FamilyNutrition { get; set; }
         public int BenefitsProvidedId { get; set; }
