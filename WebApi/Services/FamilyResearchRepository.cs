@@ -40,6 +40,8 @@ namespace WebApi.Services
             int? districtId = AddOrUpdateDistrict(familyResearch.District);
 
             int? economicSituationId = AddOrUpdateEconomicSituation(familyResearch.EconomicSituation);
+
+            int? familyNutritionId = AddOrUpdateFamilyNutrition(familyResearch.FamilyNutrition);
         }
 
         private int? AddOrUpdateSpouse(Spouse spouse)
@@ -790,6 +792,72 @@ namespace WebApi.Services
             }
 
             return economicSituationId;
+        }
+
+        private int? AddOrUpdateFamilyNutrition(FamilyNutrition familyNutrition)
+        {
+            int familyNutritionId;
+
+            if (familyNutrition == null)
+            {
+                return null;
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true
+            };
+
+            var serializedResult = JsonSerializer.Serialize(familyNutrition, typeof(FamilyNutrition), options)
+                .ConvertJsonSpecialCharactersToAscii();
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "AddOrUpdateFamilyNutrition";
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "JSONData",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.LongText,
+                    Value = serializedResult
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "FamilyNutritionId",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = 0
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "ErrorMessage",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.VarChar,
+                    Value = string.Empty
+                });
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                var errorMessage = cmd.Parameters["ErrorMessage"].Value as string;
+                if (string.IsNullOrEmpty(errorMessage) == false)
+                {
+                    if (errorMessage.Contains("45000"))
+                    {
+                        throw new BusinessLogicException(errorMessage);
+                    }
+                    throw new Exception(errorMessage);
+                }
+
+                familyNutritionId = Convert.ToInt32(cmd.Parameters["FamilyNutritionId"].Value);
+            }
+
+            return familyNutritionId;
         }
     }
 }

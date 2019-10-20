@@ -2169,7 +2169,7 @@ DROP PROCEDURE IF EXISTS `AddFamilyNutritionFoodRelation`;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddFamilyNutritionFoodRelation`(
-	In  FamilyNutritionId INT,
+	IN  FamilyNutritionId INT,
     IN  ArrayItem BLOB
 )
 BEGIN
@@ -2178,8 +2178,8 @@ BEGIN
 		
 	INSERT INTO FamilyNutritionFoodRelation (`FamilyNutritionId`, `FoodId`, `FrequencyId`)
 	SELECT FamilyNutritionId
-	,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutritionFoodRelation.FoodId')))
-	,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutritionFoodRelation.FrequencyId')));		
+	,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FoodId')))
+	,(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FrequencyId')));		
 
 END ;;
 DELIMITER ;
@@ -2188,9 +2188,9 @@ DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyNutrition`;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyNutrition`(
-	  IN  `JSONData` LONGTEXT,
-      OUT `FamilyNutritionId` INT,
-	  OUT `ErrorMessage` VARCHAR(2000)
+	  IN   JSONData LONGTEXT,
+      OUT  FamilyNutritionId INT,
+	  OUT  ErrorMessage VARCHAR(2000)
 )
 BEGIN
 
@@ -2210,19 +2210,19 @@ BEGIN
 	SELECT JSONData AS 'Data';
 
 	SELECT
-	JSON_EXTRACT(Data, '$.FamilyNutrition.Id') INTO FamilyNutritionId
+	JSON_EXTRACT(Data, '$.Id') INTO FamilyNutritionId
 	FROM JSON_TABLE;
 
 	IF FamilyNutritionId = 0 THEN
 
 		INSERT INTO FamilyNutrition (`Comments`, `FoodAllergy`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutrition.Comments'))
-       		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutrition.FoodAllergy'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments'))
+       		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FoodAllergy'))
 		FROM JSON_TABLE;
 		SET FamilyNutritionId = LAST_INSERT_ID();
 
-		CALL `foreach_array_item`(JSON_EXTRACT(Data, '$.FamilyNutrition.FamilyNutritionFoodRelation'), FamilyNutritionId, `AddFamilyNutritionFoodRelation`);
+		CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.FamilyNutritionFoodRelation') FROM JSON_TABLE), FamilyNutritionId, 'AddFamilyNutritionFoodRelation');
 
 	ELSE
 
@@ -2235,13 +2235,13 @@ BEGIN
 
 			UPDATE FamilyNutrition
 				SET
-				`Comments` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutrition.Comments')) FROM JSON_TABLE)
-				,`FoodAllergy` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutrition.FoodAllergy')) FROM JSON_TABLE)
+				`Comments` =		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments')) FROM JSON_TABLE)
+				,`FoodAllergy` =	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FoodAllergy')) FROM JSON_TABLE)
 			WHERE Id = FamilyNutritionId;
 
 			DELETE FROM FamilyNutritionFoodRelation WHERE `FamilyNutritionId` = FamilyNutritionId;
 
-			CALL `foreach_array_item`(JSON_EXTRACT(Data, '$.FamilyNutrition.FamilyNutritionFoodRelation'), FamilyNutritionId, `AddFamilyNutritionFoodRelation`);		
+			CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.FamilyNutritionFoodRelation') FROM JSON_TABLE), FamilyNutritionId, 'AddFamilyNutritionFoodRelation');
 
 		END IF;
 	END IF;
