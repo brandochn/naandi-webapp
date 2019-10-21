@@ -47,21 +47,19 @@ namespace WebApi.Services
 
             int? ingresosEgresosMensualesId = AddOrUpdateIngresosEgresosMensuales(_familyResearch.IngresosEgresosMensuales);
 
-            FamilyResearch familyResearch = _familyResearch;
+            _familyResearch.LegalGuardianId = legalGuardianId ?? default;
+            _familyResearch.MinorId = minorId ?? default;
+            _familyResearch.PreviousFoundationId = previousFoundationId ?? default;
+            _familyResearch.FamilyHealthId = familyHealthId ?? default;
+            _familyResearch.FamilyMembersId = familyMembersId ?? default;
+            _familyResearch.SocioEconomicStudyId = socioEconomicStudyId ?? default;
+            _familyResearch.DistrictId = districtId ?? default;
+            _familyResearch.EconomicSituationId = economicSituationId ?? default;
+            _familyResearch.FamilyNutritionId = familyNutritionId ?? default;
+            _familyResearch.BenefitsProvidedId = benefitsProvidedId ?? default;
+            _familyResearch.IngresosEgresosMensualesId = ingresosEgresosMensualesId ?? default;
 
-            familyResearch.LegalGuardianId = legalGuardianId ?? default(int);
-            familyResearch.MinorId = minorId ?? default(int);
-            familyResearch.PreviousFoundationId = previousFoundationId ?? default(int);
-            familyResearch.FamilyHealthId = familyHealthId ?? default(int);
-            familyResearch.FamilyMembersId = familyMembersId ?? default(int);
-            familyResearch.SocioEconomicStudyId = socioEconomicStudyId ?? default(int);
-            familyResearch.DistrictId = districtId ?? default(int);
-            familyResearch.EconomicSituationId = economicSituationId ?? default(int);
-            familyResearch.FamilyNutritionId = familyNutritionId ?? default(int);
-            familyResearch.BenefitsProvidedId = benefitsProvidedId ?? default(int);
-            familyResearch.IngresosEgresosMensualesId = ingresosEgresosMensualesId ?? default(int);
-
-            int? familyResearchId = AddOrUpdateFamilyResearch(familyResearch);
+            int? familyResearchId = AddOrUpdateFamilyResearch(_familyResearch);
         }
 
         private int? AddOrUpdateSpouse(Spouse spouse)
