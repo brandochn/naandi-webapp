@@ -17,31 +17,51 @@ namespace WebApi.Services
         {
             applicationDbContext = _applicationDbContext;
         }
-        public void Add(FamilyResearch familyResearch)
+        public void Add(FamilyResearch _familyResearch)
         {
-            int? spouseId = AddOrUpdateSpouse(familyResearch.LegalGuardian.Spouse);
+            int? spouseId = AddOrUpdateSpouse(_familyResearch.LegalGuardian.Spouse);
 
-            int? addressId = AddOrUpdateAddress(familyResearch.LegalGuardian.Address);
+            int? addressId = AddOrUpdateAddress(_familyResearch.LegalGuardian.Address);
 
-            int? legalGuardianId = AddOrUpdateLegalGuardian(familyResearch.LegalGuardian, spouseId, addressId);
+            int? legalGuardianId = AddOrUpdateLegalGuardian(_familyResearch.LegalGuardian, spouseId, addressId);
 
-            int? formalEducationId = AddOrUpdateFormalEducation(familyResearch.Minor.FormalEducation);
+            int? formalEducationId = AddOrUpdateFormalEducation(_familyResearch.Minor.FormalEducation);
 
-            int? minorId = AddOrUpdateMinor(familyResearch.Minor, formalEducationId);
+            int? minorId = AddOrUpdateMinor(_familyResearch.Minor, formalEducationId);
 
-            int? previousFoundationId = AddOrUpdatePreviousFoundation(familyResearch.PreviousFoundation);
+            int? previousFoundationId = AddOrUpdatePreviousFoundation(_familyResearch.PreviousFoundation);
 
-            int? familyHealthId = AddOrUpdateFamilyHealth(familyResearch.FamilyHealth);
+            int? familyHealthId = AddOrUpdateFamilyHealth(_familyResearch.FamilyHealth);
 
-            int? familyMembersId = AddOrUpdateFamilyMembers(familyResearch.FamilyMembers);
+            int? familyMembersId = AddOrUpdateFamilyMembers(_familyResearch.FamilyMembers);
 
-            int? socioEconomicStudyId = AddOrUpdateSocioEconomicStudy(familyResearch.SocioEconomicStudy);
+            int? socioEconomicStudyId = AddOrUpdateSocioEconomicStudy(_familyResearch.SocioEconomicStudy);
 
-            int? districtId = AddOrUpdateDistrict(familyResearch.District);
+            int? districtId = AddOrUpdateDistrict(_familyResearch.District);
 
-            int? economicSituationId = AddOrUpdateEconomicSituation(familyResearch.EconomicSituation);
+            int? economicSituationId = AddOrUpdateEconomicSituation(_familyResearch.EconomicSituation);
 
-            int? familyNutritionId = AddOrUpdateFamilyNutrition(familyResearch.FamilyNutrition);
+            int? familyNutritionId = AddOrUpdateFamilyNutrition(_familyResearch.FamilyNutrition);
+
+            int? benefitsProvidedId = AddOrUpdateBenefitsProvided(_familyResearch.BenefitsProvided);
+
+            int? ingresosEgresosMensualesId = AddOrUpdateIngresosEgresosMensuales(_familyResearch.IngresosEgresosMensuales);
+
+            FamilyResearch familyResearch = _familyResearch;
+
+            familyResearch.LegalGuardianId = legalGuardianId ?? default(int);
+            familyResearch.MinorId = minorId ?? default(int);
+            familyResearch.PreviousFoundationId = previousFoundationId ?? default(int);
+            familyResearch.FamilyHealthId = familyHealthId ?? default(int);
+            familyResearch.FamilyMembersId = familyMembersId ?? default(int);
+            familyResearch.SocioEconomicStudyId = socioEconomicStudyId ?? default(int);
+            familyResearch.DistrictId = districtId ?? default(int);
+            familyResearch.EconomicSituationId = economicSituationId ?? default(int);
+            familyResearch.FamilyNutritionId = familyNutritionId ?? default(int);
+            familyResearch.BenefitsProvidedId = benefitsProvidedId ?? default(int);
+            familyResearch.IngresosEgresosMensualesId = ingresosEgresosMensualesId ?? default(int);
+
+            int? familyResearchId = AddOrUpdateFamilyResearch(familyResearch);
         }
 
         private int? AddOrUpdateSpouse(Spouse spouse)
@@ -858,6 +878,204 @@ namespace WebApi.Services
             }
 
             return familyNutritionId;
+        }
+
+        private int? AddOrUpdateBenefitsProvided(BenefitsProvided benefitsProvided)
+        {
+            int benefitsProvidedId;
+
+            if (benefitsProvided == null)
+            {
+                return null;
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true
+            };
+
+            var serializedResult = JsonSerializer.Serialize(benefitsProvided, typeof(BenefitsProvided), options)
+                .ConvertJsonSpecialCharactersToAscii();
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "AddOrUpdateBenefitsProvided";
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "JSONData",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.LongText,
+                    Value = serializedResult
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "BenefitsProvidedId",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = 0
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "ErrorMessage",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.VarChar,
+                    Value = string.Empty
+                });
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                var errorMessage = cmd.Parameters["ErrorMessage"].Value as string;
+                if (string.IsNullOrEmpty(errorMessage) == false)
+                {
+                    if (errorMessage.Contains("45000"))
+                    {
+                        throw new BusinessLogicException(errorMessage);
+                    }
+                    throw new Exception(errorMessage);
+                }
+
+                benefitsProvidedId = Convert.ToInt32(cmd.Parameters["BenefitsProvidedId"].Value);
+            }
+
+            return benefitsProvidedId;
+        }
+
+        private int? AddOrUpdateIngresosEgresosMensuales(IngresosEgresosMensuales ingresosEgresosMensuales)
+        {
+            int ingresosEgresosMensualesId;
+
+            if (ingresosEgresosMensuales == null)
+            {
+                return null;
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true
+            };
+
+            var serializedResult = JsonSerializer.Serialize(ingresosEgresosMensuales, typeof(IngresosEgresosMensuales), options)
+                .ConvertJsonSpecialCharactersToAscii();
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "AddOrUpdateIngresosEgresosMensuales";
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "JSONData",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.LongText,
+                    Value = serializedResult
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "IngresosEgresosMensualesId",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = 0
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "ErrorMessage",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.VarChar,
+                    Value = string.Empty
+                });
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                var errorMessage = cmd.Parameters["ErrorMessage"].Value as string;
+                if (string.IsNullOrEmpty(errorMessage) == false)
+                {
+                    if (errorMessage.Contains("45000"))
+                    {
+                        throw new BusinessLogicException(errorMessage);
+                    }
+                    throw new Exception(errorMessage);
+                }
+
+                ingresosEgresosMensualesId = Convert.ToInt32(cmd.Parameters["IngresosEgresosMensualesId"].Value);
+            }
+
+            return ingresosEgresosMensualesId;
+        }
+
+        private int? AddOrUpdateFamilyResearch(FamilyResearch familyResearch)
+        {
+            int familyResearchId;
+
+            if (familyResearch == null)
+            {
+                return null;
+            }
+
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true
+            };
+
+            var serializedResult = JsonSerializer.Serialize(familyResearch, typeof(FamilyResearch), options)
+                .ConvertJsonSpecialCharactersToAscii();
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "AddOrUpdateFamilyResearch";
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "JSONData",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.LongText,
+                    Value = serializedResult
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "FamilyResearchId",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = 0
+                });
+
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "ErrorMessage",
+                    Direction = System.Data.ParameterDirection.Output,
+                    MySqlDbType = MySqlDbType.VarChar,
+                    Value = string.Empty
+                });
+
+                connection.Open();
+                cmd.ExecuteNonQuery();
+                var errorMessage = cmd.Parameters["ErrorMessage"].Value as string;
+                if (string.IsNullOrEmpty(errorMessage) == false)
+                {
+                    if (errorMessage.Contains("45000"))
+                    {
+                        throw new BusinessLogicException(errorMessage);
+                    }
+                    throw new Exception(errorMessage);
+                }
+
+                familyResearchId = Convert.ToInt32(cmd.Parameters["FamilyResearchId"].Value);
+            }
+
+            return familyResearchId;
         }
     }
 }

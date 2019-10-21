@@ -4,6 +4,6 @@ namespace Naandi.Shared.Models
     {
         public int Id { get; set; }
         public string Comments { get; set; }
-
+        public IngresosEgresosMensualesMovimientoRelation[] IngresosEgresosMensualesMovimientoRelation { get; set; }
     }
 }
