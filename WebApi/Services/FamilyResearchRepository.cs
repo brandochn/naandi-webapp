@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json;
+using System.Transactions;
 using MySql.Data.MySqlClient;
 using Naandi.Shared;
 using Naandi.Shared.Exceptions;
@@ -17,49 +18,55 @@ namespace WebApi.Services
         {
             applicationDbContext = _applicationDbContext;
         }
+
         public void Add(FamilyResearch _familyResearch)
         {
-            int? spouseId = AddOrUpdateSpouse(_familyResearch.LegalGuardian.Spouse);
+            using (TransactionScope scope = new TransactionScope())
+            {
+                int? spouseId = AddOrUpdateSpouse(_familyResearch.LegalGuardian.Spouse);
 
-            int? addressId = AddOrUpdateAddress(_familyResearch.LegalGuardian.Address);
+                int? addressId = AddOrUpdateAddress(_familyResearch.LegalGuardian.Address);
 
-            int? legalGuardianId = AddOrUpdateLegalGuardian(_familyResearch.LegalGuardian, spouseId, addressId);
+                int? legalGuardianId = AddOrUpdateLegalGuardian(_familyResearch.LegalGuardian, spouseId, addressId);
 
-            int? formalEducationId = AddOrUpdateFormalEducation(_familyResearch.Minor.FormalEducation);
+                int? formalEducationId = AddOrUpdateFormalEducation(_familyResearch.Minor.FormalEducation);
 
-            int? minorId = AddOrUpdateMinor(_familyResearch.Minor, formalEducationId);
+                int? minorId = AddOrUpdateMinor(_familyResearch.Minor, formalEducationId);
 
-            int? previousFoundationId = AddOrUpdatePreviousFoundation(_familyResearch.PreviousFoundation);
+                int? previousFoundationId = AddOrUpdatePreviousFoundation(_familyResearch.PreviousFoundation);
 
-            int? familyHealthId = AddOrUpdateFamilyHealth(_familyResearch.FamilyHealth);
+                int? familyHealthId = AddOrUpdateFamilyHealth(_familyResearch.FamilyHealth);
 
-            int? familyMembersId = AddOrUpdateFamilyMembers(_familyResearch.FamilyMembers);
+                int? familyMembersId = AddOrUpdateFamilyMembers(_familyResearch.FamilyMembers);
 
-            int? socioEconomicStudyId = AddOrUpdateSocioEconomicStudy(_familyResearch.SocioEconomicStudy);
+                int? socioEconomicStudyId = AddOrUpdateSocioEconomicStudy(_familyResearch.SocioEconomicStudy);
 
-            int? districtId = AddOrUpdateDistrict(_familyResearch.District);
+                int? districtId = AddOrUpdateDistrict(_familyResearch.District);
 
-            int? economicSituationId = AddOrUpdateEconomicSituation(_familyResearch.EconomicSituation);
+                int? economicSituationId = AddOrUpdateEconomicSituation(_familyResearch.EconomicSituation);
 
-            int? familyNutritionId = AddOrUpdateFamilyNutrition(_familyResearch.FamilyNutrition);
+                int? familyNutritionId = AddOrUpdateFamilyNutrition(_familyResearch.FamilyNutrition);
 
-            int? benefitsProvidedId = AddOrUpdateBenefitsProvided(_familyResearch.BenefitsProvided);
+                int? benefitsProvidedId = AddOrUpdateBenefitsProvided(_familyResearch.BenefitsProvided);
 
-            int? ingresosEgresosMensualesId = AddOrUpdateIngresosEgresosMensuales(_familyResearch.IngresosEgresosMensuales);
+                int? ingresosEgresosMensualesId = AddOrUpdateIngresosEgresosMensuales(_familyResearch.IngresosEgresosMensuales);
 
-            _familyResearch.LegalGuardianId = legalGuardianId ?? default;
-            _familyResearch.MinorId = minorId ?? default;
-            _familyResearch.PreviousFoundationId = previousFoundationId ?? default;
-            _familyResearch.FamilyHealthId = familyHealthId ?? default;
-            _familyResearch.FamilyMembersId = familyMembersId ?? default;
-            _familyResearch.SocioEconomicStudyId = socioEconomicStudyId ?? default;
-            _familyResearch.DistrictId = districtId ?? default;
-            _familyResearch.EconomicSituationId = economicSituationId ?? default;
-            _familyResearch.FamilyNutritionId = familyNutritionId ?? default;
-            _familyResearch.BenefitsProvidedId = benefitsProvidedId ?? default;
-            _familyResearch.IngresosEgresosMensualesId = ingresosEgresosMensualesId ?? default;
+                _familyResearch.LegalGuardianId = legalGuardianId ?? default;
+                _familyResearch.MinorId = minorId ?? default;
+                _familyResearch.PreviousFoundationId = previousFoundationId ?? default;
+                _familyResearch.FamilyHealthId = familyHealthId ?? default;
+                _familyResearch.FamilyMembersId = familyMembersId ?? default;
+                _familyResearch.SocioEconomicStudyId = socioEconomicStudyId ?? default;
+                _familyResearch.DistrictId = districtId ?? default;
+                _familyResearch.EconomicSituationId = economicSituationId ?? default;
+                _familyResearch.FamilyNutritionId = familyNutritionId ?? default;
+                _familyResearch.BenefitsProvidedId = benefitsProvidedId ?? default;
+                _familyResearch.IngresosEgresosMensualesId = ingresosEgresosMensualesId ?? default;
 
-            int? familyResearchId = AddOrUpdateFamilyResearch(_familyResearch);
+                int? familyResearchId = AddOrUpdateFamilyResearch(_familyResearch);
+
+                scope.Complete();
+            }
         }
 
         private int? AddOrUpdateSpouse(Spouse spouse)

@@ -45,8 +45,9 @@ namespace WebApi.Controllers
             {
                 familyResearchRepository.Add(familyResearch);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                // TODO: save ex object in log error
                 return StatusCode(StatusCodes.Status500InternalServerError, Constants.UNHANDLED_EXCEPTION_MESSAGE);
             }
 
