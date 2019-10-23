@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Naandi.Shared.Models;
 using Naandi.Shared.Services;
+using Microsoft.Extensions.Logging;
 
 namespace WebApi.Controllers
 {
@@ -12,9 +13,11 @@ namespace WebApi.Controllers
     public class FamilyResearchController : ControllerBase
     {
         private readonly IFamilyResearch familyResearchRepository;
-        public FamilyResearchController(IFamilyResearch _familyResearchRepository)
+        private readonly ILogger<FamilyResearchController> logger;
+        public FamilyResearchController(IFamilyResearch _familyResearchRepository, ILogger<FamilyResearchController> _logger)
         {
             familyResearchRepository = _familyResearchRepository;
+            logger = _logger;
         }
 
         [HttpPost]
@@ -48,6 +51,7 @@ namespace WebApi.Controllers
             catch (Exception ex)
             {
                 // TODO: save ex object in log error
+                logger.LogError(ex, ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, Constants.UNHANDLED_EXCEPTION_MESSAGE);
             }
 
