@@ -50,8 +50,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                // TODO: save ex object in log error
-                logger.LogError(ex, ex.Message);
+                logger.LogError(ex, null);
                 return StatusCode(StatusCodes.Status500InternalServerError, Constants.UNHANDLED_EXCEPTION_MESSAGE);
             }
 
