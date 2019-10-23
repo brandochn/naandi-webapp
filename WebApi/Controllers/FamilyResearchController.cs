@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Naandi.Shared.Models;
 using Naandi.Shared.Services;
 using Microsoft.Extensions.Logging;
+using Naandi.Shared.Exceptions;
 
 namespace WebApi.Controllers
 {
@@ -47,6 +48,11 @@ namespace WebApi.Controllers
             try
             {
                 familyResearchRepository.Add(familyResearch);
+            }
+            catch(BusinessLogicException blc)
+            {
+                logger.LogWarning(blc.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, blc.Message);
             }
             catch (Exception ex)
             {
