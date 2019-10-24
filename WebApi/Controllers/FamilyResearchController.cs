@@ -49,10 +49,10 @@ namespace WebApi.Controllers
             {
                 familyResearchRepository.Add(familyResearch);
             }
-            catch(BusinessLogicException blc)
+            catch(BusinessLogicException ble)
             {
-                logger.LogWarning(blc.Message);
-                return StatusCode(StatusCodes.Status400BadRequest, blc.Message);
+                logger.LogWarning(ble.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, ble.Message);
             }
             catch (Exception ex)
             {

@@ -548,7 +548,6 @@ namespace WebApi.Services
         {
             RegistrationRequest registrationRequest;
             IList<RegistrationRequest> registrationRequests = new List<RegistrationRequest>();
-            int limitRequest = 5000;
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
             {
@@ -629,16 +628,8 @@ namespace WebApi.Services
                     LEFT JOIN Job j ON j.Id = r.JobId
                     LEFT JOIN Address aj ON aj.Id = j.AddressId
                     LEFT JOIN Minor m ON m.Id = rr.MinorId
-                    LEFT JOIN RegistrationRequestStatus rrs on rr.RegistrationRequestStatusId = rrs.Id
-                    LIMIT @limitRequest;";
+                    LEFT JOIN RegistrationRequestStatus rrs on rr.RegistrationRequestStatusId = rrs.Id;";
                 cmd.CommandType = System.Data.CommandType.Text;
-                cmd.Parameters.Add(new MySqlParameter()
-                {
-                    ParameterName = "limitRequest",
-                    Direction = System.Data.ParameterDirection.Input,
-                    MySqlDbType = MySqlDbType.Int32,
-                    Value = limitRequest
-                });
 
                 connection.Open();
                 using (var reader = cmd.ExecuteReader())

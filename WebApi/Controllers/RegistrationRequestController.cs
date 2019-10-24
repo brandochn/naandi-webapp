@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Naandi.Shared.Exceptions;
 using Naandi.Shared.Models;
 using Naandi.Shared.Services;
 
@@ -12,12 +14,14 @@ namespace WebApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class RegistrationRequestController : ControllerBase
-    {       
+    {
         private readonly IRegistrationRequest registrationRequestRepository;
+        private readonly ILogger<RegistrationRequestController> logger;
 
-        public RegistrationRequestController(IRegistrationRequest _registrationRequestRepository)
+        public RegistrationRequestController(IRegistrationRequest _registrationRequestRepository, ILogger<RegistrationRequestController> _logger)
         {
             registrationRequestRepository = _registrationRequestRepository;
+            logger = _logger;
         }
 
         [HttpGet]
@@ -40,11 +44,11 @@ namespace WebApi.Controllers
         {
             var registrationRequests = registrationRequestRepository.GetRegistrationRequestsByMinorName(name);
 
-            if(registrationRequests == null)
+            if (registrationRequests == null)
             {
-                return NotFound("No record found");                
+                return NotFound("No record found");
             }
-            
+
             return Ok(registrationRequests.ToList());
         }
 
@@ -54,7 +58,7 @@ namespace WebApi.Controllers
         {
             var registrationRequest = registrationRequestRepository.GetRegistrationRequestById(Id);
 
-            if(registrationRequest == null)
+            if (registrationRequest == null)
             {
                 return NotFound("No record found");
             }
@@ -116,8 +120,14 @@ namespace WebApi.Controllers
             {
                 registrationRequestRepository.Add(registrationRequest);
             }
-            catch (Exception)
+            catch (BusinessLogicException ble)
             {
+                logger.LogWarning(ble.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, ble.Message);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, null);
                 return StatusCode(StatusCodes.Status500InternalServerError, Constants.UNHANDLED_EXCEPTION_MESSAGE);
             }
 
@@ -131,14 +141,20 @@ namespace WebApi.Controllers
             if (registrationRequest == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, "registrationRequest cannot be null or empty");
-            }         
+            }
 
             try
             {
                 registrationRequestRepository.Update(registrationRequest);
             }
-            catch (Exception)
+            catch (BusinessLogicException ble)
             {
+                logger.LogWarning(ble.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, ble.Message);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, null);
                 return StatusCode(StatusCodes.Status500InternalServerError, Constants.UNHANDLED_EXCEPTION_MESSAGE);
             }
 
