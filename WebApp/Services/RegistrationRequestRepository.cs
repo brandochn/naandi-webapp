@@ -11,7 +11,7 @@ namespace WebApp.Services
 {
     public class RegistrationRequestRepository : IRegistrationRequest
     {
-        private ApplicationRestClient applicationRestClient;
+        private readonly ApplicationRestClient applicationRestClient;
 
         public RegistrationRequestRepository(ApplicationRestClient _applicationRestClient)
         {
