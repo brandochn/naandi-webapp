@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Solicitud de ingreso";
+}
+
+@if (ViewData.ModelState.IsValid == false)
+{
+    <div class="alert alert-danger">
+        <h4 class="text-danger">Errores:</h4>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    </div>
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">                
+                 <h2 class="text-center text-uppercase mt-4">
+                    investigación familiar
+                </h2>
+                <div class="card-body">
+                   <div class="form-row">
+                       
+                   </div>
+                </div>
+                <div class="card-footer text-muted">
+                    Footer
+                </div>
+            </div>
+        </div>
+    </div>
+</div>   

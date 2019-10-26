@@ -11,5 +11,12 @@ namespace WebApp.Areas.SocialWork.Controllers
         {
             familyResearchRepository = _familyResearchRepository;
         }
+
+        [HttpGet]
+        [Route("/SocialWork/FamilyResearch/ShowForm/{id?}")]
+        public IActionResult ShowForm(int? Id)
+        {
+            return View();
+        }
     }
 }
