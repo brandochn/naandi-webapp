@@ -1,3 +1,5 @@
+@model WebApp.Areas.SocialWork.Models.FamilyResearchViewModel
+
 @{
     ViewData["Title"] = "Solicitud de ingreso";
 }
@@ -19,7 +21,25 @@
                 </h2>
                 <div class="card-body">
                    <div class="form-row">
-                       
+                        <div class="form-group col-md-3">
+                            <label>Fecha de visita</label>
+                            <input type="text" readonly asp-for="CreationDate" class="form-control" value="@Model.CreationDate.ToString("dd/MM/yyyy")" />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Hora de visita</label>
+                            <input type="text" readonly asp-for="CreationTime" class="form-control" value="@Model.CreationTime.ToString("HH:MM")" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Familia</label>
+                            @if (Model.Family == null)
+                            {
+                                <input type="text" asp-for="Family" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Family" class="form-control" value="@Model.Family" />
+                            }
+                        </div>
                    </div>
                 </div>
                 <div class="card-footer text-muted">

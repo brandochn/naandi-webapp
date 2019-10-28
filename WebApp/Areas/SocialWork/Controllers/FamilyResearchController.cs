@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Naandi.Shared.Services;
+using WebApp.Areas.SocialWork.Models;
 
 namespace WebApp.Areas.SocialWork.Controllers
 {
@@ -16,7 +17,9 @@ namespace WebApp.Areas.SocialWork.Controllers
         [Route("/SocialWork/FamilyResearch/ShowForm/{id?}")]
         public IActionResult ShowForm(int? Id)
         {
-            return View();
+            FamilyResearchViewModel model = new FamilyResearchViewModel();
+            
+            return View(model);
         }
     }
 }
