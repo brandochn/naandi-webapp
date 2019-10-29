@@ -1,4 +1,5 @@
 using Naandi.Shared.Models;
+using System;
 
 namespace Naandi.Shared.Models
 {
@@ -20,6 +21,7 @@ namespace Naandi.Shared.Models
         public string PhoneNumber { get; set; }
         public string Errand { get; set; }
         public int SpouseId { get; set; }
-        public Spouse Spouse {get; set;}
+        public Spouse Spouse { get; set; }
+        public DateTime DateOfBirth { get; set;}
     }
 }

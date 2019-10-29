@@ -310,6 +310,7 @@ CREATE TABLE `LegalGuardian` (
   `PhoneNumber` varchar(12) DEFAULT NULL,
   `Errand` varchar(100) DEFAULT NULL COMMENT 'Recados', 
   `SpouseId` int(11) NULL,
+  `DateOfBirth` datetime,
   PRIMARY KEY (`Id`),
   KEY `FK_LegalGuardian_MaritalStatus` (`MaritalStatusId`),
   KEY `FK_LegalGuardian_Relationship` (`RelationshipId`),
@@ -699,8 +700,8 @@ DROP TABLE IF EXISTS `FamilyResearch`;
 
 CREATE TABLE `FamilyResearch` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `CreationDate` datetime NOT NULL,
-  `CreationTime` time NOT NULL,
+  `VisitDate` datetime NOT NULL,
+  `VisitTime` time NOT NULL,
   `Family` varchar(100) NOT NULL,
   `RequestReasons` varchar(300) NOT NULL,
   `SituationsOfDomesticViolence` varchar(200) DEFAULT NULL,
@@ -1379,7 +1380,8 @@ BEGIN
 			,`CellPhoneNumber`
 			,`PhoneNumber`
 			,`Errand`
-			,`SpouseId`)
+			,`SpouseId`
+			,`DateOfBirth`)
 		SELECT
 			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FullName'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Age'))
@@ -1393,6 +1395,7 @@ BEGIN
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PhoneNumber'))
       		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Errand'))
 			,SpouseId
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DateOfBirth'))
 		FROM JSON_TABLE;
 		SET LegalGuardianId = LAST_INSERT_ID();
 	
@@ -1419,6 +1422,7 @@ BEGIN
 				,`PhoneNumber`= (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PhoneNumber'))  FROM JSON_TABLE)
                 ,`Errand` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Errand'))  FROM JSON_TABLE)
 				,`SpouseId` = SpouseId
+				,`DateOfBirth` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DateOfBirth'))  FROM JSON_TABLE)
 			WHERE Id = LegalGuardianId;
 		END IF;
 	END IF;
@@ -2427,8 +2431,8 @@ BEGIN
 		
 		INSERT INTO FamilyResearch
 		(
-			CreationDate 
-			,CreationTime 
+			VisitDate 
+			,VisitTime 
 			,Family 
 			,RequestReasons 
 			,SituationsOfDomesticViolence 
@@ -2451,8 +2455,8 @@ BEGIN
 			,IngresosEgresosMensualesId
 		)
 		SELECT
-			 UTC_DATE()
-			,UTC_TIME()
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisitDate'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisitTime'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Family'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RequestReasons'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SituationsOfDomesticViolence'))
@@ -2496,6 +2500,8 @@ BEGIN
 				,`Recommendations` =               (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Recommendations')) FROM JSON_TABLE)
 				,`VisualSupports` =                (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisualSupports')) FROM JSON_TABLE)
 				,`Sketch` =                        (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Sketch')) FROM JSON_TABLE)
+				,`VisitDate` =                     (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisitDate')) FROM JSON_TABLE)
+				,`VisitTime` =                     (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisitTime')) FROM JSON_TABLE)
 			WHERE Id = FamilyResearchId;
 		END IF;
 	END IF;

@@ -15,19 +15,19 @@
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <div class="card shadow-sm">                
-                 <h2 class="text-center text-uppercase mt-4">
+            <div class="card shadow-sm">
+                <h2 class="text-center text-uppercase mt-4">
                     investigación familiar
                 </h2>
                 <div class="card-body">
-                   <div class="form-row">
+                    <div class="form-row">
                         <div class="form-group col-md-3">
                             <label>Fecha de visita</label>
-                            <input type="text" readonly asp-for="CreationDate" class="form-control" value="@Model.CreationDate.ToString("dd/MM/yyyy")" />
+                            <input type="date" asp-for="VisitDate" class="form-control" value="@Model.VisitDate.ToString("yyyy-MM-dd")" />
                         </div>
                         <div class="form-group col-md-3">
                             <label>Hora de visita</label>
-                            <input type="text" readonly asp-for="CreationTime" class="form-control" value="@Model.CreationTime.ToString("HH:MM")" />
+                            <input type="datetime" asp-for="VisitTime" class="form-control" value="@Model.VisitTime.ToShortTimeString()" />
                         </div>
                         <div class="form-group col-md-6">
                             <label>Familia</label>
@@ -40,7 +40,145 @@
                                 <input type="text" asp-for="Family" class="form-control" value="@Model.Family" />
                             }
                         </div>
-                   </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label>Motivo de solicitud</label>
+                            @if (Model.RequestReasons == null)
+                            {
+                                <input type="text" asp-for="RequestReasons" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="RequestReasons" class="form-control" value="@Model.RequestReasons" />
+                            }
+                        </div>
+                    </div>
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white bg-primary">
+                                Datos del Tutor
+                            </h5>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label>Nombre de solicitante</label>
+                                        @if (Model.LegalGuardian == null)
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.FullName" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.FullName" class="form-control" value="@Model.LegalGuardian.FullName" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Edad</label>
+                                        @if (Model.LegalGuardian == null)
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Age" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Age" class="form-control" value="@Model.LegalGuardian.Age" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Parentesco</label>
+                                        @Html.DropDownListFor(x => Model.LegalGuardian.RelationshipId, new SelectList(Model.RelationshipList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "Relationship" })
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-5">
+                                        <label>Lugar de nacimiento</label>
+                                        @if (Model.LegalGuardian == null)
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.PlaceOfBirth" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.PlaceOfBirth" class="form-control" value="@Model.LegalGuardian.PlaceOfBirth" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Fecha de nacimiento</label>
+                                        @if (Model.LegalGuardian == null)
+                                        {
+                                            <input type="date" asp-for="LegalGuardian.DateOfBirth" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="date" asp-for="LegalGuardian.DateOfBirth" class="form-control" value="@Model.LegalGuardian.DateOfBirth.ToString("yyyy-MM-dd")" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Estado civil</label>
+                                        @Html.DropDownListFor(x => Model.LegalGuardian.MaritalStatusId, new SelectList(Model.MaritalStatusList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "MaritalStatus" })
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Recados</label>
+                                        @if (Model.LegalGuardian == null)
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Errand" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Errand" class="form-control" value="@Model.LegalGuardian.Errand" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Ocupación</label>
+                                        @if (Model.LegalGuardian == null)
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.CurrentOccupation" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.CurrentOccupation" class="form-control" value="@Model.LegalGuardian.CurrentOccupation" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Escolaridad</label>
+                                        @if (Model.LegalGuardian == null)
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Education" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Education" class="form-control" value="@Model.LegalGuardian.Education" />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Número celular</label>
+                                        @if (Model.LegalGuardian == null)
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.CellPhoneNumber" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.CellPhoneNumber" class="form-control" value="@Model.LegalGuardian.CellPhoneNumber" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Telefono de casa</label>
+                                        @if (Model.LegalGuardian == null)
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.PhoneNumber" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.PhoneNumber" class="form-control" value="@Model.LegalGuardian.PhoneNumber" />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
                 </div>
                 <div class="card-footer text-muted">
                     Footer
@@ -48,4 +186,4 @@
             </div>
         </div>
     </div>
-</div>   
+</div>

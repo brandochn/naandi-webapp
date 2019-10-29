@@ -5,8 +5,8 @@ namespace Naandi.Shared.Models
     public class FamilyResearch
     {
         public int Id { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime CreationTime { get; set; }
+        public DateTime VisitDate { get; set; }
+        public DateTime VisitTime { get; set; }
         public string Family { get; set; }
         public string RequestReasons { get; set; }
         public string SituationsOfDomesticViolence { get; set; }
