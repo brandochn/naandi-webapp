@@ -9,6 +9,8 @@ namespace WebApp.Areas.SocialWork.Models
     {
         public IList<MaritalStatus> MaritalStatusList { get; set; }
         public IList<Relationship> RelationshipList { get; set; }
+        public IList<StatesOfMexico> StatesOfMexico { get; set; }
+        public IList<MunicipalitiesOfMexico> MunicipalitiesOfMexico { get; set; }
 
         public bool IsValid(object value)
         {
@@ -35,6 +37,32 @@ namespace WebApp.Areas.SocialWork.Models
                 Id = 0,
                 Name = "Selecciona parentesco"
             });
+        }
+
+        public void LoadStatesOfMexico(IFamilyResearch familyResearchRepository)
+        {
+            StatesOfMexico = new  List<StatesOfMexico>();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            StatesOfMexico.Insert(0, new StatesOfMexico()
+            {
+                Nombre = "Selecciona un estado"
+            });
+        }
+
+        public void LoadMunicipalitiesOfMexico(IFamilyResearch familyResearchRepository)
+        {
+            if (string.IsNullOrEmpty(LegalGuardian?.Address?.State))
+            {
+                MunicipalitiesOfMexico = new List<MunicipalitiesOfMexico>();
+                MunicipalitiesOfMexico.Add(new MunicipalitiesOfMexico()
+                {
+                    Nombre = "Selecciona un municipio"
+                });
+            }
+            else
+            {
+                MunicipalitiesOfMexico = new List<MunicipalitiesOfMexico>(); /* registrationRequestRepository
+                    .GetMunicipalitiesOfMexicoByStateOfMexicoName(Requestor.Address.State).ToList(); */
+            }
         }
     }
 }

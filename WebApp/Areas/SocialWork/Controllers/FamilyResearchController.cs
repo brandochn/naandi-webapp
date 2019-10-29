@@ -21,6 +21,8 @@ namespace WebApp.Areas.SocialWork.Controllers
             FamilyResearchViewModel model = new FamilyResearchViewModel();
             model.LoadMaritalStatuses(familyResearchRepository);
             model.LoadRelationships(familyResearchRepository);
+            model.LoadStatesOfMexico(familyResearchRepository);
+            model.LoadMunicipalitiesOfMexico(familyResearchRepository);
             model.VisitDate = DateTime.Now;
             model.VisitTime = DateTime.Now;
 

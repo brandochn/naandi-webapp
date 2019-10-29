@@ -1,7 +1,7 @@
 @model WebApp.Areas.SocialWork.Models.FamilyResearchViewModel
 
 @{
-    ViewData["Title"] = "Solicitud de ingreso";
+    ViewData["Title"] = "Investigación familiar";
 }
 
 @if (ViewData.ModelState.IsValid == false)
@@ -61,7 +61,7 @@
                             </h5>
                             <div class="card-body">
                                 <div class="form-row">
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-5">
                                         <label>Nombre de solicitante</label>
                                         @if (Model.LegalGuardian == null)
                                         {
@@ -72,7 +72,7 @@
                                             <input type="text" asp-for="LegalGuardian.FullName" class="form-control" value="@Model.LegalGuardian.FullName" />
                                         }
                                     </div>
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
                                         <label>Edad</label>
                                         @if (Model.LegalGuardian == null)
                                         {
@@ -177,7 +177,106 @@
                                 </div>
                             </div>
                         </div>
-
+                    </section>
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white bg-primary">
+                                Dirección
+                            </h5>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group col-md-5">
+                                    <label>Calle</label>
+                                    @if (Model.LegalGuardian == null || Model.LegalGuardian.Address == null)
+                                    {
+                                        <input type="text" asp-for="LegalGuardian.Address.Street" class="form-control" />
+                                    }
+                                    else
+                                    {
+                                        <input type="text" asp-for="LegalGuardian.Address.Street" class="form-control" value="@Model.LegalGuardian.Address.Street" />
+                                    }
+                                </div>
+                             <div class="form-group col-md-4">
+                                <label>Número</label>
+                                    @if (Model.LegalGuardian == null || Model.LegalGuardian.Address == null)
+                                    {
+                                        <input type="text" asp-for="LegalGuardian.Address.HouseNumber" class="form-control" />
+                                    }
+                                    else
+                                    {
+                                        <input type="text" asp-for="LegalGuardian.Address.HouseNumber" class="form-control" value="@Model.LegalGuardian.Address.HouseNumber" />
+                                    }
+                             </div>
+                            <div class="form-group col-md-3">
+                                <label>Int.</label>
+                                @if (Model.LegalGuardian == null || Model.LegalGuardian.Address == null)
+                                {
+                                    <input type="text" asp-for="LegalGuardian.Address.PoBox" class="form-control" />
+                                }
+                                else
+                                {
+                                    <input type="text" asp-for="LegalGuardian.Address.PoBox" class="form-control" value="@Model.LegalGuardian.Address.PoBox" />
+                                }
+                            </div>
+                         </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+                                <label>Colonia</label>
+                                @if (Model.LegalGuardian == null || Model.LegalGuardian.Address == null)
+                                {
+                                    <input type="text" asp-for="LegalGuardian.Address.Neighborhood" class="form-control" />
+                                }
+                                else
+                                {
+                                    <input type="text" asp-for="LegalGuardian.Address.Neighborhood" class="form-control" value="@Model.LegalGuardian.Address.Neighborhood" />
+                                }
+                            </div>
+                        <div class="form-group col-md-4">
+                            <label>Estado</label>
+                            @Html.DropDownListFor(x => Model.LegalGuardian.Address.State, new SelectList(Model.StatesOfMexico, "Nombre", "Nombre"), htmlAttributes: new { @class = "form-control", id = "StatesOfMexico" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Municipio</label>
+                            @Html.DropDownListFor(x => Model.LegalGuardian.Address.City, new SelectList(Model.MunicipalitiesOfMexico, "Nombre", "Nombre"), htmlAttributes: new { @class = "form-control", @id = "MunicipalitiesOfMexico" })
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Entre (Referencia)</label>
+                            @if (Model.LegalGuardian == null || Model.LegalGuardian.Address == null)
+                            {
+                                <input type="text" asp-for="LegalGuardian.Address.Reference" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="LegalGuardian.Address.Reference" class="form-control" value="@Model.LegalGuardian.Address.Reference" />
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Código postal</label>
+                            @if (Model.LegalGuardian == null || Model.LegalGuardian.Address == null)
+                            {
+                                <input type="text" asp-for="LegalGuardian.Address.Zip" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="LegalGuardian.Address.Zip" class="form-control" value="@Model.LegalGuardian.Address.Zip" />
+                            }
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>Teléfono</label>
+                            @if (Model.LegalGuardian == null || Model.LegalGuardian.Address == null)
+                            {
+                                <input type="text" asp-for="LegalGuardian.Address.PhoneNumber" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="LegalGuardian.Address.PhoneNumber" class="form-control" value="@Model.LegalGuardian.Address.PhoneNumber" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
                     </section>
                 </div>
                 <div class="card-footer text-muted">
