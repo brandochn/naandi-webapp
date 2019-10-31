@@ -278,6 +278,63 @@
                             </div>
                         </div>
                     </section>
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white bg-primary">
+                                Datos de cónyuge o pareja
+                            </h5>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Nombre</label>
+                                        @if (Model.LegalGuardian == null || Model.LegalGuardian.Spouse ==  null || Model.LegalGuardian.Spouse.FullName == null)
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Spouse.FullName" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Spouse.FullName" class="form-control" value="@Model.LegalGuardian.Spouse.FullName" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Edad</label>
+                                        @if (Model.LegalGuardian == null || Model.LegalGuardian.Spouse ==  null)
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Spouse.Age" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Spouse.Age" class="form-control" value="@Model.LegalGuardian.Spouse.Age" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Ocupación</label>
+                                        @if (Model.LegalGuardian == null || Model.LegalGuardian.Spouse ==  null || Model.LegalGuardian.Spouse.CurrentOccupation == null)
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Spouse.CurrentOccupation" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Spouse.CurrentOccupation" class="form-control" value="@Model.LegalGuardian.Spouse.CurrentOccupation" />
+                                        }
+                                    </div>	           
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label>Observaciones</label>
+                                        @if (Model.LegalGuardian == null || Model.LegalGuardian.Spouse == null || Model.LegalGuardian.Spouse.Comments == null)
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Spouse.Comments" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="LegalGuardian.Spouse.Comments" class="form-control" value="@Model.LegalGuardian.Spouse.Comments" />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
                 <div class="card-footer text-muted">
                     Footer
