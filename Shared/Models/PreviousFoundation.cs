@@ -7,8 +7,8 @@ namespace Naandi.Shared.Models
         public string Procuraduria { get; set; }
         public string Dif { get; set; }
         public string Otro { get; set; }
-        public string Institucionanterior { get; set; }
-        public string Tiempodeestadia { get; set; }
-        public string Motivodeegreso { get; set; }
+        public string InstitucionAnterior { get; set; }
+        public string TiempoDeEstadia { get; set; }
+        public string MotivoDeEgreso { get; set; }
     }
 }
