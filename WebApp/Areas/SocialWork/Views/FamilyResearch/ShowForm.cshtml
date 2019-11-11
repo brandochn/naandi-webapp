@@ -287,7 +287,7 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
                                         <label>Nombre</label>
-                                        @if (Model.LegalGuardian == null || Model.LegalGuardian.Spouse ==  null || Model.LegalGuardian.Spouse.FullName == null)
+                                        @if (Model.LegalGuardian == null || Model.LegalGuardian.Spouse == null || Model.LegalGuardian.Spouse.FullName == null)
                                         {
                                             <input type="text" asp-for="LegalGuardian.Spouse.FullName" class="form-control" />
                                         }
@@ -298,7 +298,7 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label>Edad</label>
-                                        @if (Model.LegalGuardian == null || Model.LegalGuardian.Spouse ==  null)
+                                        @if (Model.LegalGuardian == null || Model.LegalGuardian.Spouse == null)
                                         {
                                             <input type="text" asp-for="LegalGuardian.Spouse.Age" class="form-control" />
                                         }
@@ -309,7 +309,7 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label>Ocupación</label>
-                                        @if (Model.LegalGuardian == null || Model.LegalGuardian.Spouse ==  null || Model.LegalGuardian.Spouse.CurrentOccupation == null)
+                                        @if (Model.LegalGuardian == null || Model.LegalGuardian.Spouse == null || Model.LegalGuardian.Spouse.CurrentOccupation == null)
                                         {
                                             <input type="text" asp-for="LegalGuardian.Spouse.CurrentOccupation" class="form-control" />
                                         }
@@ -317,7 +317,7 @@
                                         {
                                             <input type="text" asp-for="LegalGuardian.Spouse.CurrentOccupation" class="form-control" value="@Model.LegalGuardian.Spouse.CurrentOccupation" />
                                         }
-                                    </div>	           
+                                    </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-12">
@@ -335,7 +335,7 @@
                             </div>
                         </div>
                     </section>
-                    <section> 
+                    <section>
                         <div class="card">
                             <h5 class="card-header text-center text-white bg-primary">
                                 Datos del menor
@@ -412,7 +412,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>    
+                        </div>
                     </section>
                     <section>
                         <div class="card">
@@ -429,59 +429,59 @@
                                         else
                                         {
                                             <input class="form-check-input" type="checkbox" asp-for="Minor.FormalEducation.CanItRead" class="form-control"
-                                                value="@Model.Minor.FormalEducation.CanItRead" />
+                                                   value="@Model.Minor.FormalEducation.CanItRead" />
                                         }
                                         <label class="form-check-label">¿Sabe leer?</label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                            @if (Model.Minor == null || Model.Minor.FormalEducation == null)
-                                            {
-                                                <input class="form-check-input" type="checkbox" asp-for="Minor.FormalEducation.CanItWrite" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input class="form-check-input" type="checkbox" asp-for="Minor.FormalEducation.CanItWrite" class="form-control"
-                                                    value="@Model.Minor.FormalEducation.CanItWrite" />
-                                            }
-                                            <label class="form-check-label">¿Sabe escribir?</label>
+                                        @if (Model.Minor == null || Model.Minor.FormalEducation == null)
+                                        {
+                                            <input class="form-check-input" type="checkbox" asp-for="Minor.FormalEducation.CanItWrite" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input" type="checkbox" asp-for="Minor.FormalEducation.CanItWrite" class="form-control"
+                                                   value="@Model.Minor.FormalEducation.CanItWrite" />
+                                        }
+                                        <label class="form-check-label">¿Sabe escribir?</label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                            @if (Model.Minor == null || Model.Minor.FormalEducation == null)
-                                            {
-                                                <input class="form-check-input" type="checkbox" asp-for="Minor.FormalEducation.IsItStudyingNow" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input class="form-check-input" type="checkbox" asp-for="Minor.FormalEducation.IsItStudyingNow" class="form-control"
-                                                    value="@Model.Minor.FormalEducation.IsItStudyingNow" />
-                                            }
-                                            <label class="form-check-label">¿Actualmente estudia?</label>
+                                        @if (Model.Minor == null || Model.Minor.FormalEducation == null)
+                                        {
+                                            <input class="form-check-input" type="checkbox" asp-for="Minor.FormalEducation.IsItStudyingNow" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input" type="checkbox" asp-for="Minor.FormalEducation.IsItStudyingNow" class="form-control"
+                                                   value="@Model.Minor.FormalEducation.IsItStudyingNow" />
+                                        }
+                                        <label class="form-check-label">¿Actualmente estudia?</label>
                                     </div>
                                 </div>
                                 <div class="form-row mt-3">
                                     <div class="form-group col-md-5">
                                         <label>Último grado cursado</label>
-                                            @if (Model.Minor == null)
-                                            {
-                                                <input type="text" asp-for="Minor.FormalEducation.CurrentGrade" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="Minor.FormalEducation.CurrentGrade" class="form-control" value="@Model.Minor.FormalEducation.CurrentGrade" />
-                                            }
+                                        @if (Model.Minor == null)
+                                        {
+                                            <input type="text" asp-for="Minor.FormalEducation.CurrentGrade" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="Minor.FormalEducation.CurrentGrade" class="form-control" value="@Model.Minor.FormalEducation.CurrentGrade" />
+                                        }
                                     </div>
                                     <div class="form-group col-md-7">
                                         <label>Motivo por el que dejo de estudiar  (si es asi)</label>
-                                            @if (Model.Minor == null)
-                                            {
-                                                <input type="text" asp-for="Minor.FormalEducation.ReasonsToStopStudying" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="Minor.FormalEducation.ReasonsToStopStudying" class="form-control" value="@Model.Minor.FormalEducation.ReasonsToStopStudying" />
-                                            }
-                                    </div>  
-                                </div>                                 
+                                        @if (Model.Minor == null)
+                                        {
+                                            <input type="text" asp-for="Minor.FormalEducation.ReasonsToStopStudying" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="Minor.FormalEducation.ReasonsToStopStudying" class="form-control" value="@Model.Minor.FormalEducation.ReasonsToStopStudying" />
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -492,7 +492,7 @@
                                 Derivada por
                             </h5>
                             <div class="card-body">
-                                <div	class="form-row">
+                                <div class="form-row">
                                     <div class="form-group col-md-3">
                                         <label>Familiar</label>
                                         @if (Model.PreviousFoundation == null || Model.PreviousFoundation.Familiar == null)
@@ -501,7 +501,7 @@
                                         }
                                         else
                                         {
-                                            <input type="text" asp-for="PreviousFoundation.Familiar" class="form-control" value= "@Model.PreviousFoundation.Familiar"/>
+                                            <input type="text" asp-for="PreviousFoundation.Familiar" class="form-control" value="@Model.PreviousFoundation.Familiar" />
                                         }
                                     </div>
                                     <div class="form-group col-md-3">
@@ -560,7 +560,7 @@
                                         {
                                             <input type="text" asp-for="PreviousFoundation.TiempoDeEstadia" class="form-control" value="@Model.PreviousFoundation.TiempoDeEstadia" />
                                         }
-                                    </div>                              
+                                    </div>
                                     <div class="form-group col-md-4">
                                         <label>Motivo de egreso</label>
                                         @if (Model.PreviousFoundation == null || Model.PreviousFoundation.MotivoDeEgreso == null)
@@ -569,10 +569,114 @@
                                         }
                                         else
                                         {
-                                            <input type="text" asp-for="PreviousFoundation.MotivoDeEgreso"	class="form-control" value="@Model.PreviousFoundation.MotivoDeEgreso" />
+                                            <input type="text" asp-for="PreviousFoundation.MotivoDeEgreso" class="form-control" value="@Model.PreviousFoundation.MotivoDeEgreso" />
                                         }
                                     </div>
-                                </div>				
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white bg-primary">
+                                Salud familiar
+                            </h5>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Estado de salud general de la familia</label>
+                                        @if (Model.FamilyHealth == null || Model.FamilyHealth.FamilyHealthStatus == null)
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.FamilyHealthStatus" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.FamilyHealthStatus" class="form-control" value="@Model.FamilyHealth.FamilyHealthStatus" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Derecho hambiente a servicios de salud</label>
+                                        @if (Model.FamilyHealth == null || Model.FamilyHealth.DerechoHambienteAServiciosDeSalud == null)
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.DerechoHambienteAServiciosDeSalud" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.DerechoHambienteAServiciosDeSalud" class="form-control" value="@Model.FamilyHealth.DerechoHambienteAServiciosDeSalud" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Tipo</label>
+                                        @if (Model.FamilyHealth == null || Model.FamilyHealth.Tipo == null)
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.Tipo" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.Tipo" class="form-control" value="@Model.FamilyHealth.Tipo" />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Enfermedades crónicas degenerativas</label>
+                                        @if (Model.FamilyHealth == null || Model.FamilyHealth.EnfermedadesCronicasDegenerativas == null)
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.EnfermedadesCronicasDegenerativas" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.EnfermedadesCronicasDegenerativas" class="form-control" value="@Model.FamilyHealth.EnfermedadesCronicasDegenerativas" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Consumo de tabaco</label>
+                                        @if (Model.FamilyHealth == null || Model.FamilyHealth.ConsumoDeTabaco == null)
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.ConsumoDeTabaco" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.ConsumoDeTabaco" class="form-control" value="@Model.FamilyHealth.ConsumoDeTabaco" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Consumo de alcohol</label>
+                                        @if (Model.FamilyHealth == null || Model.FamilyHealth.ConsumoDeAlcohol == null)
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.ConsumoDeAlcohol" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.ConsumoDeAlcohol" class="form-control" value="@Model.FamilyHealth.ConsumoDeAlcohol" />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Consumo de drogas</label>
+                                        @if (Model.FamilyHealth == null || Model.FamilyHealth.ConsumoDeDrogas == null)
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.ConsumoDeDrogas" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.ConsumoDeDrogas" class="form-control" value="@Model.FamilyHealth.ConsumoDeDrogas" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-8">
+                                        <label>Observaciones</label>
+                                        @if (Model.FamilyHealth == null || Model.FamilyHealth.Comments == null)
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.Comments" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="FamilyHealth.Comments" class="form-control" value="@Model.FamilyHealth.Comments" />
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
