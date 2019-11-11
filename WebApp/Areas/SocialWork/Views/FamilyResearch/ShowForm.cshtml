@@ -565,7 +565,7 @@
                                         <label>Motivo de egreso</label>
                                         @if (Model.PreviousFoundation == null || Model.PreviousFoundation.MotivoDeEgreso == null)
                                         {
-                                            <input type="text" asp-for="PreviousFoundation.MotivoDeEgreso"	class="form-control" />
+                                            <input type="text" asp-for="PreviousFoundation.MotivoDeEgreso" class="form-control" />
                                         }
                                         else
                                         {
@@ -573,6 +573,22 @@
                                         }
                                     </div>
                                 </div>				
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white   bg-primary">
+                                Composición familiar
+                            </h5>
+                            <div class="card-body">
+                                <div class ="mb-3 ml-3">
+                                    @Html.ActionLink("+ Nuevo", "Action", "Controller", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-success" })
+                                </div>
+                                <div class="col-12">
+                                    @await Html.PartialAsync("_FamilyMembersTable", Model)
+                                </div>                                   
                             </div>
                         </div>
                     </section>
@@ -585,3 +601,11 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready( function () {
+            $('#FamilyMembersTableId').DataTable({ searching: false });
+        });
+    </script>
+}

@@ -1,0 +1,37 @@
+@model WebApp.Areas.SocialWork.Models.FamilyResearchViewModel
+
+<div class="row">
+    <div class="col">
+        <table id="FamilyMembersTableId" class="table table-responsive-lg table-hover">
+            <thead class="">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Edad</th>
+                    <th>Edo. Civil</th>
+                    <th>Parentesco</th>
+                    <th>Escolaridad</th>
+                    <th>Ocupación</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.FamilyMembers != null && Model.FamilyMembers.FamilyMembersDetails != null)
+                {
+                    foreach (var item in Model.FamilyMembers.FamilyMembersDetails)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(model => item.FullName)</td>
+                            <td>@Html.DisplayFor(model => item.Age)</td>
+                            <td>@Html.DisplayFor(model => item.Relationship.Name)</td>
+                            <td>@Html.DisplayFor(model => item.MaritalStatus.Name)</td>
+                            <td>@Html.DisplayFor(model => item.Education)</td>
+                            <td>@Html.DisplayFor(model => item.CurrentOccupation)</td>
+                            <td>
+                                @Html.ActionLink("Eliminar", "Action", "Controller", new { id = item.Id, area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-danger" })
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

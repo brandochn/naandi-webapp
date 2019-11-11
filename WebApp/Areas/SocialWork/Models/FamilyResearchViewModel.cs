@@ -11,6 +11,8 @@ namespace WebApp.Areas.SocialWork.Models
         public IList<Relationship> RelationshipList { get; set; }
         public IList<StatesOfMexico> StatesOfMexico { get; set; }
         public IList<MunicipalitiesOfMexico> MunicipalitiesOfMexico { get; set; }
+        public FamilyMembersDetails FamilyMember { get; set; }
+
 
         public bool IsValid(object value)
         {
@@ -41,7 +43,7 @@ namespace WebApp.Areas.SocialWork.Models
 
         public void LoadStatesOfMexico(IFamilyResearch familyResearchRepository)
         {
-            StatesOfMexico = new  List<StatesOfMexico>();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            StatesOfMexico = new List<StatesOfMexico>();// registrationRequestRepository.GetStatesOfMexico().ToList();
             StatesOfMexico.Insert(0, new StatesOfMexico()
             {
                 Nombre = "Selecciona un estado"
