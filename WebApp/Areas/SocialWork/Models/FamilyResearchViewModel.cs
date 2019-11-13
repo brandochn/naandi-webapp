@@ -12,6 +12,7 @@ namespace WebApp.Areas.SocialWork.Models
         public IList<StatesOfMexico> StatesOfMexico { get; set; }
         public IList<MunicipalitiesOfMexico> MunicipalitiesOfMexico { get; set; }
         public FamilyMembersDetails FamilyMember { get; set; }
+        public IList<HomeAcquisition> HomeAcquisitionList { get; set; }
 
 
         public bool IsValid(object value)
@@ -65,6 +66,15 @@ namespace WebApp.Areas.SocialWork.Models
                 MunicipalitiesOfMexico = new List<MunicipalitiesOfMexico>(); /* registrationRequestRepository
                     .GetMunicipalitiesOfMexicoByStateOfMexicoName(Requestor.Address.State).ToList(); */
             }
+        }
+
+        public void LoadHomeAcquisitionList(IFamilyResearch familyResearchRepository)
+        {
+            HomeAcquisitionList = new List<HomeAcquisition>();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            HomeAcquisitionList.Insert(0, new HomeAcquisition()
+            {
+                Name = "Selecciona uno"
+            });
         }
     }
 }

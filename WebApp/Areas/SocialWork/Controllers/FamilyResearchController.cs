@@ -23,6 +23,7 @@ namespace WebApp.Areas.SocialWork.Controllers
             model.LoadRelationships(familyResearchRepository);
             model.LoadStatesOfMexico(familyResearchRepository);
             model.LoadMunicipalitiesOfMexico(familyResearchRepository);
+            model.LoadHomeAcquisitionList(familyResearchRepository);
             model.VisitDate = DateTime.Now;
             model.VisitTime = DateTime.Now;
 

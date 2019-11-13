@@ -539,6 +539,18 @@ CREATE TABLE `EconomicSituationPatrimonyRelation` (
 
 
 --
+-- Table structure for table `HomeAcquisition`
+--
+
+DROP TABLE IF EXISTS `HomeAcquisition`;
+
+CREATE TABLE `HomeAcquisition` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(50) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB COMMENT='Adquisición de la vivienda (prestada, rentada o propia)';
+
+--
 -- Table structure for table `SocioEconomicStudy`
 --
 
@@ -546,7 +558,7 @@ DROP TABLE IF EXISTS `SocioEconomicStudy`;
 
 CREATE TABLE `SocioEconomicStudy` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `Vivienda` varchar(100) DEFAULT NULL,
+  `HomeAcquisitionId` int(11) DEFAULT NULL,
   `NombrePropietario` varchar(100) DEFAULT NULL,
   `MedioAdquisicion` varchar(100) DEFAULT NULL,
   `TypesOfHousesId` int(11) DEFAULT NULL,
@@ -555,7 +567,9 @@ CREATE TABLE `SocioEconomicStudy` (
   KEY `FK_SocioeconomicStudy_TypesOfHouses` (`TypesOfHousesId`),
   CONSTRAINT `FK_SocioeconomicStudy_TypesOfHouses` FOREIGN KEY (`TypesOfHousesId`) REFERENCES `TypesOfHouses` (`Id`),
   KEY `FK_SocioeconomicStudy_HouseLayout` (`HouseLayoutId`),
-  CONSTRAINT `FK_SocioeconomicStudy_HouseLayout` FOREIGN KEY (`HouseLayoutId`) REFERENCES `HouseLayout` (`Id`)
+  CONSTRAINT `FK_SocioeconomicStudy_HouseLayout` FOREIGN KEY (`HouseLayoutId`) REFERENCES `HouseLayout` (`Id`),
+  KEY `FK_SocioeconomicStudy_HomeAcquisition` (`HomeAcquisitionId`),
+  CONSTRAINT `FK_SocioeconomicStudy_HomeAcquisition` FOREIGN KEY (`HomeAcquisitionId`) REFERENCES `HomeAcquisition` (`Id`)
 ) ENGINE=InnoDB COMMENT='SOCIOECONOMICO no tengo la traducción correcta para algunas columnas';
 
 --
@@ -1907,9 +1921,9 @@ BEGIN
 		SET HouseLayoutId = LAST_INSERT_ID();
 		
 		
-		INSERT INTO SocioEconomicStudy (`Vivienda` ,`NombrePropietario`, `MedioAdquisicion`, `TypesOfHousesId`, `HouseLayoutId`)
+		INSERT INTO SocioEconomicStudy (`HomeAcquisitionId` ,`NombrePropietario`, `MedioAdquisicion`, `TypesOfHousesId`, `HouseLayoutId`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Vivienda'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HomeAcquisitionId'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.NombrePropietario'))			
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MedioAdquisicion'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TypesOfHousesId'))
@@ -1933,7 +1947,7 @@ BEGIN
 						
 			UPDATE SocioEconomicStudy
 				SET
-				 Vivienda =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Vivienda')) FROM JSON_TABLE)
+				 HomeAcquisitionId =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HomeAcquisitionId')) FROM JSON_TABLE)
 				,NombrePropietario =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.NombrePropietario')) FROM JSON_TABLE)
 				,MedioAdquisicion =   (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MedioAdquisicion')) FROM JSON_TABLE)
 				,TypesOfHousesId =    (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TypesOfHousesId')) FROM JSON_TABLE)

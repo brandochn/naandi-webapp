@@ -723,6 +723,22 @@
                         </div>
                     </section>
 
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white bg-primary">
+                                Socioeconomico
+                            </h5>
+                            <div class="card-body">
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Vivienda</label>
+                                        @Html.DropDownListFor(x => Model.SocioEconomicStudy.HomeAcquisitionId, new SelectList(Model.HomeAcquisitionList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "HomeAcquisition" })
+                                    </div>
+                                </div>       
+                            </div>
+                        </div>
+                    </section>
+
                 </div>
                 <div class="card-footer text-muted">
                     Footer

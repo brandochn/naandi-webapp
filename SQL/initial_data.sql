@@ -145,3 +145,18 @@ VALUES (1,'Ingresos del tutor',1)
 ,(14,'Otros',2);
 /*!40000 ALTER TABLE `Movimiento` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping data for table `HomeAcquisition`
+--
+
+LOCK TABLES `HomeAcquisition` WRITE;
+/*!40000 ALTER TABLE `HomeAcquisition` DISABLE KEYS */;
+INSERT INTO `HomeAcquisition` 
+VALUES 
+ (1,'Propia')
+,(2,'Prestada')
+,(3,'Rentada');
+
+/*!40000 ALTER TABLE `HomeAcquisition` ENABLE KEYS */;
+UNLOCK TABLES;
