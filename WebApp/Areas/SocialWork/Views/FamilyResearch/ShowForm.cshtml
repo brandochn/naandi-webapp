@@ -734,7 +734,83 @@
                                         <label>Vivienda</label>
                                         @Html.DropDownListFor(x => Model.SocioEconomicStudy.HomeAcquisitionId, new SelectList(Model.HomeAcquisitionList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "HomeAcquisition" })
                                     </div>
-                                </div>       
+                                    <div class="form-group col-md-4">
+                                        <label>Nombre de propietario</label>
+                                        @if (Model.SocioEconomicStudy == null)
+                                        {
+                                            <input type="text" asp-for="SocioEconomicStudy.NombrePropietario" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="SocioEconomicStudy.NombrePropietario" class="form-control" value="@Model.SocioEconomicStudy.NombrePropietario" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Medio de adquisición</label>
+                                        @if (Model.SocioEconomicStudy == null)
+                                        {
+                                            <input type="text" asp-for="SocioEconomicStudy.MedioAdquisicion" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="SocioEconomicStudy.MedioAdquisicion" class="form-control" value="@Model.SocioEconomicStudy.MedioAdquisicion" />
+                                        }
+                                    </div>                                            
+                                </div>
+                                
+                                <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label>Tipo de vivienda</label>
+                                            @Html.DropDownListFor(x => Model.SocioEconomicStudy.TypesOfHousesId, new SelectList(Model.HomeAcquisitionList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "TypesOfHouses" })
+                                        </div>            
+                                </div>  
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label>Recamaras</label>
+                                        @if (Model.SocioEconomicStudy == null || Model.SocioEconomicStudy.HouseLayout == null)
+                                        {
+                                            <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Bedroom" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Bedroom" class="form-control" value="@Model.SocioEconomicStudy.HouseLayout.Bedroom" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Comedor</label>
+                                        @if (Model.SocioEconomicStudy == null || Model.SocioEconomicStudy.HouseLayout == null)
+                                        {
+                                            <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Dinningroom" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Dinningroom" class="form-control" value="@Model.SocioEconomicStudy.HouseLayout.Dinningroom" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Cocina</label>
+                                        @if (Model.SocioEconomicStudy == null || Model.SocioEconomicStudy.HouseLayout == null)
+                                        {
+                                            <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Kitchen" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Kitchen" class="form-control" value="@Model.SocioEconomicStudy.HouseLayout.Kitchen" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Sala</label>
+                                        @if (Model.SocioEconomicStudy == null || Model.SocioEconomicStudy.HouseLayout == null)
+                                        {
+                                            <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Livingroom" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Livingroom" class="form-control" value="@Model.SocioEconomicStudy.HouseLayout.Livingroom" />
+                                        }
+                                    </div>                        
+                                </div>
                             </div>
                         </div>
                     </section>

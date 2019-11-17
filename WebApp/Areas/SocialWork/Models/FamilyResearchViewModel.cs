@@ -13,6 +13,7 @@ namespace WebApp.Areas.SocialWork.Models
         public IList<MunicipalitiesOfMexico> MunicipalitiesOfMexico { get; set; }
         public FamilyMembersDetails FamilyMember { get; set; }
         public IList<HomeAcquisition> HomeAcquisitionList { get; set; }
+        public IList<TypesOfHouses> TypesOfHousesList { get; set; }
 
 
         public bool IsValid(object value)
@@ -72,6 +73,14 @@ namespace WebApp.Areas.SocialWork.Models
         {
             HomeAcquisitionList = new List<HomeAcquisition>();// registrationRequestRepository.GetStatesOfMexico().ToList();
             HomeAcquisitionList.Insert(0, new HomeAcquisition()
+            {
+                Name = "Selecciona uno"
+            });
+        }
+        public void LoadTypesOfHousesList(IFamilyResearch familyResearchRepository)
+        {
+            TypesOfHousesList = new List<TypesOfHouses>();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            TypesOfHousesList.Insert(0, new TypesOfHouses()
             {
                 Name = "Selecciona uno"
             });
