@@ -477,6 +477,7 @@ CREATE TABLE `HouseLayout` (
   `Dinningroom` varchar(100) NOT NULL,
   `Kitchen` varchar(100) NOT NULL,
   `Livingroom` varchar(100) NOT NULL,
+  `Bathroom` varchar(100) NOT NULL,
   `Patio` varchar(100) NOT NULL,
   `Garage` varchar(100) NOT NULL,
   `Backyard` varchar(100) NOT NULL,
@@ -1901,12 +1902,13 @@ BEGIN
 	
 	IF SocioEconomicStudyId = 0 THEN						
 
-		INSERT INTO HouseLayout (`Bedroom` ,`Dinningroom`,`Kitchen`,`Livingroom`,`Patio`,`Garage`,`Backyard`,`Other`,`Ground`,`Walls`,`Roof`,`Description`,`TipoDeMobiliarioId`,`CharacteristicsOfFurniture`)
+		INSERT INTO HouseLayout (`Bedroom` ,`Dinningroom`,`Kitchen`,`Livingroom`,`Bathroom`,`Patio`,`Garage`,`Backyard`,`Other`,`Ground`,`Walls`,`Roof`,`Description`,`TipoDeMobiliarioId`,`CharacteristicsOfFurniture`)
 		SELECT
 			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Bedroom'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Dinningroom'))			
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Kitchen'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Livingroom'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Bathroom'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Patio'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Garage'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Backyard'))			
@@ -1959,6 +1961,7 @@ BEGIN
 				,Dinningroom = 					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Dinningroom')) FROM JSON_TABLE)
 				,Kitchen =  					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Kitchen')) FROM JSON_TABLE)
 				,Livingroom =   				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Livingroom')) FROM JSON_TABLE)
+				,Bathroom =   				    (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Bathroom')) FROM JSON_TABLE)
 				,Patio = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Patio')) FROM JSON_TABLE)
 				,Garage =  						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Garage')) FROM JSON_TABLE)
 				,Backyard =   					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Backyard')) FROM JSON_TABLE)

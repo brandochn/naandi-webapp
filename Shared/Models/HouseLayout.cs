@@ -7,6 +7,7 @@ namespace Naandi.Shared.Models
         public string Dinningroom { get; set; }
         public string Kitchen { get; set; }
         public string Livingroom { get; set; }
+        public string Bathroom { get; set; }
         public string Patio { get; set; }
         public string Garage { get; set; }
         public string Backyard { get; set; }
