@@ -15,6 +15,7 @@ namespace WebApp.Areas.SocialWork.Models
         public IList<HomeAcquisition> HomeAcquisitionList { get; set; }
         public IList<TypesOfHouses> TypesOfHousesList { get; set; }
         public IList<TipoDeMobiliario> TipoDeMobiliarioList { get; set; }
+        public IList<TypeOfDistrict> TypeOfDistrictList { get; set; }
 
 
         public bool IsValid(object value)
@@ -90,6 +91,15 @@ namespace WebApp.Areas.SocialWork.Models
         {
             TipoDeMobiliarioList = new List<TipoDeMobiliario>();// registrationRequestRepository.GetStatesOfMexico().ToList();
             TipoDeMobiliarioList.Insert(0, new TipoDeMobiliario()
+            {
+                Name = "Selecciona uno"
+            });
+        }
+
+        public void LoadTypeOfDistrictList(IFamilyResearch familyResearchRepository)
+        {
+            TypeOfDistrictList = new List<TypeOfDistrict>();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            TypeOfDistrictList.Insert(0, new TypeOfDistrict()
             {
                 Name = "Selecciona uno"
             });

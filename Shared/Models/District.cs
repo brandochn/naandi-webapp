@@ -18,6 +18,7 @@ namespace Naandi.Shared.Models
         public string TransportePublico { get; set; }
         public string AseoPublico { get; set; }
         public string Iglesia { get; set; }
+        public string Mercado { get; set; }
         public string Otros { get; set; }
         public string Description { get; set; }
     }

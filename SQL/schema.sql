@@ -458,6 +458,7 @@ CREATE TABLE `District` (
   `TransportePublico` varchar(100) NOT NULL,
   `AseoPublico` varchar(100) NOT NULL,
   `Iglesia` varchar(100) NOT NULL,
+  `Mercado` varchar(100) NOT NULL,
   `Otros` varchar(100) NOT NULL,
   `Description` varchar(100) NOT NULL,
   PRIMARY KEY (`Id`),
@@ -2012,7 +2013,7 @@ BEGIN
 	
 	IF DistrictId = 0 THEN						
 		
-		INSERT INTO District (`TypeOfDistrictId` ,`AguaPotable`, `Telefono`, `Electricidad`, `Drenaje`,`Hospital`,`Correo`,`Escuela`,`Policia`,`AlumbradoPublico`,`ViasDeAcceso`,`TransportePublico`,`AseoPublico`,`Iglesia`,`Otros`,`Description`)
+		INSERT INTO District (`TypeOfDistrictId` ,`AguaPotable`, `Telefono`, `Electricidad`, `Drenaje`,`Hospital`,`Correo`,`Escuela`,`Policia`,`AlumbradoPublico`,`ViasDeAcceso`,`TransportePublico`,`AseoPublico`,`Iglesia`,`Mercado`,`Otros`,`Description`)
 		SELECT
 			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TypeOfDistrictId'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AguaPotable'))			
@@ -2028,6 +2029,7 @@ BEGIN
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TransportePublico'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AseoPublico'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Iglesia'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Mercado'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Otros'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Description'))
 		FROM JSON_TABLE;
@@ -2058,6 +2060,7 @@ BEGIN
 				,TransportePublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TransportePublico')) FROM JSON_TABLE)
 				,AseoPublico = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AseoPublico')) FROM JSON_TABLE)
 				,Iglesia =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Iglesia')) FROM JSON_TABLE)
+				,Mercado =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Mercado')) FROM JSON_TABLE)
 				,Otros = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Otros')) FROM JSON_TABLE)
 				,Description = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Description')) FROM JSON_TABLE)				
 			WHERE Id = DistrictId;

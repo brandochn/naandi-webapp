@@ -941,12 +941,215 @@
                                         }
                                     </div>
                                 </div>
-
-
-
                             </div>
                         </div>
                     </section>
+
+
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white   bg-primary">
+                                Colonia
+                            </h5>
+                            <div class="card-body">
+                            <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Tipo de colonia</label>
+                                        @Html.DropDownListFor(x => Model.DistrictId, new SelectList(Model.TypeOfDistrictList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "TypeOfDistrict" })
+                                    </div>
+                            </div>
+                            <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label>Agua</label>
+                                        @if (Model.District == null || Model.District.AguaPotable == null)
+                                        {
+                                            <input type="text" asp-for="District.AguaPotable" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.AguaPotable" class="form-control" value="@Model.District.AguaPotable" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Teléfono</label>
+                                        @if (Model.District == null || Model.District.Telefono == null)
+                                        {
+                                            <input type="text" asp-for="District.Telefono" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.Telefono" class="form-control" value="@Model.District.Telefono" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Electricidad</label>
+                                        @if (Model.District == null || Model.District.Electricidad == null)
+                                        {
+                                            <input type="text" asp-for="District.Electricidad" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.Electricidad" class="form-control" value="@Model.District.Electricidad" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Drenaje</label>
+                                        @if (Model.District == null || Model.District.Drenaje == null)
+                                        {
+                                            <input type="text" asp-for="District.Drenaje" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.Drenaje" class="form-control" value="@Model.District.Drenaje" />
+                                        }
+                                    </div>                        
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label>Hospital</label>
+                                        @if (Model.District == null || Model.District.Hospital == null)
+                                        {
+                                            <input type="text" asp-for="District.Hospital" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.Hospital" class="form-control" value="@Model.District.Hospital" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Correo</label>
+                                        @if (Model.District == null || Model.District.Correo == null)
+                                        {
+                                            <input type="text" asp-for="District.Correo" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.Correo" class="form-control" value="@Model.District.Correo" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Escuela</label>
+                                        @if (Model.District == null || Model.District.Escuela == null)
+                                        {
+                                            <input type="text" asp-for="District.Escuela" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.Escuela" class="form-control" value="@Model.District.Escuela" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Policía</label>
+                                        @if (Model.District == null || Model.District.Policia == null)
+                                        {
+                                            <input type="text" asp-for="District.Policia" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.Policia" class="form-control" value="@Model.District.Policia" />
+                                        }
+                                    </div>                        
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label>Alumbrado público</label>
+                                        @if (Model.District == null || Model.District.AlumbradoPublico == null)
+                                        {
+                                            <input type="text" asp-for="District.AlumbradoPublico" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.AlumbradoPublico" class="form-control" value="@Model.District.AlumbradoPublico" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Vías de acceso</label>
+                                        @if (Model.District == null || Model.District.ViasDeAcceso == null)
+                                        {
+                                            <input type="text" asp-for="District.ViasDeAcceso" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.ViasDeAcceso" class="form-control" value="@Model.District.ViasDeAcceso" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Transporte público</label>
+                                        @if (Model.District == null || Model.District.TransportePublico == null)
+                                        {
+                                            <input type="text" asp-for="District.TransportePublico" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.TransportePublico" class="form-control" value="@Model.District.TransportePublico" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Aseo público</label>
+                                        @if (Model.District == null || Model.District.AseoPublico == null)
+                                        {
+                                            <input type="text" asp-for="District.AseoPublico" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.AseoPublico" class="form-control" value="@Model.District.AseoPublico" />
+                                        }
+                                    </div>                        
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label>Iglesia</label>
+                                        @if (Model.District == null || Model.District.Iglesia == null)
+                                        {
+                                            <input type="text" asp-for="District.Iglesia" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.Iglesia" class="form-control" value="@Model.District.Iglesia" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>Mercado</label>
+                                        @if (Model.District == null || Model.District.Mercado == null)
+                                        {
+                                            <input type="text" asp-for="District.Mercado" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.Mercado" class="form-control" value="@Model.District.Mercado" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Otros</label>
+                                        @if (Model.District == null || Model.District.Otros == null)
+                                        {
+                                            <input type="text" asp-for="District.Otros" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.Otros" class="form-control" value="@Model.District.Otros" />
+                                        }
+                                    </div>                
+                                </div>
+                                <div class="form-row">                
+                                    <div class="form-group col-md-12">
+                                        <label>Descripción de la colonia</label>
+                                        @if (Model.District == null || Model.District.Description == null)
+                                        {
+                                            <input type="text" asp-for="District.Description" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="District.Description" class="form-control" value="@Model.District.Description" />
+                                        }
+                                    </div>                                        
+                                </div>                       
+                            </div>            
+                        </div>
+                    </section>
+
+
+
 
                 </div>
                 <div class="card-footer text-muted">
