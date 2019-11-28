@@ -16,6 +16,7 @@ namespace WebApp.Areas.SocialWork.Models
         public IList<TypesOfHouses> TypesOfHousesList { get; set; }
         public IList<TipoDeMobiliario> TipoDeMobiliarioList { get; set; }
         public IList<TypeOfDistrict> TypeOfDistrictList { get; set; }
+        public PatrimonyViewModelCollection PatrimonyViewModelCollection { get; set; }
 
 
         public bool IsValid(object value)
@@ -103,6 +104,15 @@ namespace WebApp.Areas.SocialWork.Models
             {
                 Name = "Selecciona uno"
             });
+        }
+        public void LoadPatrimonyViewModelCollection(IFamilyResearch familyResearchRepository)
+        {
+            PatrimonyViewModelCollection = new PatrimonyViewModelCollection();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            PatrimonyViewModelCollection[0] = new PatrimonyViewModel()
+            {
+                Name = "Automovil",
+                Value = string.Empty
+            };
         }
     }
 }
