@@ -4,7 +4,7 @@ namespace Naandi.Shared.Models
     {
         public int Id { get; set; }
         public string Comments { get; set; }
-        public string Foodallergy { get; set; }
+        public string FoodAllergy { get; set; }
         public FamilyNutritionFoodRelation[] FamilyNutritionFoodRelation {get; set;}
     }
 }

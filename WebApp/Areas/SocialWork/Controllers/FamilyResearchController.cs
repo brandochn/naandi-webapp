@@ -27,6 +27,8 @@ namespace WebApp.Areas.SocialWork.Controllers
             model.LoadTipoDeMobiliarioList(familyResearchRepository);
             model.LoadTypeOfDistrictList(familyResearchRepository);
             model.LoadPatrimonyViewModelCollection(familyResearchRepository);
+            model.LoadFoods(familyResearchRepository);
+            model.LoadFrequencies(familyResearchRepository);
             model.VisitDate = DateTime.Now;
             model.VisitTime = DateTime.Now;
 

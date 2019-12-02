@@ -17,7 +17,9 @@ namespace WebApp.Areas.SocialWork.Models
         public IList<TipoDeMobiliario> TipoDeMobiliarioList { get; set; }
         public IList<TypeOfDistrict> TypeOfDistrictList { get; set; }
         public PatrimonyViewModelCollection PatrimonyViewModelCollection { get; set; }
-
+        public IList<Food> Foods { get; set; }
+        public IList<Frequency> Frequencies { get; set; }
+        public int[] FrequencyIdsSelected { get; set; }
 
         public bool IsValid(object value)
         {
@@ -113,6 +115,44 @@ namespace WebApp.Areas.SocialWork.Models
                 Name = "Automovil",
                 Value = string.Empty
             };
+        }
+
+        public void LoadFoods(IFamilyResearch familyResearchRepository)
+        {
+            Foods = new List<Food>();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            Foods.Add(new Food()
+            {
+                Id = 1,
+                Name = "Leche"
+            });
+            Foods.Add(new Food()
+            {
+                Id = 2,
+                Name = "Huevo"
+            });
+        }
+
+        public void LoadFrequencies(IFamilyResearch familyResearchRepository)
+        {
+            Frequencies = new List<Frequency>();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            Frequencies.Add(new Frequency()
+            {
+                Id = 1,
+                Name = "Diario"
+            });
+            Frequencies.Add(new Frequency()
+            {
+                Id = 2,
+                Name = "Cada 3er día"
+            });
+
+            Frequencies.Insert(0, new Frequency()
+            {
+                Id = 3,
+                Name = "Selecciona uno"
+            });
+
+            FrequencyIdsSelected = new int[12];
         }
     }
 }

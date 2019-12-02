@@ -1330,6 +1330,68 @@
                         </div>
                     </section>
 
+                   <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white   bg-primary">
+                                Alimentacion familiar
+                            </h5>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <table id="FamilyNutritionTableId" class="table table-responsive-lg table-hover">
+                                            <thead class="">
+                                                <tr>
+                                                    <th>Alimentos</th>
+                                                    <th>Frecuencia</th>								
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.Foods != null)
+                                                {
+                                                    foreach (var item in Model.Foods)
+                                                    {
+                                                        <tr>
+                                                            <td>@Html.DisplayFor(model => item.Name)</td>
+                                                            <td>@Html.DropDownListFor(x => Model.FrequencyIdsSelected[item.Id], new SelectList(Model.Frequencies, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "Frequencies" })</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label>Observaciones</label>
+                                        @if (Model.FamilyNutrition == null || Model.FamilyNutrition.Comments == null)
+                                        {
+                                            <input type="text" asp-for="FamilyNutrition.Comments" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="FamilyNutrition.Comments" class="form-control" value="@Model.FamilyNutrition.Comments" />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label>Alergias a algun alimento</label>
+                                        @if (Model.FamilyNutrition == null || Model.FamilyNutrition.FoodAllergy == null)
+                                        {
+                                            <input type="text" asp-for="FamilyNutrition.FoodAllergy" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="FamilyNutrition.FoodAllergy" class="form-control" value="@Model.FamilyNutrition.FoodAllergy" />
+                                        }
+                                    </div>
+                                </div>
+
+
+                            </div>            
+                        </div>
+                    </section>
+
 
 
 
