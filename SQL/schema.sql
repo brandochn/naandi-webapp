@@ -642,13 +642,27 @@ DROP TABLE IF EXISTS `BenefitsProvided`;
 
 CREATE TABLE `BenefitsProvided` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `Institucion` varchar(100),
-  `ApoyoRecibido` varchar(200),
-  `Monto`   decimal(13, 2),
-  `Periodo` datetime,
   `RedesDeApoyoFamiliares` varchar(400),
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='Apoyos y Servicios Otorgados no tengo la traducción correcta para algunas columnas';
+
+--
+-- Table structure for table `BenefitsProvidedDetails`
+--
+
+DROP TABLE IF EXISTS `BenefitsProvidedDetails`;
+
+CREATE TABLE `BenefitsProvidedDetails` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Institucion` varchar(100),
+  `ApoyoRecibido` varchar(200),
+  `Monto`   decimal(13, 2),
+  `Periodo` varchar(200),
+  `BenefitsProvidedId` int(11),
+  PRIMARY KEY (`Id`),
+  KEY `FK_BenefitsProvided_BenefitsProvidedDetails` (`BenefitsProvidedId`),
+  CONSTRAINT `FK_BenefitsProvided_BenefitsProvidedDetails` FOREIGN KEY (`BenefitsProvidedId`) REFERENCES `BenefitsProvided` (`Id`)
+) ENGINE=InnoDB COMMENT='Details about BenefitsProvided';
 
 --
 -- Table structure for table `TipoMovimiento`
@@ -2272,11 +2286,34 @@ BEGIN
 END ;;
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS `AddOrUpdateBenefitsProvidedDetails`;
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateBenefitsProvidedDetails`(
+	IN  BenefitsProvidedId INT,
+    IN  ArrayItem BLOB
+)
+BEGIN
+
+	DECLARE Data LONGTEXT DEFAULT CAST(ArrayItem as CHAR CHARACTER SET utf8mb4);
+		
+	INSERT INTO BenefitsProvidedDetails (`Institucion` ,`ApoyoRecibido`,`Monto`,`Periodo`,`BenefitsProvidedId`)
+	SELECT
+		 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Institucion'))
+		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ApoyoRecibido'))			
+		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Monto'))
+		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Periodo'))
+		,BenefitsProvidedId;	
+
+END ;;
+DELIMITER ;
+
+
 DROP PROCEDURE IF EXISTS `AddOrUpdateBenefitsProvided`;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateBenefitsProvided`(
-	IN `JSONData` LONGTEXT,
+	IN  `JSONData` LONGTEXT,
     OUT `BenefitsProvidedId` INT,
 	OUT `ErrorMessage` VARCHAR(2000)
 )
@@ -2301,18 +2338,15 @@ BEGIN
 	JSON_EXTRACT(Data, '$.Id') INTO BenefitsProvidedId
 	FROM JSON_TABLE;
  
-	
 	IF BenefitsProvidedId = 0 THEN							
 		
-		INSERT INTO BenefitsProvided(Institucion ,ApoyoRecibido ,Monto ,Periodo ,RedesDeApoyoFamiliares)
+		INSERT INTO BenefitsProvided (`RedesDeApoyoFamiliares`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Institucion'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ApoyoRecibido'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Monto'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Periodo'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RedesDeApoyoFamiliares'))
+			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RedesDeApoyoFamiliares'))	
 		FROM JSON_TABLE;
 		SET BenefitsProvidedId = LAST_INSERT_ID();
+
+		CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.BenefitsProvidedDetails') FROM JSON_TABLE), BenefitsProvidedId, 'AddOrUpdateBenefitsProvidedDetails');
 	
 	ELSE
 		
@@ -2325,12 +2359,13 @@ BEGIN
 						
 			UPDATE BenefitsProvided
 			SET
-				Institucion = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Institucion')) FROM JSON_TABLE)
-				,ApoyoRecibido = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ApoyoRecibido')) FROM JSON_TABLE)
-				,Monto =  					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Monto')) FROM JSON_TABLE)
-				,Periodo = 					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Periodo')) FROM JSON_TABLE)
-				,RedesDeApoyoFamiliares = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RedesDeApoyoFamiliares')) FROM JSON_TABLE)				
+				RedesDeApoyoFamiliares = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.RedesDeApoyoFamiliares')) FROM JSON_TABLE)			
 			WHERE Id = BenefitsProvidedId;
+
+			DELETE FROM BenefitsProvidedDetails  WHERE `BenefitsProvidedId` = BenefitsProvidedId;
+
+			CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.BenefitsProvidedDetails') FROM JSON_TABLE), BenefitsProvidedId, 'AddOrUpdateBenefitsProvidedDetails');
+			
 		END IF;
 	END IF;
 END ;;

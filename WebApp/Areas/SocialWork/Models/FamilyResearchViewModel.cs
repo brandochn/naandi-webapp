@@ -11,7 +11,6 @@ namespace WebApp.Areas.SocialWork.Models
         public IList<Relationship> RelationshipList { get; set; }
         public IList<StatesOfMexico> StatesOfMexico { get; set; }
         public IList<MunicipalitiesOfMexico> MunicipalitiesOfMexico { get; set; }
-        public FamilyMembersDetails FamilyMember { get; set; }
         public IList<HomeAcquisition> HomeAcquisitionList { get; set; }
         public IList<TypesOfHouses> TypesOfHousesList { get; set; }
         public IList<TipoDeMobiliario> TipoDeMobiliarioList { get; set; }

@@ -1386,9 +1386,37 @@
                                         }
                                     </div>
                                 </div>
-
-
                             </div>            
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white   bg-primary">
+                                Apoyos y Servicios Otorgados
+                            </h5>
+                            <div class="card-body">
+                                <div class ="mb-3 ml-3">
+                                    @Html.ActionLink("+ Agregar", "Action", "Controller", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-success" })
+                                </div>
+                                <div class="col-12">
+                                    @await Html.PartialAsync("_BenefitsProvidedTable", Model)
+                                </div>
+
+                                <div class="form-row mt-4">
+                                    <div class="form-group col-md-12">
+                                        <label>Dinamica familiar</label>
+                                        @if (Model.BenefitsProvided == null || Model.BenefitsProvided.RedesDeApoyoFamiliares == null)
+                                        {
+                                            <input type="text" asp-for="BenefitsProvided.RedesDeApoyoFamiliares" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="BenefitsProvided.RedesDeApoyoFamiliares" class="form-control" value="@Model.BenefitsProvided.RedesDeApoyoFamiliares" />
+                                        }
+                                    </div>				                            
+                                </div>
+                            </div>
                         </div>
                     </section>
 
@@ -1408,6 +1436,10 @@
     <script type="text/javascript">
         $(document).ready( function () {
             $('#FamilyMembersTableId').DataTable({ searching: false });
+        });
+
+        $(document).ready( function () {
+            $('#BenefitsProvidedTableId').DataTable({ searching: false });
         });
     </script>
 }
