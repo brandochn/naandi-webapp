@@ -13,6 +13,7 @@ namespace Naandi.Shared.Models
         public string FamilyExpectations { get; set; }
         public string FamilyDiagnostic { get; set; }
         public string CaseStudyConclusion { get; set; }
+        public string ProblemsIdentified { get; set; }
         public string Recommendations { get; set; }
         public string VisualSupports { get; set; }
         public string Sketch { get; set; }

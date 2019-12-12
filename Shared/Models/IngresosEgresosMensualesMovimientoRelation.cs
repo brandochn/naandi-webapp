@@ -5,6 +5,7 @@ namespace Naandi.Shared.Models
         public int Id { get; set; }
         public int IngresosEgresosMensualesId { get; set; }
         public int MovimientoId { get; set; }
+        public Movimiento Movimiento { get; set;}
         public decimal Monto { get; set; }
     }
 }

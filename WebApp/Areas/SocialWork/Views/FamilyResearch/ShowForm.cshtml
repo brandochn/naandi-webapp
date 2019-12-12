@@ -46,11 +46,11 @@
                             <label>Motivo de solicitud</label>
                             @if (Model.RequestReasons == null)
                             {
-                                <input type="text" asp-for="RequestReasons" class="form-control" />
+                                <textarea rows="1" asp-for="RequestReasons" class="form-control"></textarea>
                             }
                             else
                             {
-                                <input type="text" asp-for="RequestReasons" class="form-control" value="@Model.RequestReasons" />
+                                <textarea rows="1" asp-for="RequestReasons" class="form-control">@Model.RequestReasons</textarea>
                             }
                         </div>
                     </div>
@@ -324,11 +324,11 @@
                                         <label>Observaciones</label>
                                         @if (Model.LegalGuardian == null || Model.LegalGuardian.Spouse == null || Model.LegalGuardian.Spouse.Comments == null)
                                         {
-                                            <input type="text" asp-for="LegalGuardian.Spouse.Comments" class="form-control" />
+                                            <textarea rows="1" asp-for="LegalGuardian.Spouse.Comments" class="form-control"></textarea>
                                         }
                                         else
                                         {
-                                            <input type="text" asp-for="LegalGuardian.Spouse.Comments" class="form-control" value="@Model.LegalGuardian.Spouse.Comments" />
+                                            <textarea rows="1" asp-for="LegalGuardian.Spouse.Comments" class="form-control">@Model.LegalGuardian.Spouse.Comments</textarea>
                                         }
                                     </div>
                                 </div>
@@ -669,11 +669,11 @@
                                         <label>Observaciones</label>
                                         @if (Model.FamilyHealth == null || Model.FamilyHealth.Comments == null)
                                         {
-                                            <input type="text" asp-for="FamilyHealth.Comments" class="form-control" />
+                                            <textarea rows="1" asp-for="FamilyHealth.Comments" class="form-control"></textarea>
                                         }
                                         else
                                         {
-                                            <input type="text" asp-for="FamilyHealth.Comments" class="form-control" value="@Model.FamilyHealth.Comments" />
+                                            <textarea rows="1" asp-for="FamilyHealth.Comments" class="form-control">@Model.FamilyHealth.Comments</textarea>
                                         }
                                     </div>
                                 </div>
@@ -687,36 +687,36 @@
                                 Composición familiar
                             </h5>
                             <div class="card-body">
-                                <div class ="mb-3 ml-3">
+                                <div class="mb-3 ml-3">
                                     @Html.ActionLink("+ Agregar", "Action", "Controller", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-success" })
                                 </div>
                                 <div class="col-12">
                                     @await Html.PartialAsync("_FamilyMembersTable", Model)
                                 </div>
 
-                                <div    class="form-row mt-4">
+                                <div class="form-row mt-4">
                                     <div class="form-group col-md-6">
                                         <label>Dinamica familiar</label>
                                         @if (Model.FamilyMembers == null || Model.FamilyMembers.FamilyInteraction == null)
                                         {
-                                            <input type="text" asp-for="FamilyMembers.FamilyInteraction" class="form-control" />
+                                            <textarea rows="1" asp-for="FamilyMembers.FamilyInteraction" class="form-control"></textarea>
                                         }
                                         else
                                         {
-                                            <input type="text" asp-for="FamilyMembers.FamilyInteraction" class="form-control" value="@Model.FamilyMembers.FamilyInteraction" />
+                                            <textarea rows="1" asp-for="FamilyMembers.FamilyInteraction" class="form-control">@Model.FamilyMembers.FamilyInteraction</textarea>
                                         }
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label>Observaciones</label>
                                         @if (Model.FamilyMembers == null || Model.FamilyMembers.Comments == null)
                                         {
-                                            <input type="text" asp-for="FamilyMembers.Comments" class="form-control" />
+                                            <textarea rows="1" asp-for="FamilyMembers.Comments" class="form-control"></textarea>
                                         }
                                         else
                                         {
-                                            <input type="text" asp-for="FamilyMembers.Comments" class="form-control" value="@Model.FamilyMembers.Comments" />
+                                            <textarea rows="1" asp-for="FamilyMembers.Comments" class="form-control">@Model.FamilyMembers.Comments</textarea>
                                         }
-                                    </div>                                    
+                                    </div>
                                 </div>
 
                             </div>
@@ -755,15 +755,15 @@
                                         {
                                             <input type="text" asp-for="SocioEconomicStudy.MedioAdquisicion" class="form-control" value="@Model.SocioEconomicStudy.MedioAdquisicion" />
                                         }
-                                    </div>                                            
+                                    </div>
                                 </div>
-                                
+
                                 <div class="form-row">
-                                        <div class="form-group col-md-4">
-                                            <label>Tipo de vivienda</label>
-                                            @Html.DropDownListFor(x => Model.SocioEconomicStudy.TypesOfHousesId, new SelectList(Model.HomeAcquisitionList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "TypesOfHouses" })
-                                        </div>            
-                                </div>  
+                                    <div class="form-group col-md-4">
+                                        <label>Tipo de vivienda</label>
+                                        @Html.DropDownListFor(x => Model.SocioEconomicStudy.TypesOfHousesId, new SelectList(Model.HomeAcquisitionList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "TypesOfHouses" })
+                                    </div>
+                                </div>
 
                                 <div class="form-row">
                                     <div class="form-group col-md-3">
@@ -809,7 +809,7 @@
                                         {
                                             <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Livingroom" class="form-control" value="@Model.SocioEconomicStudy.HouseLayout.Livingroom" />
                                         }
-                                    </div>                        
+                                    </div>
                                 </div>
 
                                 <div class="form-row">
@@ -856,7 +856,7 @@
                                         {
                                             <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Backyard" class="form-control" value="@Model.SocioEconomicStudy.HouseLayout.Backyard" />
                                         }
-                                    </div>                        
+                                    </div>
                                 </div>
 
 
@@ -904,7 +904,7 @@
                                         {
                                             <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Roof" class="form-control" value="@Model.SocioEconomicStudy.HouseLayout.Roof" />
                                         }
-                                    </div>                        
+                                    </div>
                                 </div>
 
                                 <div class="form-row">
@@ -912,11 +912,11 @@
                                         <label>Descripción de vivienda</label>
                                         @if (Model.SocioEconomicStudy == null || Model.SocioEconomicStudy.HouseLayout == null || Model.SocioEconomicStudy.HouseLayout.Description == null)
                                         {
-                                            <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Description" class="form-control" />
+                                            <textarea rows="1" asp-for="SocioEconomicStudy.HouseLayout.Description" class="form-control"></textarea>
                                         }
                                         else
                                         {
-                                            <input type="text" asp-for="SocioEconomicStudy.HouseLayout.Description" class="form-control" value="@Model.SocioEconomicStudy.HouseLayout.Description" />
+                                            <textarea rows="1" asp-for="SocioEconomicStudy.HouseLayout.Description" class="form-control">@Model.SocioEconomicStudy.HouseLayout.Description</textarea>
                                         }
                                     </div>
                                 </div>
@@ -933,11 +933,11 @@
                                         <label>Características del mobiliario</label>
                                         @if (Model.SocioEconomicStudy == null || Model.SocioEconomicStudy.HouseLayout == null || Model.SocioEconomicStudy.HouseLayout.CharacteristicsOfFurniture == null)
                                         {
-                                            <input type="text" asp-for="SocioEconomicStudy.HouseLayout.CharacteristicsOfFurniture" class="form-control" />
+                                            <textarea rows="1" asp-for="SocioEconomicStudy.HouseLayout.CharacteristicsOfFurniture" class="form-control"></textarea>
                                         }
                                         else
                                         {
-                                            <input type="text" asp-for="SocioEconomicStudy.HouseLayout.CharacteristicsOfFurniture" class="form-control" value="@Model.SocioEconomicStudy.HouseLayout.CharacteristicsOfFurniture" />
+                                            <textarea rows="1" asp-for="SocioEconomicStudy.HouseLayout.CharacteristicsOfFurniture" class="form-control">@Model.SocioEconomicStudy.HouseLayout.CharacteristicsOfFurniture</textarea>
                                         }
                                     </div>
                                 </div>
@@ -952,13 +952,13 @@
                                 Colonia
                             </h5>
                             <div class="card-body">
-                            <div class="form-row">
+                                <div class="form-row">
                                     <div class="form-group col-md-4">
                                         <label>Tipo de colonia</label>
                                         @Html.DropDownListFor(x => Model.DistrictId, new SelectList(Model.TypeOfDistrictList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "TypeOfDistrict" })
                                     </div>
-                            </div>
-                            <div class="form-row">
+                                </div>
+                                <div class="form-row">
                                     <div class="form-group col-md-3">
                                         <label>Agua</label>
                                         @if (Model.District == null || Model.District.AguaPotable == null)
@@ -1002,7 +1002,7 @@
                                         {
                                             <input type="text" asp-for="District.Drenaje" class="form-control" value="@Model.District.Drenaje" />
                                         }
-                                    </div>                        
+                                    </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-3">
@@ -1048,7 +1048,7 @@
                                         {
                                             <input type="text" asp-for="District.Policia" class="form-control" value="@Model.District.Policia" />
                                         }
-                                    </div>                        
+                                    </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-3">
@@ -1094,7 +1094,7 @@
                                         {
                                             <input type="text" asp-for="District.AseoPublico" class="form-control" value="@Model.District.AseoPublico" />
                                         }
-                                    </div>                        
+                                    </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-3">
@@ -1129,22 +1129,22 @@
                                         {
                                             <input type="text" asp-for="District.Otros" class="form-control" value="@Model.District.Otros" />
                                         }
-                                    </div>                
+                                    </div>
                                 </div>
-                                <div class="form-row">                
+                                <div class="form-row">
                                     <div class="form-group col-md-12">
                                         <label>Descripción de la colonia</label>
                                         @if (Model.District == null || Model.District.Description == null)
                                         {
-                                            <input type="text" asp-for="District.Description" class="form-control" />
+                                            <textarea rows="1" asp-for="District.Description" class="form-control"></textarea>
                                         }
                                         else
                                         {
-                                            <input type="text" asp-for="District.Description" class="form-control" value="@Model.District.Description" />
+                                            <textarea rows="1" asp-for="District.Description" class="form-control">@Model.District.Description</textarea>
                                         }
-                                    </div>                                        
-                                </div>                       
-                            </div>            
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
@@ -1155,182 +1155,182 @@
                             </h5>
                             <div class="card-body">
                                 <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label>Nivel socioeconómico familiar</label>
-                                            @if (Model.EconomicSituation == null || Model.EconomicSituation.NivelSocioEconomico == null)
-                                            {
-                                                <input type="text" asp-for="EconomicSituation.NivelSocioEconomico" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="EconomicSituation.NivelSocioEconomico" class="form-control" value="@Model.EconomicSituation.NivelSocioEconomico" />
-                                            }
-                                        </div>                                        
+                                    <div class="form-group col-md-6">
+                                        <label>Nivel socioeconómico familiar</label>
+                                        @if (Model.EconomicSituation == null || Model.EconomicSituation.NivelSocioEconomico == null)
+                                        {
+                                            <input type="text" asp-for="EconomicSituation.NivelSocioEconomico" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="EconomicSituation.NivelSocioEconomico" class="form-control" value="@Model.EconomicSituation.NivelSocioEconomico" />
+                                        }
+                                    </div>
                                 </div>
-                                <div class="form-row">				
+                                <div class="form-row">
                                     <div class="form-group col-md-4">
-                                            <label>Automóvil</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[0] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[0].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[0].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[0].Value" />
-                                            }
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Modelo</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[1] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[1].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[1].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[1].Value" />
-                                            }
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Valor</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[1] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[1].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[1].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[1].Value" />
-                                            }
-                                        </div>	
-                                </div>
-                                
-                                <div class="form-row">				
+                                        <label>Automóvil</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[0] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[0].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[0].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[0].Value" />
+                                        }
+                                    </div>
                                     <div class="form-group col-md-4">
-                                            <label>Casa habitación</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[2] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[2].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[2].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[2].Value" />
-                                            }
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Ubicación</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[3] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[3].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[3].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[3].Value" />
-                                            }
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Valor</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[3] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[3].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[3].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[3].Value" />
-                                            }
-                                        </div>	
-                                </div>
-                                
-                                <div class="form-row">				
+                                        <label>Modelo</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[1] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[1].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[1].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[1].Value" />
+                                        }
+                                    </div>
                                     <div class="form-group col-md-4">
-                                            <label>Terreno</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[4] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[4].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[4].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[4].Value" />
-                                            }
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Ubicación</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[5] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[5].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[5].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[5].Value" />
-                                            }
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Valor</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[5] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[5].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[5].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[5].Value" />
-                                            }
-                                        </div>
+                                        <label>Valor</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[1] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[1].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[1].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[1].Value" />
+                                        }
+                                    </div>
                                 </div>
 
-                                <div class="form-row">				
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Casa habitación</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[2] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[2].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[2].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[2].Value" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Ubicación</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[3] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[3].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[3].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[3].Value" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Valor</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[3] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[3].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[3].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[3].Value" />
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label>Terreno</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[4] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[4].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[4].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[4].Value" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Ubicación</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[5] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[5].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[5].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[5].Value" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Valor</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[5] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[5].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[5].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[5].Value" />
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
                                     <div class="form-group col-md-12">
-                                            <label>Otros</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[6] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[6].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[6].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[6].Value" />
-                                            }
-                                        </div>                                       
+                                        <label>Otros</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[6] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[6].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[6].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[6].Value" />
+                                        }
+                                    </div>
                                 </div>
 
-                                <div class="form-row">				
+                                <div class="form-row">
                                     <div class="form-group col-md-4">
-                                            <label>Ahorros</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[7] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[7].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[7].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[7].Value" />
-                                            }
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Frecuencia de ahorro</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[8] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[8].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[8].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[8].Value" />
-                                            }
-                                        </div>	
-                                        <div class="form-group col-md-4">
-                                            <label>Valor</label>
-                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[8] == null)
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[8].Value" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[8].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[8].Value" />
-                                            }
-                                        </div>
-                                </div> 
+                                        <label>Ahorros</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[7] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[7].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[7].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[7].Value" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Frecuencia de ahorro</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[8] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[8].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[8].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[8].Value" />
+                                        }
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label>Valor</label>
+                                        @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[8] == null)
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[8].Value" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" asp-for="PatrimonyViewModelCollection[8].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[8].Value" />
+                                        }
+                                    </div>
+                                </div>
 
-                                
-                            </div>            
+
+                            </div>
                         </div>
                     </section>
 
-                   <section>
+                    <section>
                         <div class="card">
                             <h5 class="card-header text-center text-white   bg-primary">
                                 Alimentacion familiar
@@ -1342,7 +1342,7 @@
                                             <thead class="">
                                                 <tr>
                                                     <th>Alimentos</th>
-                                                    <th>Frecuencia</th>								
+                                                    <th>Frecuencia</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -1365,11 +1365,11 @@
                                         <label>Observaciones</label>
                                         @if (Model.FamilyNutrition == null || Model.FamilyNutrition.Comments == null)
                                         {
-                                            <input type="text" asp-for="FamilyNutrition.Comments" class="form-control" />
+                                            <textarea rows="1" asp-for="FamilyNutrition.Comments" class="form-control"></textarea>
                                         }
                                         else
                                         {
-                                            <input type="text" asp-for="FamilyNutrition.Comments" class="form-control" value="@Model.FamilyNutrition.Comments" />
+                                            <textarea rows="1" asp-for="FamilyNutrition.Comments" class="form-control">@Model.FamilyNutrition.Comments</textarea>
                                         }
                                     </div>
                                 </div>
@@ -1378,15 +1378,15 @@
                                         <label>Alergias a algun alimento</label>
                                         @if (Model.FamilyNutrition == null || Model.FamilyNutrition.FoodAllergy == null)
                                         {
-                                            <input type="text" asp-for="FamilyNutrition.FoodAllergy" class="form-control" />
+                                            <textarea rows="1" asp-for="FamilyNutrition.FoodAllergy" class="form-control"></textarea>
                                         }
                                         else
                                         {
-                                            <input type="text" asp-for="FamilyNutrition.FoodAllergy" class="form-control" value="@Model.FamilyNutrition.FoodAllergy" />
+                                            <textarea rows="1" asp-for="FamilyNutrition.FoodAllergy" class="form-control">@Model.FamilyNutrition.FoodAllergy</textarea>
                                         }
                                     </div>
                                 </div>
-                            </div>            
+                            </div>
                         </div>
                     </section>
 
@@ -1396,7 +1396,7 @@
                                 Apoyos y Servicios Otorgados
                             </h5>
                             <div class="card-body">
-                                <div class ="mb-3 ml-3">
+                                <div class="mb-3 ml-3">
                                     @Html.ActionLink("+ Agregar", "Action", "Controller", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-success" })
                                 </div>
                                 <div class="col-12">
@@ -1408,13 +1408,158 @@
                                         <label>Dinamica familiar</label>
                                         @if (Model.BenefitsProvided == null || Model.BenefitsProvided.RedesDeApoyoFamiliares == null)
                                         {
-                                            <input type="text" asp-for="BenefitsProvided.RedesDeApoyoFamiliares" class="form-control" />
+                                            <textarea rows="1" asp-for="BenefitsProvided.RedesDeApoyoFamiliares" class="form-control"></textarea>
                                         }
                                         else
                                         {
-                                            <input type="text" asp-for="BenefitsProvided.RedesDeApoyoFamiliares" class="form-control" value="@Model.BenefitsProvided.RedesDeApoyoFamiliares" />
+                                            <textarea rows="1" asp-for="BenefitsProvided.RedesDeApoyoFamiliares" class="form-control">@Model.BenefitsProvided.RedesDeApoyoFamiliares</textarea>
                                         }
-                                    </div>				                            
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white   bg-primary">
+                                Ingresos y Egresos Mensuales
+                            </h5>
+                            <div class="card-body">
+                                <section>
+                                    <div class="card">
+                                        <h5 class="card-header text-center text-white bg-secondary">
+                                            Ingreso
+                                        </h5>
+                                        <div class="card-body">
+                                            <div class="mb-3 ml-3">
+                                                @Html.ActionLink("+ Agregar", "Action", "Controller", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-success" })
+                                            </div>
+                                            <div class="col-12">
+                                                @await Html.PartialAsync("_IngresosMensualesTable", Model)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section>
+                                    <div class="card">
+                                        <h5 class="card-header text-center text-white bg-secondary">
+                                            Egreso
+                                        </h5>
+                                        <div class="card-body">
+                                            <div class="mb-3 ml-3">
+                                                @Html.ActionLink("+ Agregar", "Action", "Controller", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-success" })
+                                            </div>
+                                            <div class="col-12">
+                                                @await Html.PartialAsync("_EgresosMensualesTable", Model)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <div class="form-row mt-4">
+                                    <div class="form-group col-md-12">
+                                        <label>Observaciones</label>
+                                        @if (Model.IngresosEgresosMensuales == null || Model.IngresosEgresosMensuales.Comments == null)
+                                        {
+                                            <textarea rows="1" asp-for="IngresosEgresosMensuales.Comments" class="form-control"></textarea>
+                                        }
+                                        else
+                                        {
+                                            <textarea rows="1" asp-for="IngresosEgresosMensuales.Comments" class="form-control">@Model.IngresosEgresosMensuales.Comments</textarea>
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white   bg-primary">
+                                Situaciones de violencia
+                            </h5>
+                            <div class="card-body">
+                                <div class="form-row mt-4">
+                                    <div class="form-group col-md-12">
+                                        <textarea rows="3" asp-for="SituationsOfDomesticViolence" class="form-control">@Model.SituationsOfDomesticViolence</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white   bg-primary">
+                                Espectativas familiares
+                            </h5>
+                            <div class="card-body">
+                                <div class="form-row mt-4">
+                                    <div class="form-group col-md-12">
+                                        <textarea rows="3" asp-for="FamilyExpectations" class="form-control">@Model.FamilyExpectations</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white   bg-primary">
+                                Diagnóstico familiar
+                            </h5>
+                            <div class="card-body">
+                                <div class="form-row mt-4">
+                                    <div class="form-group col-md-12">
+                                        <textarea rows="3" asp-for="FamilyDiagnostic" class="form-control">@Model.FamilyDiagnostic</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white   bg-primary">
+                                Problemáticas detectadas
+                            </h5>
+                            <div class="card-body">
+                                <div class="form-row mt-4">
+                                    <div class="form-group col-md-12">
+                                        <textarea rows="3" asp-for="ProblemsIdentified" class="form-control">@Model.ProblemsIdentified</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white   bg-primary">
+                                Conclusión del caso
+                            </h5>
+                            <div class="card-body">
+                                <div class="form-row mt-4">
+                                    <div class="form-group col-md-12">
+                                        <textarea rows="3" asp-for="CaseStudyConclusion" class="form-control">@Model.CaseStudyConclusion</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="card">
+                            <h5 class="card-header text-center text-white   bg-primary">
+                                Recomendaciones
+                            </h5>
+                            <div class="card-body">
+                                <div class="form-row mt-4">
+                                    <div class="form-group col-md-12">
+                                        <textarea rows="3" asp-for="Recommendations" class="form-control">@Model.Recommendations</textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1434,12 +1579,20 @@
 
 @section Scripts {
     <script type="text/javascript">
-        $(document).ready( function () {
+        $(document).ready(function () {
             $('#FamilyMembersTableId').DataTable({ searching: false });
         });
 
-        $(document).ready( function () {
+        $(document).ready(function () {
             $('#BenefitsProvidedTableId').DataTable({ searching: false });
+        });
+
+        $(document).ready(function () {
+            $('#IngresosMensualesTableId').DataTable({ searching: false });
+        });
+
+        $(document).ready(function () {
+            $('#EgresosMensualesTableId').DataTable({ searching: false });
         });
     </script>
 }

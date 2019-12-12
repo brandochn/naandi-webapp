@@ -737,6 +737,7 @@ CREATE TABLE `FamilyResearch` (
   `SituationsOfDomesticViolence` varchar(200) DEFAULT NULL,
   `FamilyExpectations` varchar(300) DEFAULT NULL,
   `FamilyDiagnostic` varchar(300) DEFAULT NULL,
+  `ProblemsIdentified` varchar(300) DEFAULT NULL,
   `CaseStudyConclusion` varchar(300) DEFAULT NULL,
   `Recommendations` varchar(300) DEFAULT NULL,
   `VisualSupports` varchar(300) DEFAULT NULL,
@@ -2492,7 +2493,8 @@ BEGIN
 			,RequestReasons 
 			,SituationsOfDomesticViolence 
 			,FamilyExpectations 
-			,FamilyDiagnostic 
+			,FamilyDiagnostic
+			,ProblemsIdentified
 			,CaseStudyConclusion 
 			,Recommendations
 			,VisualSupports
@@ -2517,6 +2519,7 @@ BEGIN
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SituationsOfDomesticViolence'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyExpectations'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyDiagnostic'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ProblemsIdentified'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CaseStudyConclusion'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Recommendations'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisualSupports'))
@@ -2551,6 +2554,7 @@ BEGIN
 				,`SituationsOfDomesticViolence` =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SituationsOfDomesticViolence')) FROM JSON_TABLE)
 				,`FamilyExpectations` =            (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyExpectations')) FROM JSON_TABLE)
 				,`FamilyDiagnostic` =              (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyDiagnostic')) FROM JSON_TABLE)
+				,`ProblemsIdentified` =              (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ProblemsIdentified')) FROM JSON_TABLE)
 				,`CaseStudyConclusion` =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CaseStudyConclusion')) FROM JSON_TABLE)
 				,`Recommendations` =               (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Recommendations')) FROM JSON_TABLE)
 				,`VisualSupports` =                (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisualSupports')) FROM JSON_TABLE)
