@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Transactions;
+using Dapper;
 using MySql.Data.MySqlClient;
 using Naandi.Shared;
 using Naandi.Shared.Exceptions;
@@ -1081,6 +1083,76 @@ namespace WebApi.Services
             }
 
             return familyResearchId;
+        }
+
+        public IEnumerable<MaritalStatus> GetMaritalStatuses()
+        {
+            IEnumerable<MaritalStatus> maritalStatuses;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+
+                string sql = "SELECT * FROM MaritalStatus order by Name;";
+
+                maritalStatuses = connection.Query<MaritalStatus>(sql);
+            }
+
+            return maritalStatuses;
+        }
+
+        public IEnumerable<Relationship> GetRelationships()
+        {
+            IEnumerable<Relationship> relationships;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+
+                string sql = "SELECT * FROM Relationship order by Name;";
+
+                relationships = connection.Query<Relationship>(sql);
+            }
+
+            return relationships;
+        }
+
+        public IEnumerable<StatesOfMexico> GetStatesOfMexico()
+        {
+            IEnumerable<StatesOfMexico> statesOfMexicoList;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                string sql = "SELECT * FROM StatesOfMexico ORDER BY nombre;";
+
+                statesOfMexicoList = connection.Query<StatesOfMexico>(sql);
+            }
+
+            return statesOfMexicoList;
+        }
+
+        public IEnumerable<MunicipalitiesOfMexico> GetMunicipalitiesOfMexicoByStateOfMexicoName(string nameOfState)
+        {
+            IEnumerable<MunicipalitiesOfMexico> municipalities;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                string sql = @"
+                   SELECT m.*,s.*
+                    FROM MunicipalitiesOfMexico m
+                    JOIN StatesOfMexico s ON s.id = m.estado_id
+                    WHERE s.nombre = @nameOfState
+                    ORDER BY m.nombre;";
+
+                municipalities = connection.Query<MunicipalitiesOfMexico, StatesOfMexico, MunicipalitiesOfMexico>(sql,
+                (m, s) =>
+                {
+                    m.StatesOfMexico = s;
+                    m.EstadoId = s.Id;
+                    return m;
+
+                }, new { nameOfState });
+            }
+
+            return municipalities;
         }
     }
 }

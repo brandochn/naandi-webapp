@@ -1565,12 +1565,10 @@
                         </div>
                     </section>
 
-
-
-
                 </div>
-                <div class="card-footer text-muted">
-                    Footer
+                <div class="card-footer  text-right">
+                    <button asp-controller="controller" asp-area="SocialWork" asp-action="action" type="submit" class="btn btn-primary">Guardar</button>
+                    @Html.ActionLink("Cancelar", "Action", "Controller", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-secondary" })
                 </div>
             </div>
         </div>

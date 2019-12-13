@@ -2,6 +2,7 @@ using Naandi.Shared.Models;
 using Naandi.Shared.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WebApp.Areas.SocialWork.Models
 {
@@ -27,8 +28,7 @@ namespace WebApp.Areas.SocialWork.Models
 
         public void LoadMaritalStatuses(IFamilyResearch familyResearchRepository)
         {
-            // MaritalStatusList = familyResearchRepository.GetMaritalStatuses().ToList();
-            MaritalStatusList = new List<MaritalStatus>();
+            MaritalStatusList = familyResearchRepository.GetMaritalStatuses().ToList();
             MaritalStatusList.Insert(0, new MaritalStatus()
             {
                 Id = 0,
@@ -38,8 +38,7 @@ namespace WebApp.Areas.SocialWork.Models
 
         public void LoadRelationships(IFamilyResearch familyResearchRepository)
         {
-            //RelationshipList = familyResearchRepository.GetRelationships().ToList();
-            RelationshipList = new List<Relationship>();
+            RelationshipList = familyResearchRepository.GetRelationships().ToList();            
             RelationshipList.Insert(0, new Relationship()
             {
                 Id = 0,
@@ -49,7 +48,7 @@ namespace WebApp.Areas.SocialWork.Models
 
         public void LoadStatesOfMexico(IFamilyResearch familyResearchRepository)
         {
-            StatesOfMexico = new List<StatesOfMexico>();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            StatesOfMexico = familyResearchRepository.GetStatesOfMexico().ToList();
             StatesOfMexico.Insert(0, new StatesOfMexico()
             {
                 Nombre = "Selecciona un estado"
@@ -68,8 +67,8 @@ namespace WebApp.Areas.SocialWork.Models
             }
             else
             {
-                MunicipalitiesOfMexico = new List<MunicipalitiesOfMexico>(); /* registrationRequestRepository
-                    .GetMunicipalitiesOfMexicoByStateOfMexicoName(Requestor.Address.State).ToList(); */
+                MunicipalitiesOfMexico = familyResearchRepository
+                    .GetMunicipalitiesOfMexicoByStateOfMexicoName(LegalGuardian.Address.State).ToList();
             }
         }
 
