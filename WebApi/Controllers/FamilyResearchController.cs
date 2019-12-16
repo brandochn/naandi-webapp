@@ -5,6 +5,8 @@ using Naandi.Shared.Models;
 using Naandi.Shared.Services;
 using Microsoft.Extensions.Logging;
 using Naandi.Shared.Exceptions;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace WebApi.Controllers
 {
@@ -61,6 +63,20 @@ namespace WebApi.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("GetHomeAcquisitions")]
+        public IEnumerable<HomeAcquisition> GetHomeAcquisitions()
+        {
+            return familyResearchRepository.GetHomeAcquisitions().ToList();
+        }
+
+        [HttpGet]
+        [Route("GetTypesOfHouses")]
+        public IEnumerable<TypesOfHouses> GetTypesOfHouses()
+        {
+            return familyResearchRepository.GetTypesOfHouses().ToList();
         }
     }
 }

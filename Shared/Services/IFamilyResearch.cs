@@ -10,5 +10,7 @@ namespace Naandi.Shared.Services
         IEnumerable<Relationship> GetRelationships();
         IEnumerable<StatesOfMexico> GetStatesOfMexico();
         IEnumerable<MunicipalitiesOfMexico> GetMunicipalitiesOfMexicoByStateOfMexicoName(string nameOfState);
+        IEnumerable<HomeAcquisition> GetHomeAcquisitions();
+        IEnumerable<TypesOfHouses> GetTypesOfHouses();
     }
 }

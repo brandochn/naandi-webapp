@@ -1154,5 +1154,33 @@ namespace WebApi.Services
 
             return municipalities;
         }
+
+        public IEnumerable<HomeAcquisition> GetHomeAcquisitions()
+        {
+            IEnumerable<HomeAcquisition> acquisitions;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                string sql = "SELECT * FROM HomeAcquisition ORDER BY Name;";
+
+                acquisitions = connection.Query<HomeAcquisition>(sql);
+            }
+
+            return acquisitions;
+        }
+
+        public IEnumerable<TypesOfHouses> GetTypesOfHouses()
+        {
+            IEnumerable<TypesOfHouses> typeOfHouses;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                string sql = "SELECT * FROM TypesOfHouses ORDER BY Name;";
+
+                typeOfHouses = connection.Query<TypesOfHouses>(sql);
+            }
+
+            return typeOfHouses;
+        }
     }
 }

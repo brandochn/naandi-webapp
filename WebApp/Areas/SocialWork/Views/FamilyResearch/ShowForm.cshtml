@@ -761,7 +761,7 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
                                         <label>Tipo de vivienda</label>
-                                        @Html.DropDownListFor(x => Model.SocioEconomicStudy.TypesOfHousesId, new SelectList(Model.HomeAcquisitionList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "TypesOfHouses" })
+                                        @Html.DropDownListFor(x => Model.SocioEconomicStudy.TypesOfHousesId, new SelectList(Model.TypesOfHousesList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "TypesOfHouses" })
                                     </div>
                                 </div>
 

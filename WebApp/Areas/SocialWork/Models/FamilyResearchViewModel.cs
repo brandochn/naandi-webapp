@@ -74,7 +74,7 @@ namespace WebApp.Areas.SocialWork.Models
 
         public void LoadHomeAcquisitionList(IFamilyResearch familyResearchRepository)
         {
-            HomeAcquisitionList = new List<HomeAcquisition>();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            HomeAcquisitionList = familyResearchRepository.GetHomeAcquisitions().ToList();
             HomeAcquisitionList.Insert(0, new HomeAcquisition()
             {
                 Name = "Selecciona uno"
@@ -82,7 +82,7 @@ namespace WebApp.Areas.SocialWork.Models
         }
         public void LoadTypesOfHousesList(IFamilyResearch familyResearchRepository)
         {
-            TypesOfHousesList = new List<TypesOfHouses>();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            TypesOfHousesList = familyResearchRepository.GetTypesOfHouses().ToList();
             TypesOfHousesList.Insert(0, new TypesOfHouses()
             {
                 Name = "Selecciona uno"

@@ -20,6 +20,17 @@ namespace WebApp.Services
             throw new System.NotImplementedException();
         }
 
+        public IEnumerable<HomeAcquisition> GetHomeAcquisitions()
+        {
+             IList<HomeAcquisition> acquisitions;
+
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/FamilyResearch/GetHomeAcquisitions", Method.GET);
+            acquisitions = client.GetCall<List<HomeAcquisition>>(request);
+
+            return acquisitions;
+        }
+
         public IEnumerable<MaritalStatus> GetMaritalStatuses()
         {
             IList<MaritalStatus> maritalStatuses;
@@ -64,6 +75,17 @@ namespace WebApp.Services
             statesOfMexicoList = client.GetCall<List<StatesOfMexico>>(request);
 
             return statesOfMexicoList;
+        }
+
+        public IEnumerable<TypesOfHouses> GetTypesOfHouses()
+        {
+            IList<TypesOfHouses> typeOfHouses;
+
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/FamilyResearch/GetTypesOfHouses", Method.GET);
+            typeOfHouses = client.GetCall<List<TypesOfHouses>>(request);
+
+            return typeOfHouses;
         }
     }
 }
