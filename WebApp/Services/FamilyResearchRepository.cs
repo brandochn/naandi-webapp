@@ -22,7 +22,7 @@ namespace WebApp.Services
 
         public IEnumerable<HomeAcquisition> GetHomeAcquisitions()
         {
-             IList<HomeAcquisition> acquisitions;
+            IList<HomeAcquisition> acquisitions;
 
             var client = applicationRestClient.CreateRestClient();
             var request = new RestRequest("/api/FamilyResearch/GetHomeAcquisitions", Method.GET);
@@ -54,7 +54,6 @@ namespace WebApp.Services
 
             return municipalities;
         }
-
         public IEnumerable<Relationship> GetRelationships()
         {
             IList<Relationship> Relationship;
@@ -77,6 +76,28 @@ namespace WebApp.Services
             return statesOfMexicoList;
         }
 
+        public IEnumerable<TipoDeMobiliario> GetTipoDeMobiliarios()
+        {
+            IList<TipoDeMobiliario> tipoDeMobiliarios;
+
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/FamilyResearch/GetTipoDeMobiliarios", Method.GET);
+            tipoDeMobiliarios = client.GetCall<List<TipoDeMobiliario>>(request);
+
+            return tipoDeMobiliarios;
+        }
+
+        public IEnumerable<TypeOfDistrict> GetTypeOfDistricts()
+        {
+            IList<TypeOfDistrict> typeOfDistricts;
+
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/FamilyResearch/GetTypeOfDistricts", Method.GET);
+            typeOfDistricts = client.GetCall<List<TypeOfDistrict>>(request);
+
+            return typeOfDistricts;
+        }
+
         public IEnumerable<TypesOfHouses> GetTypesOfHouses()
         {
             IList<TypesOfHouses> typeOfHouses;
@@ -86,6 +107,39 @@ namespace WebApp.Services
             typeOfHouses = client.GetCall<List<TypesOfHouses>>(request);
 
             return typeOfHouses;
+        }
+
+        public IEnumerable<Patrimony> GetPatrimonies()
+        {
+            IList<Patrimony> patrimonies;
+
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/FamilyResearch/GetPatrimonies", Method.GET);
+            patrimonies = client.GetCall<List<Patrimony>>(request);
+
+            return patrimonies;
+        }
+
+        public IEnumerable<Food> GetFoods()
+        {
+            IList<Food> foods;
+
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/FamilyResearch/GetFoods", Method.GET);
+            foods = client.GetCall<List<Food>>(request);
+
+            return foods;
+        }
+
+        public IEnumerable<Frequency> GetFrequencies()
+        {
+            IList<Frequency> frequencies;
+
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/FamilyResearch/GetFrequencies", Method.GET);
+            frequencies = client.GetCall<List<Frequency>>(request);
+
+            return frequencies;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace WebApp.Areas.SocialWork.Models
 
         public void LoadRelationships(IFamilyResearch familyResearchRepository)
         {
-            RelationshipList = familyResearchRepository.GetRelationships().ToList();            
+            RelationshipList = familyResearchRepository.GetRelationships().ToList();
             RelationshipList.Insert(0, new Relationship()
             {
                 Id = 0,
@@ -90,7 +90,7 @@ namespace WebApp.Areas.SocialWork.Models
         }
         public void LoadTipoDeMobiliarioList(IFamilyResearch familyResearchRepository)
         {
-            TipoDeMobiliarioList = new List<TipoDeMobiliario>();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            TipoDeMobiliarioList = familyResearchRepository.GetTipoDeMobiliarios().ToList();
             TipoDeMobiliarioList.Insert(0, new TipoDeMobiliario()
             {
                 Name = "Selecciona uno"
@@ -99,7 +99,7 @@ namespace WebApp.Areas.SocialWork.Models
 
         public void LoadTypeOfDistrictList(IFamilyResearch familyResearchRepository)
         {
-            TypeOfDistrictList = new List<TypeOfDistrict>();// registrationRequestRepository.GetStatesOfMexico().ToList();
+            TypeOfDistrictList = familyResearchRepository.GetTypeOfDistricts().ToList();
             TypeOfDistrictList.Insert(0, new TypeOfDistrict()
             {
                 Name = "Selecciona uno"
@@ -107,49 +107,31 @@ namespace WebApp.Areas.SocialWork.Models
         }
         public void LoadPatrimonyViewModelCollection(IFamilyResearch familyResearchRepository)
         {
-            PatrimonyViewModelCollection = new PatrimonyViewModelCollection();// registrationRequestRepository.GetStatesOfMexico().ToList();
-            PatrimonyViewModelCollection[0] = new PatrimonyViewModel()
+            var patrimonies = familyResearchRepository.GetPatrimonies()?.OrderBy(o => o.Id)?.ToList();
+            if (patrimonies == null)
             {
-                Name = "Automovil",
-                Value = string.Empty
-            };
+                return;
+            }
+
+            PatrimonyViewModelCollection = new PatrimonyViewModelCollection();
+            for (int i = 0; i < patrimonies.Count; i++)
+            {
+                PatrimonyViewModelCollection[i] = new PatrimonyViewModel()
+                {
+                    Name = patrimonies[i].Name,
+                    Value = string.Empty
+                };
+            }
         }
 
         public void LoadFoods(IFamilyResearch familyResearchRepository)
         {
-            Foods = new List<Food>();// registrationRequestRepository.GetStatesOfMexico().ToList();
-            Foods.Add(new Food()
-            {
-                Id = 1,
-                Name = "Leche"
-            });
-            Foods.Add(new Food()
-            {
-                Id = 2,
-                Name = "Huevo"
-            });
+            Foods = familyResearchRepository.GetFoods().ToList();
         }
 
         public void LoadFrequencies(IFamilyResearch familyResearchRepository)
         {
-            Frequencies = new List<Frequency>();// registrationRequestRepository.GetStatesOfMexico().ToList();
-            Frequencies.Add(new Frequency()
-            {
-                Id = 1,
-                Name = "Diario"
-            });
-            Frequencies.Add(new Frequency()
-            {
-                Id = 2,
-                Name = "Cada 3er día"
-            });
-
-            Frequencies.Insert(0, new Frequency()
-            {
-                Id = 3,
-                Name = "Selecciona uno"
-            });
-
+            Frequencies = familyResearchRepository.GetFrequencies().OrderBy(o => o.Id).ToList();
             FrequencyIdsSelected = new int[12];
         }
     }

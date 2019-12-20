@@ -78,5 +78,40 @@ namespace WebApi.Controllers
         {
             return familyResearchRepository.GetTypesOfHouses().ToList();
         }
+
+        [HttpGet]
+        [Route("GetTipoDeMobiliarios")]
+        public IEnumerable<TipoDeMobiliario> GetTipoDeMobiliarios()
+        {
+            return familyResearchRepository.GetTipoDeMobiliarios().ToList();
+        }
+
+        [HttpGet]
+        [Route("GetTypeOfDistricts")]
+        public IEnumerable<TypeOfDistrict> GetTypeOfDistricts()
+        {
+            return familyResearchRepository.GetTypeOfDistricts().ToList();
+        }
+
+        [HttpGet]
+        [Route("GetPatrimonies")]
+        public IEnumerable<Patrimony> GetPatrimonies()
+        {
+            return familyResearchRepository.GetPatrimonies().ToList();
+        }
+
+        [HttpGet]
+        [Route("GetFoods")]
+        public IEnumerable<Food> GetFoods()
+        {
+            return familyResearchRepository.GetFoods().ToList();
+        }
+
+        [HttpGet]
+        [Route("GetFrequencies")]
+        public IEnumerable<Frequency> GetFrequencies()
+        {
+            return familyResearchRepository.GetFrequencies().ToList();
+        }
     }
 }

@@ -1182,5 +1182,75 @@ namespace WebApi.Services
 
             return typeOfHouses;
         }
+
+        public IEnumerable<TipoDeMobiliario> GetTipoDeMobiliarios()
+        {
+            IEnumerable<TipoDeMobiliario> tipoDeMobiliarios;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                string sql = "SELECT * FROM TipoDeMobiliario ORDER BY Name;";
+
+                tipoDeMobiliarios = connection.Query<TipoDeMobiliario>(sql);
+            }
+
+            return tipoDeMobiliarios;
+        }
+
+        public IEnumerable<TypeOfDistrict> GetTypeOfDistricts()
+        {
+            IEnumerable<TypeOfDistrict> typeOfDistricts;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                string sql = "SELECT * FROM TypeOfDistrict ORDER BY Name;";
+
+                typeOfDistricts = connection.Query<TypeOfDistrict>(sql);
+            }
+
+            return typeOfDistricts;
+        }
+
+        public IEnumerable<Patrimony> GetPatrimonies()
+        {
+            IEnumerable<Patrimony> patrimonies;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                string sql = "SELECT * FROM Patrimony ORDER BY Name;";
+
+                patrimonies = connection.Query<Patrimony>(sql);
+            }
+
+            return patrimonies;
+        }
+
+        public IEnumerable<Food> GetFoods()
+        {
+            IEnumerable<Food> foods;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                string sql = "SELECT * FROM Food ORDER BY Name;";
+
+                foods = connection.Query<Food>(sql);
+            }
+
+            return foods;
+        }
+
+         public IEnumerable<Frequency> GetFrequencies()
+        {
+            IEnumerable<Frequency> frequencies;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                string sql = "SELECT * FROM Frequency ORDER BY Name;";
+
+                frequencies = connection.Query<Frequency>(sql);
+            }
+
+            return frequencies;
+        }
     }
 }
