@@ -33,6 +33,12 @@ namespace WebApp.Areas.SocialWork.Controllers
             model.VisitDate = DateTime.Now;
             model.VisitTime = DateTime.Now;
 
+            if(Id > 0)
+            {
+                
+                return View(model);
+            }
+
             return View(model);
         }
     }

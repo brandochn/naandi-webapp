@@ -17,5 +17,6 @@ namespace Naandi.Shared.Services
         IEnumerable<Patrimony> GetPatrimonies();
         IEnumerable<Food> GetFoods();
         IEnumerable<Frequency> GetFrequencies();
+        FamilyResearch GetFamilyResearchById(int id);
     }
 }

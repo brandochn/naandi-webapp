@@ -1252,5 +1252,224 @@ namespace WebApi.Services
 
             return frequencies;
         }
+
+        public FamilyResearch GetFamilyResearchById(int id)
+        {
+           FamilyResearch familyResearches = null;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT `FamilyResearch`.Id, -- 0
+                                `FamilyResearch`.VisitDate, -- 1
+                                `FamilyResearch`.VisitTime, -- 2
+                                `FamilyResearch`.Family, -- 3
+                                `FamilyResearch`.RequestReasons, -- 4
+                                `FamilyResearch`.SituationsOfDomesticViolence, -- 5
+                                `FamilyResearch`.FamilyExpectations, -- 6
+                                `FamilyResearch`.FamilyDiagnostic, -- 7
+                                `FamilyResearch`.CaseStudyConclusion, -- 8
+                                `FamilyResearch`.Recommendations, -- 9
+                                `FamilyResearch`.VisualSupports, -- 10
+                                `FamilyResearch`.Sketch, -- 11
+                                `FamilyResearch`.LegalGuardianId, -- 12
+                                `FamilyResearch`.MinorId, -- 13
+                                `FamilyResearch`.PreviousFoundationId, -- 14
+                                `FamilyResearch`.FamilyHealthId, -- 15
+                                `FamilyResearch`.FamilyMembersId, -- 16
+                                `FamilyResearch`.SocioEconomicStudyId, -- 17
+                                `FamilyResearch`.DistrictId, -- 18
+                                `FamilyResearch`.EconomicSituationId, -- 19
+                                `FamilyResearch`.FamilyNutritionId, -- 20
+                                `FamilyResearch`.BenefitsProvidedId, -- 21
+                                `FamilyResearch`.IngresosEgresosMensualesId, -- 22
+                                `LegalGuardian`.Id, -- 23
+                                `LegalGuardian`.FullName, -- 24
+                                `LegalGuardian`.Age, -- 25
+                                `LegalGuardian`.PlaceOfBirth, -- 26
+                                `LegalGuardian`.MaritalStatusId, -- 27
+                                `LegalGuardian`.Education, -- 28
+                                `LegalGuardian`.CurrentOccupation, -- 29
+                                `LegalGuardian`.RelationshipId, -- 30
+                                `LegalGuardian`.AddressId, -- 31
+                                `LegalGuardian`.CellPhoneNumber, -- 32
+                                `LegalGuardian`.PhoneNumber, -- 33
+                                `LegalGuardian`.Errand, -- 34
+                                `LegalGuardian`.SpouseId, -- 35 
+                                `LegalGuardian`.DateOfBirth, -- 36
+                                `MaritalStatus`.Id, -- 37
+                                `MaritalStatus`.Name, -- 38
+                                `Relationship`.Id, -- 39
+                                `Relationship`.Name, -- 40
+                                `Address`.Id, -- 41
+                                `Address`.Street, -- 42
+                                `Address`.HouseNumber, -- 43
+                                `Address`.PoBox, -- 44
+                                `Address`.PhoneNumber, -- 45
+                                `Address`.City, -- 46
+                                `Address`.Zip, -- 47
+                                `Address`.State, -- 48
+                                `Address`.Neighborhood, -- 49
+                                `Address`.Reference, -- 50
+                                `Spouse`.Id, -- 51,
+                                `Spouse`.FullName, -- 52
+                                `Spouse`.Age, -- 53
+                                `Spouse`.CurrentOccupation, -- 54
+                                `Spouse`.Comments, -- 55
+                                `Minor`.Id, -- 56
+                                `Minor`.FullName, -- 57
+                                `Minor`.DateOfBirth, -- 58
+                                `Minor`.PlaceOfBirth, -- 59
+                                `Minor`.Age, -- 60
+                                `Minor`.Education, -- 61
+                                `Minor`.CurrentOccupation, -- 62
+                                `Minor`.FormalEducationId, -- 63
+                                `FormalEducation`.Id, -- 64
+                                `FormalEducation`.CanItRead, -- 65
+                                `FormalEducation`.CanItWrite, -- 66
+                                `FormalEducation`.IsItStudyingNow, -- 67
+                                `FormalEducation`.CurrentGrade, -- 68
+                                `FormalEducation`.ReasonsToStopStudying, -- 69
+                                `PreviousFoundation`.Id, -- 70
+                                `PreviousFoundation`.Familiar, -- 71
+                                `PreviousFoundation`.Procuraduria, -- 72
+                                `PreviousFoundation`.Dif, -- 73
+                                `PreviousFoundation`.Otro, -- 74
+                                `PreviousFoundation`.InstitucionAnterior, -- 75
+                                `PreviousFoundation`.TiempoDeEstadia, -- 76
+                                `PreviousFoundation`.MotivoDeEgreso, -- 77
+                                `FamilyHealth`.Id, -- 78
+                                `FamilyHealth`.FamilyHealthStatus, -- 79
+                                `FamilyHealth`.DerechoHambienteAServiciosDeSalud, -- 80
+                                `FamilyHealth`.Tipo, -- 81
+                                `FamilyHealth`.EnfermedadesCronicasDegenerativas, -- 82
+                                `FamilyHealth`.ConsumoDeTabaco, -- 83
+                                `FamilyHealth`.ConsumoDeAlcohol, -- 84
+                                `FamilyHealth`.ConsumoDeDrogas, -- 85
+                                `FamilyHealth`.Comments, -- 86
+                                `SocioEconomicStudy`.Id, -- 87
+                                `SocioEconomicStudy`.HomeAcquisitionId, -- 88
+                                `SocioEconomicStudy`.NombrePropietario, -- 89
+                                `SocioEconomicStudy`.MedioAdquisicion, -- 90
+                                `SocioEconomicStudy`.TypesOfHousesId, -- 91
+                                `SocioEconomicStudy`.HouseLayoutId, -- 92
+                                `District`.Id, -- 93
+                                `District`.TypeOfDistrictId, -- 94
+                                `District`.AguaPotable, -- 95
+                                `District`.Telefono, -- 96
+                                `District`.Electricidad, -- 97
+                                `District`.Drenaje, -- 98
+                                `District`.Hospital, -- 99
+                                `District`.Correo, -- 100
+                                `District`.Escuela, -- 101
+                                `District`.Policia, -- 102
+                                `District`.AlumbradoPublico, -- 103
+                                `District`.ViasDeAcceso, -- 104
+                                `District`.TransportePublico, -- 105
+                                `District`.AseoPublico, -- 106
+                                `District`.Iglesia, -- 107
+                                `District`.Otros, -- 108
+                                `District`.Description -- 109
+
+                            FROM `FamilyResearch`
+                            LEFT JOIN `LegalGuardian` ON `LegalGuardian`.Id =  `FamilyResearch`.LegalGuardianId
+                            LEFT JOIN `MaritalStatus` ON `MaritalStatus`.Id = `LegalGuardian`.MaritalStatusId
+                            LEFT JOIN `Relationship` ON `Relationship`.Id = `LegalGuardian`.RelationshipId
+                            LEFT JOIN `Address` ON `Address`.Id = `LegalGuardian`.AddressId
+                            LEFT JOIN `Spouse` ON `Spouse`.Id = `LegalGuardian`.SpouseId
+                            LEFT JOIN `Minor` ON `Minor`.Id = `FamilyResearch`.MinorId
+                            LEFT JOIN `FormalEducation` ON `FormalEducation`.Id = `Minor`.FormalEducationId
+                            LEFT JOIN `PreviousFoundation` ON `PreviousFoundation`.Id = `FamilyResearch`.PreviousFoundationId
+                            LEFT JOIN `FamilyHealth` ON `FamilyHealth`.Id = `FamilyResearch`.FamilyHealthId
+                            LEFT JOIN `SocioEconomicStudy` ON `SocioEconomicStudy`.Id = `FamilyResearch`.SocioEconomicStudyId
+                            LEFT JOIN `District` ON `District`.Id = `FamilyResearch`.DistrictId
+                            WHERE `FamilyResearch`.Id = @id;";
+
+                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "id",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.Int32,
+                    Value = id
+                });
+
+                connection.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows == false)
+                    {
+                        return null;
+                    }
+                    int index;
+                    while (reader.Read())
+                    {
+                        index = 0;
+
+                        familyResearches = new FamilyResearch();
+                        familyResearches.Id = reader.GetInt32(index);
+                        familyResearches.VisitDate = reader.GetDateTime(index);
+                        familyResearches.VisitTime = reader.GetDateTime(index);
+                        familyResearches.Family = reader.GetString(index);
+                        familyResearches.RequestReasons = reader.GetString(index);
+                        familyResearches.SituationsOfDomesticViolence = reader.GetString(index);
+                        familyResearches.FamilyExpectations = reader.GetString(index);
+                        familyResearches.FamilyDiagnostic = reader.GetString(index);
+                        familyResearches.CaseStudyConclusion = reader.GetString(index);
+                        familyResearches.Recommendations = reader.GetString(index);
+                        familyResearches.VisualSupports = reader.GetString(index);
+                        familyResearches.Sketch = reader.GetString(index);
+                        familyResearches.LegalGuardianId = reader.GetInt32(index);
+                        familyResearches.MinorId = reader.GetInt32(index);
+                        familyResearches.PreviousFoundationId = reader.GetInt32(index);
+                        familyResearches.FamilyHealthId = reader.GetInt32(index);
+                        familyResearches.FamilyMembersId = reader.GetInt32(index);
+                        familyResearches.SocioEconomicStudyId = reader.GetInt32(index);
+                        familyResearches.DistrictId = reader.GetInt32(index);
+                        familyResearches.EconomicSituationId = reader.GetInt32(index);
+                        familyResearches.FamilyNutritionId = reader.GetInt32(index);
+                        familyResearches.BenefitsProvidedId = reader.GetInt32(index);
+                        familyResearches.IngresosEgresosMensualesId = reader.GetInt32(index);
+
+                        familyResearches.LegalGuardian = new LegalGuardian();
+                        familyResearches.LegalGuardian.Id = reader.GetInt32(index);
+                        familyResearches.LegalGuardian.FullName = reader.GetString(index);
+                        familyResearches.LegalGuardian.Age = reader.GetInt32(index);
+                        familyResearches.LegalGuardian.PlaceOfBirth = reader.GetString(index);
+                        familyResearches.LegalGuardian.MaritalStatusId = reader.GetInt32(index);
+                        familyResearches.LegalGuardian.Education = reader.GetString(index);
+                        familyResearches.LegalGuardian.CurrentOccupation = reader.GetString(index);
+                        familyResearches.LegalGuardian.RelationshipId = reader.GetInt32(index);
+                        familyResearches.LegalGuardian.AddressId = reader.GetInt32(index);
+                        familyResearches.LegalGuardian.CellPhoneNumber = reader.GetString(index);
+                        familyResearches.LegalGuardian.PhoneNumber = reader.GetString(index);
+                        familyResearches.LegalGuardian.Errand = reader.GetString(index);
+                        familyResearches.LegalGuardian.SpouseId = reader.GetInt32(index);
+                        familyResearches.LegalGuardian.DateOfBirth = reader.GetDateTime(index);
+
+                        familyResearches.LegalGuardian.MaritalStatus = new MaritalStatus();
+                        familyResearches.LegalGuardian.MaritalStatus.Id = reader.GetInt32(index);
+                        familyResearches.LegalGuardian.MaritalStatus.Name = reader.GetString(index);
+
+                        familyResearches.LegalGuardian.Relationship = new Relationship();
+                        familyResearches.LegalGuardian.Relationship.Id = reader.GetInt32(index);
+                        familyResearches.LegalGuardian.Relationship.Name = reader.GetString(index);
+
+                        familyResearches.LegalGuardian.Address = new Address();
+                        familyResearches.LegalGuardian.Address.Id = reader.GetInt32(index);
+
+
+                        
+                        
+
+
+                    }
+                }
+                
+            }
+            
+            return familyResearches;
+        }
     }
 }

@@ -141,5 +141,10 @@ namespace WebApp.Services
 
             return frequencies;
         }
+
+        public FamilyResearch GetFamilyResearchById(int id)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
