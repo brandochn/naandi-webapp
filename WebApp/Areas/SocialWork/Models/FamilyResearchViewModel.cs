@@ -20,6 +20,8 @@ namespace WebApp.Areas.SocialWork.Models
         public IList<Food> Foods { get; set; }
         public IList<Frequency> Frequencies { get; set; }
         public int[] FrequencyIdsSelected { get; set; }
+        public IList<FamilyResearch> FamilyResearches { get; set; }
+ 
 
         public bool IsValid(object value)
         {

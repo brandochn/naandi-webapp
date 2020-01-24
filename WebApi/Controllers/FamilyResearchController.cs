@@ -113,5 +113,26 @@ namespace WebApi.Controllers
         {
             return familyResearchRepository.GetFrequencies().ToList();
         }
+
+        [HttpGet]
+        [Route("GetFamilyResearchById/{Id}")]
+        public IActionResult GetFamilyResearchById(int Id)
+        {
+            var familyResearch = familyResearchRepository.GetFamilyResearchById(Id);
+
+            if (familyResearch == null)
+            {
+                return NotFound("No record found");
+            }
+
+            return Ok(familyResearch);
+        }
+
+        [HttpGet]
+        [Route("GetFamilyResearches")]
+        public IEnumerable<FamilyResearch> GetFamilyResearches()
+        {
+            return familyResearchRepository.GetFamilyResearches().ToList();
+        }
     }
 }

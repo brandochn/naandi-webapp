@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Naandi.Shared.Services;
 using System;
+using System.Linq;
 using WebApp.Areas.SocialWork.Models;
 
 namespace WebApp.Areas.SocialWork.Controllers
@@ -12,6 +13,17 @@ namespace WebApp.Areas.SocialWork.Controllers
         public FamilyResearchController(IFamilyResearch _familyResearchRepository)
         {
             familyResearchRepository = _familyResearchRepository;
+        }
+
+        [HttpGet]
+        [Route("/SocialWork/FamilyResearch")]
+        public IActionResult Index()
+        {
+            FamilyResearchViewModel model = new FamilyResearchViewModel
+            {
+                FamilyResearches = familyResearchRepository.GetFamilyResearches().ToList()
+            };
+            return View(model);
         }
 
         [HttpGet]

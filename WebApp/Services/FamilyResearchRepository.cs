@@ -144,7 +144,25 @@ namespace WebApp.Services
 
         public FamilyResearch GetFamilyResearchById(int id)
         {
-            throw new System.NotImplementedException();
+            FamilyResearch familyResearch;
+
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/FamilyResearch/GetFamilyResearchById/{Id}", Method.GET);
+            request.AddUrlSegment("Id", id);
+
+            familyResearch = client.GetCall<FamilyResearch>(request);
+
+            return familyResearch;
+        }
+
+        public IEnumerable<FamilyResearch> GetFamilyResearches()
+        {
+            IList<FamilyResearch> familyResearches = new List<FamilyResearch>();
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/FamilyResearch/GetFamilyResearches", Method.GET);
+            familyResearches = client.GetCall<List<FamilyResearch>>(request);
+
+            return familyResearches;
         }
     }
 }
