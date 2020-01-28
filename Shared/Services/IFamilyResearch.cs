@@ -19,5 +19,8 @@ namespace Naandi.Shared.Services
         IEnumerable<Frequency> GetFrequencies();
         FamilyResearch GetFamilyResearchById(int id);
         IEnumerable<FamilyResearch> GetFamilyResearches();
+        void Update(FamilyResearch familyResearch);
+        IEnumerable<FamilyResearch> GetFamilyResearchByMinorName(string minorName);
+
     }
 }

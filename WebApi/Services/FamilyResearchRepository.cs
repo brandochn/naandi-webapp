@@ -1819,5 +1819,15 @@ namespace WebApi.Services
             
             return familyResearches;
         }
+
+        public void Update(FamilyResearch familyResearch)
+        {
+            Add(familyResearch);
+        }
+
+        public IEnumerable<FamilyResearch> GetFamilyResearchByMinorName(string minorName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

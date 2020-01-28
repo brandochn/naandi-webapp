@@ -134,5 +134,32 @@ namespace WebApi.Controllers
         {
             return familyResearchRepository.GetFamilyResearches().ToList();
         }
+
+        [HttpPut]
+        [Route("UpdateFamilyResearch")]
+        public IActionResult UpdateFamilyResearch([FromBody] FamilyResearch familyResearch)
+        {
+            if (familyResearch == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, "FamilyResearch cannot be null or empty");
+            }
+
+            try
+            {
+                familyResearchRepository.Update(familyResearch);
+            }
+            catch (BusinessLogicException ble)
+            {
+                logger.LogWarning(ble.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, ble.Message);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, null);
+                return StatusCode(StatusCodes.Status500InternalServerError, Constants.UNHANDLED_EXCEPTION_MESSAGE);
+            }
+
+            return Ok();
+        }
     }
 }
