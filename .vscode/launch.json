@@ -9,7 +9,7 @@
            "type": "coreclr",
            "request": "launch",
            "preLaunchTask": "build",
-           "program": "${workspaceFolder}/WebApi/bin/Debug/netcoreapp3.0/WebApi.dll",
+           "program": "${workspaceFolder}/WebApi/bin/Debug/netcoreapp3.0/Naandi.WebApi.dll",
            "args": [],
            "cwd": "${workspaceFolder}/WebApi",
            "stopAtEntry": false,
@@ -30,7 +30,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/WebApp/bin/Debug/netcoreapp3.0/WebApp.dll",
+            "program": "${workspaceFolder}/WebApp/bin/Debug/netcoreapp3.0/Naandi.WebApp.dll",
             "args": [],
             "cwd": "${workspaceFolder}/WebApp",
             "stopAtEntry": false,

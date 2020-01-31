@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <AssemblyName>Naandi.WebApp</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="compilerconfig.json"/>

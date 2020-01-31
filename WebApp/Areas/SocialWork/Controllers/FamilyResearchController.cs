@@ -55,6 +55,7 @@ namespace WebApp.Areas.SocialWork.Controllers
             return View(model);
         }
 
+        [HttpPost]
         public IActionResult AddOrUpdateFamilyResearch([FromForm]FamilyResearchViewModel model)
         {
             try
