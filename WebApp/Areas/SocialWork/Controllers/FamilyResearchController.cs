@@ -17,7 +17,7 @@ namespace WebApp.Areas.SocialWork.Controllers
         }
 
         [HttpGet]
-        [Route("/SocialWork/FamilyResearch")]
+        [Route("/FamilyResearch")]
         public IActionResult Index()
         {
             FamilyResearchViewModel model = new FamilyResearchViewModel
@@ -28,7 +28,7 @@ namespace WebApp.Areas.SocialWork.Controllers
         }
 
         [HttpGet]
-        [Route("/SocialWork/FamilyResearch/ShowForm/{id?}")]
+        [Route("/FamilyResearch/ShowForm/{id?}")]
         public IActionResult ShowForm(int? Id)
         {
             FamilyResearchViewModel model = new FamilyResearchViewModel();
@@ -127,6 +127,13 @@ namespace WebApp.Areas.SocialWork.Controllers
             System.Collections.Generic.List<Naandi.Shared.Models.MunicipalitiesOfMexico> MunicipalitiesOfMexico = familyResearchRepository.GetMunicipalitiesOfMexicoByStateOfMexicoName(nameOfState).ToList();
 
             return Json(MunicipalitiesOfMexico);
+        }
+
+        [HttpGet]
+        [Route("/FamilyResearch/GetFamilyMembersForm")]
+        public IActionResult GetFamilyMembersForm()
+        {            
+            return PartialView("_FamilyMembersForm");
         }
     }
 }
