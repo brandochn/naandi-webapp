@@ -12,7 +12,7 @@
 Naandi orphanage was founded in 1997 at Guadalajara México by a group of people to help poor kids.
 
 ## Technologies
-* ASP NET Core - version 3.0
+* ASP.NET Core - version 3.0
 * Bootstrap    - version 4.3.1
 * MySql.Data   - version 8.0.18
 * MariaDB      - version 10.4
@@ -25,4 +25,4 @@ Project is: _in progress_, I am coding as fast as I can ;)
 Currently the orphanage does not have a own system to do its work. So the aim for this project is create a tool that help Naandi to manage the internal work done.
 
 ## Contact
-Created by [Hildebrando Chávez](brandochn@gmail.com) - feel free to contact me!
+Created by [Hildebrando Chávez](mailto:brandochn@gmail.com) - feel free to contact me!
