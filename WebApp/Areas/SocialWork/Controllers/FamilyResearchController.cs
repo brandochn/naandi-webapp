@@ -17,7 +17,7 @@ namespace WebApp.Areas.SocialWork.Controllers
         }
 
         [HttpGet]
-        [Route("/FamilyResearch")]
+        [Route("/SocialWork/FamilyResearch")]
         public IActionResult Index()
         {
             FamilyResearchViewModel model = new FamilyResearchViewModel
@@ -28,7 +28,7 @@ namespace WebApp.Areas.SocialWork.Controllers
         }
 
         [HttpGet]
-        [Route("/FamilyResearch/ShowForm/{id?}")]
+        [Route("/SocialWork/FamilyResearch/ShowForm/{id?}")]
         public IActionResult ShowForm(int? Id)
         {
             FamilyResearchViewModel model = new FamilyResearchViewModel();
@@ -130,10 +130,22 @@ namespace WebApp.Areas.SocialWork.Controllers
         }
 
         [HttpGet]
-        [Route("/FamilyResearch/GetFamilyMembersForm")]
+        [Route("/SocialWork/FamilyResearch/GetFamilyMembersForm")]
         public IActionResult GetFamilyMembersForm()
-        {            
-            return PartialView("_FamilyMembersForm");
+        {
+            var model = new FamilyMembersViewModel();
+            model.FamilyMembersDetails = new Naandi.Shared.Models.FamilyMembersDetails();
+            model.LoadMaritalStatuses(familyResearchRepository);
+            model.LoadRelationships(familyResearchRepository);
+
+            return PartialView("_FamilyMembersForm", model);
+        }
+
+        [HttpPost]
+        public IActionResult AddFamilyMembers([FromForm]FamilyMembersViewModel model)
+        {
+
+            return Ok();
         }
     }
 }
