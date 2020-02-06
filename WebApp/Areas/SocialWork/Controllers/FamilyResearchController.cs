@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Naandi.Shared.Exceptions;
 using Naandi.Shared.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using WebApp.Areas.SocialWork.Models;
 
@@ -45,6 +46,8 @@ namespace WebApp.Areas.SocialWork.Controllers
             model.LoadTypesOfHousesList(familyResearchRepository);
             model.VisitDate = DateTime.Now;
             model.VisitTime = DateTime.Now;
+
+            //TempData["FamilyMembers"] = new FamilyMembersViewModel();
 
             if (Id > 0)
             {
@@ -142,10 +145,25 @@ namespace WebApp.Areas.SocialWork.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddFamilyMembers([FromForm]FamilyMembersViewModel model)
+        [Route("/SocialWork/FamilyResearch/AddFamilyMembers")]
+        public IActionResult AddFamilyMembers([FromBody]FamilyMembersViewModel model)
         {
+            TempData["FamilyMembers"] = model;
+
+            TempData.Keep();
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("/SocialWork/FamilyResearch/GetFamilyMembersTable")]
+        public IActionResult GetFamilyMembersTable()
+        {
+            var model = new FamilyResearchViewModel();
+            model.FamilyMembers = new Naandi.Shared.Models.FamilyMembers();
+            model.FamilyMembers.FamilyMembersDetails = TempData["FamilyMembers"] as Naandi.Shared.Models.FamilyMembersDetails[];
+
+            return PartialView("_FamilyMembersTable", model);
         }
     }
 }

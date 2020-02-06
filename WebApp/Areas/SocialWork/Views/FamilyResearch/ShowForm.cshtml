@@ -691,7 +691,7 @@
                                     <div class="mb-3 ml-3">
                                         <input type="button" value="+ Agregar" class="btn btn-success" onclick="GetFamilyMembersForm()"></button>
                                     </div>
-                                    <div class="col-12">
+                                    <div id="FamilyMembersTableId" class="col-12">
                                         @await Html.PartialAsync("_FamilyMembersTable", Model)
                                     </div>
 
@@ -1591,7 +1591,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button id="btnyes" class="btn btn-primary">Guardar</button>
+                <button id="familyMembersbtnyes" class="btn btn-primary">Guardar</button>
             </div>
         </div>
     </div>
@@ -1646,8 +1646,56 @@
             $("#familyMembersForm").load(url, function () {
                 $("#familyMembersModalWindow").modal("show");
 
-            });
+            });            
         }
+
+        let GetFamilyMembersTable = function () {
+
+            let url = '@Url.Action("GetFamilyMembersTable", "FamilyResearch", new { Area = "SocialWork" })';
+
+             $.ajax({
+                type: "GET",
+                url: url,
+                cache: false,
+                success: function (response) {
+                    $('FamilyMembersTableId').html(response);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    let error = jQuery.parseJSON(jqXHR.responseText)
+                    alert(error.value.responseText);
+                }
+            });
+        }            
+
+        $("#familyMembersbtnyes").click(function() {
+            var model = 
+            { 
+                'FullName': 'Saran', 
+                'Age': '1',
+                'MaritalStatusId' : '1',
+                'RelationshipId' : '1',
+                'Education' : '1',
+                'CurrentOccupation' : '1'
+            };
+
+            $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("AddFamilyMembers", "FamilyResearch", new { Area = "SocialWork" })',
+                    data: JSON.stringify(model),
+                    datatype: "json",
+                    success: function (result) {
+                        GetFamilyMembersTable();
+                        $("#familyMembersModalWindow").modal("hide");
+                    },
+                    error: function (xmlhttprequest, textstatus, errorthrown) {
+                        alert(" conection to the server failed ");
+                        console.log("error: " + errorthrown);
+                    }
+                });
+        });
+
+
 
     </script>
 }
