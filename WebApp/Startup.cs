@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Naandi.Shared.Services;
+using System;
 using WebApp.Data;
 using WebApp.Services;
+using WebApp.SessionState;
 
 namespace WebApp
 {
@@ -28,10 +31,21 @@ namespace WebApp
             });
 
             services.AddTransient(_ => new ApplicationRestClient(Configuration["AppServiceUri"]));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddControllersWithViews()
                 .AddNewtonsoftJson();
             services.AddRazorPages();
+
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
+            });
 
             services.AddScoped<IRegistrationRequest, RegistrationRequestRepository>();
             services.AddScoped<IFamilyResearch, FamilyResearchRepository>();
@@ -59,6 +73,8 @@ namespace WebApp
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseSession();
+            UserSession.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
 
             app.UseEndpoints(endpoints =>
             {
