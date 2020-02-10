@@ -689,9 +689,9 @@
                                 </h5>
                                 <div class="card-body">
                                     <div class="mb-3 ml-3">
-                                        <input type="button" value="+ Agregar" class="btn btn-success" onclick="GetFamilyMembersForm()"></button>
+                                        <input type="button" value="+ Agregar" class="btn btn-success" onclick="GetFamilyMembersForm()">
                                     </div>
-                                    <div id="FamilyMembersTableId" class="col-12">
+                                    <div class="col-12">
                                         @await Html.PartialAsync("_FamilyMembersTable", Model)
                                     </div>
 
@@ -1600,21 +1600,6 @@
 
 @section Scripts {
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#FamilyMembersTableId').DataTable({ searching: false });
-        });
-
-        $(document).ready(function () {
-            $('#BenefitsProvidedTableId').DataTable({ searching: false });
-        });
-
-        $(document).ready(function () {
-            $('#IngresosMensualesTableId').DataTable({ searching: false });
-        });
-
-        $(document).ready(function () {
-            $('#EgresosMensualesTableId').DataTable({ searching: false });
-        });
 
         $('#StatesOfMexico').change(function () {
                 var selectedStateOfMexico = $("#StatesOfMexico").val();
@@ -1657,12 +1642,11 @@
                 type: "GET",
                 url: url,
                 cache: false,
-                success: function (response) {
-                    $('FamilyMembersTableId').html(response);
+                success: function (response) {                    
+                    $('#FamilyMembersTableId').html(response);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    let error = jQuery.parseJSON(jqXHR.responseText)
-                    alert(error.value.responseText);
+                    alert(" conection to the server failed ");
                 }
             });
         }            
@@ -1670,18 +1654,18 @@
         $("#familyMembersbtnyes").click(function() {
             var model = 
             { 
-                'FullName': 'Saran', 
-                'Age': '1',
-                'MaritalStatusId' : '1',
-                'RelationshipId' : '1',
-                'Education' : '1',
-                'CurrentOccupation' : '1'
+                'FullName': $('#FamilyMembersDetails-FullName').val(), 
+                'Age': $('#FamilyMembersDetails-Age').val(),
+                'MaritalStatusId' : $("#FamilyMembersDetails-MaritalStatusId").val(),
+                'RelationshipId' : $("#FamilyMembersDetails-RelationshipId").val(),
+                'Education' : $('#FamilyMembersDetails-Education').val(),
+                'CurrentOccupation' : $('#FamilyMembersDetails-CurrentOccupation').val()
             };
 
             $.ajax({
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
-                    url: '@Url.Action("AddFamilyMembers", "FamilyResearch", new { Area = "SocialWork" })',
+                    url: '@Url.Action("AddItemInFamilyMembersTable", "FamilyResearch", new { Area = "SocialWork" })',
                     data: JSON.stringify(model),
                     datatype: "json",
                     success: function (result) {
@@ -1695,7 +1679,42 @@
                 });
         });
 
+        $("#FamilyMembersTableId").on('click','.btn-danger',function(){
+            // get the current row
+            var currentRow = $(this).closest("tr"); 
+            
+            // get current row 1st TD value
+            var model = 
+            { 
+                Id: currentRow.find("td:eq(0)").text()
+            };
 
+            $.ajax({
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    url: '@Url.Action("RemoveItemInFamilyMembersTable", "FamilyResearch", new { Area = "SocialWork" })',
+                    data: model,
+                    success: function (result) {
+                        GetFamilyMembersTable();
+                    },
+                    error: function (xmlhttprequest, textstatus, errorthrown) {
+                        alert(" conection to the server failed ");
+                        console.log("error: " + errorthrown);
+                    }
+            });         
+        });
+
+        $(document).ready(function () {
+            $('#BenefitsProvidedTableId').DataTable({ searching: false });
+        });
+
+        $(document).ready(function () {
+            $('#IngresosMensualesTableId').DataTable({ searching: false });
+        });
+
+        $(document).ready(function () {
+            $('#EgresosMensualesTableId').DataTable({ searching: false });
+        });
 
     </script>
 }

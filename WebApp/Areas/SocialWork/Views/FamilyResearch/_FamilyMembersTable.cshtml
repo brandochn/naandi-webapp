@@ -5,12 +5,14 @@
         <table id="FamilyMembersTableId" class="table table-responsive-lg table-hover">
             <thead class="">
                 <tr>
+                    <th style="display:none">Id</th>
                     <th>Nombre</th>
                     <th>Edad</th>
                     <th>Edo. Civil</th>
                     <th>Parentesco</th>
                     <th>Escolaridad</th>
                     <th>Ocupación</th>
+                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
@@ -19,14 +21,15 @@
                     foreach (var item in Model.FamilyMembers.FamilyMembersDetails)
                     {
                         <tr>
+                            <td style="display:none">@Html.DisplayFor(model => item.Id)</td>
                             <td>@Html.DisplayFor(model => item.FullName)</td>
                             <td>@Html.DisplayFor(model => item.Age)</td>
                             <td>@Html.DisplayFor(model => item.Relationship.Name)</td>
                             <td>@Html.DisplayFor(model => item.MaritalStatus.Name)</td>
                             <td>@Html.DisplayFor(model => item.Education)</td>
                             <td>@Html.DisplayFor(model => item.CurrentOccupation)</td>
-                            <td>
-                                @Html.ActionLink("Eliminar", "Action", "Controller", new { id = item.Id, area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-danger" })
+                            <td>                                
+                                <input type="button" value="Eliminar" class="btn btn-danger">
                             </td>
                         </tr>
                     }

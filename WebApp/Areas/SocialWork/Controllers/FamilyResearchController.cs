@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Naandi.Shared.Exceptions;
+using Naandi.Shared.Models;
 using Naandi.Shared.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,8 +48,6 @@ namespace WebApp.Areas.SocialWork.Controllers
             model.LoadTypesOfHousesList(familyResearchRepository);
             model.VisitDate = DateTime.Now;
             model.VisitTime = DateTime.Now;
-
-            //TempData["FamilyMembers"] = new FamilyMembersViewModel();
 
             if (Id > 0)
             {
@@ -145,12 +145,15 @@ namespace WebApp.Areas.SocialWork.Controllers
         }
 
         [HttpPost]
-        [Route("/SocialWork/FamilyResearch/AddFamilyMembers")]
-        public IActionResult AddFamilyMembers([FromBody]FamilyMembersViewModel model)
+        [Route("/SocialWork/FamilyResearch/AddItemInFamilyMembersTable")]
+        public IActionResult AddItemInFamilyMembersTable([FromBody]FamilyMembersDetails model)
         {
-            TempData["FamilyMembers"] = model;
+            if (model == null)
+            {
+                return BadRequest();
+            }
 
-            TempData.Keep();
+            SessionState.UserSession.AddItemInDataCollection<FamilyMembersDetails>(Constants.FamilyResearch_FamilyMembers_Table, model);
 
             return Ok();
         }
@@ -161,9 +164,42 @@ namespace WebApp.Areas.SocialWork.Controllers
         {
             var model = new FamilyResearchViewModel();
             model.FamilyMembers = new Naandi.Shared.Models.FamilyMembers();
-            model.FamilyMembers.FamilyMembersDetails = TempData["FamilyMembers"] as Naandi.Shared.Models.FamilyMembersDetails[];
+            var details = SessionState.UserSession.GetDataCollection<List<FamilyMembersDetails>>(Constants.FamilyResearch_FamilyMembers_Table);
+
+            if (details != null)
+            {
+                model.LoadMaritalStatuses(familyResearchRepository);
+                model.LoadRelationships(familyResearchRepository);
+
+                foreach (var d in details)
+                {
+                    d.MaritalStatus = model.MaritalStatusList.Where(ms => ms.Id == d.MaritalStatusId).FirstOrDefault();
+                    d.Relationship = model.RelationshipList.Where(r => r.Id == d.RelationshipId).FirstOrDefault();
+                }
+
+                model.FamilyMembers.FamilyMembersDetails = details?.ToArray();
+            }
 
             return PartialView("_FamilyMembersTable", model);
+        }
+
+        [HttpPost]
+        [Route("/SocialWork/FamilyResearch/RemoveItemInFamilyMembersTable")]
+        public IActionResult RemoveItemInFamilyMembersTable(int Id)
+        {
+            var details = SessionState.UserSession.GetDataCollection<List<FamilyMembersDetails>>(Constants.FamilyResearch_FamilyMembers_Table);
+
+            if (details != null)
+            {
+                var index = details.FindIndex(d => d.Id == Id);
+
+                if (index >= 0 && index < details.Count)
+                {
+                    SessionState.UserSession.RemoveItemInDataCollection<FamilyMembersDetails>(Constants.FamilyResearch_FamilyMembers_Table, index);
+                }
+            }
+
+            return Ok();
         }
     }
 }

@@ -6,42 +6,42 @@
              <div class="form-row">
                 <div class="form-group col-md-12">
                     <label>Nombre</label>
-                    <input type="text" asp-for="FamilyMembersDetails.FullName"  class="form-control" />
+                    <input id="FamilyMembersDetails-FullName" type="text" asp-for="FamilyMembersDetails.FullName"  class="form-control" />
                 </div>
              </div>
 
               <div class="form-row">
                 <div class="form-group col-md-12">
                     <label>Edad</label>
-                    <input type="text" asp-for="FamilyMembersDetails.Age"  class="form-control" />
+                    <input id="FamilyMembersDetails-Age" type="text" asp-for="FamilyMembersDetails.Age"  class="form-control" />
                 </div>
              </div>
 
               <div class="form-row">
                 <div class="form-group col-md-12">
                     <label>Edo. Civil</label>
-                    @Html.DropDownListFor(x => Model.FamilyMembersDetails.MaritalStatusId, new SelectList(Model.MaritalStatusList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "MaritalStatus" })
+                    @Html.DropDownListFor(x => Model.FamilyMembersDetails.MaritalStatusId, new SelectList(Model.MaritalStatusList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "FamilyMembersDetails-MaritalStatusId"})
                 </div>
              </div>
 
              <div class="form-row">
                 <div class="form-group col-md-12">
                     <label>Parentesco</label>
-                    @Html.DropDownListFor(x => Model.FamilyMembersDetails.RelationshipId, new SelectList(Model.RelationshipList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "Relationship" })
+                    @Html.DropDownListFor(x => Model.FamilyMembersDetails.RelationshipId, new SelectList(Model.RelationshipList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "FamilyMembersDetails-RelationshipId" })
                 </div>
              </div>
 
              <div class="form-row">
                 <div class="form-group col-md-12">
                     <label>Escolaridad</label>
-                    <input type="text" asp-for="FamilyMembersDetails.Education"  class="form-control" />
+                    <input id="FamilyMembersDetails-Education" type="text" asp-for="FamilyMembersDetails.Education"  class="form-control" />
                 </div>
              </div>
 
              <div class="form-row">
                 <div class="form-group col-md-12">
                     <label>Ocupación</label>
-                    <input type="text" asp-for="FamilyMembersDetails.CurrentOccupation"  class="form-control" />
+                    <input id="FamilyMembersDetails-CurrentOccupation" type="text" asp-for="FamilyMembersDetails.CurrentOccupation"  class="form-control" />
                 </div>
              </div>
          </div>
