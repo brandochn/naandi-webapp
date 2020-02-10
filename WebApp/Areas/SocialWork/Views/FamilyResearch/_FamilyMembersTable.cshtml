@@ -4,8 +4,7 @@
     <div class="col">
         <table id="FamilyMembersTableId" class="table table-responsive-lg table-hover">
             <thead class="">
-                <tr>
-                    <th style="display:none">Id</th>
+                <tr>                   
                     <th>Nombre</th>
                     <th>Edad</th>
                     <th>Edo. Civil</th>
@@ -20,8 +19,7 @@
                 {
                     foreach (var item in Model.FamilyMembers.FamilyMembersDetails)
                     {
-                        <tr>
-                            <td style="display:none">@Html.DisplayFor(model => item.Id)</td>
+                        <tr>                           
                             <td>@Html.DisplayFor(model => item.FullName)</td>
                             <td>@Html.DisplayFor(model => item.Age)</td>
                             <td>@Html.DisplayFor(model => item.Relationship.Name)</td>

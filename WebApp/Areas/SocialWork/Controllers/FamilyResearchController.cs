@@ -153,6 +153,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                 return BadRequest();
             }
 
+            model.FullName = model.FullName?.Trim();
             SessionState.UserSession.AddItemInDataCollection<FamilyMembersDetails>(Constants.FamilyResearch_FamilyMembers_Table, model);
 
             return Ok();
@@ -185,13 +186,18 @@ namespace WebApp.Areas.SocialWork.Controllers
 
         [HttpPost]
         [Route("/SocialWork/FamilyResearch/RemoveItemInFamilyMembersTable")]
-        public IActionResult RemoveItemInFamilyMembersTable(int Id)
+        public IActionResult RemoveItemInFamilyMembersTable(string name)
         {
+            if (string.IsNullOrEmpty(name) == true)
+            {
+                return BadRequest("name cannot be null or empty");
+            }
+            
             var details = SessionState.UserSession.GetDataCollection<List<FamilyMembersDetails>>(Constants.FamilyResearch_FamilyMembers_Table);
 
             if (details != null)
             {
-                var index = details.FindIndex(d => d.Id == Id);
+                var index = details.FindIndex(d => string.Equals(d.FullName, name, StringComparison.OrdinalIgnoreCase));
 
                 if (index >= 0 && index < details.Count)
                 {
