@@ -35,7 +35,12 @@ namespace WebApp
 
             services.AddControllersWithViews()
                 .AddNewtonsoftJson();
-            services.AddRazorPages();
+            services.AddRazorPages().AddMvcOptions(options =>
+            {
+                options.MaxModelValidationErrors = 50;
+                options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(
+                    _ => "The field is required.");
+            });
 
             services.AddDistributedMemoryCache();
 

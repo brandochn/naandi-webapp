@@ -5,12 +5,10 @@ using Naandi.Shared.Services;
 
 namespace WebApp.Areas.SocialWork.Models
 {
-    public class FamilyMembersViewModel
+    public class FamilyMembersViewModel : FamilyMembersDetails
     {
         public IList<MaritalStatus> MaritalStatusList { get; set; }
         public IList<Relationship> RelationshipList { get; set; }
-
-        public FamilyMembersDetails FamilyMembersDetails { get; set; }
 
         public void LoadMaritalStatuses(IFamilyResearch familyResearchRepository)
         {

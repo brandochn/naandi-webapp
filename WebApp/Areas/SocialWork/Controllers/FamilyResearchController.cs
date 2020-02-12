@@ -137,7 +137,6 @@ namespace WebApp.Areas.SocialWork.Controllers
         public IActionResult GetFamilyMembersForm()
         {
             var model = new FamilyMembersViewModel();
-            model.FamilyMembersDetails = new Naandi.Shared.Models.FamilyMembersDetails();
             model.LoadMaritalStatuses(familyResearchRepository);
             model.LoadRelationships(familyResearchRepository);
 
@@ -153,10 +152,23 @@ namespace WebApp.Areas.SocialWork.Controllers
                 return BadRequest();
             }
 
-            model.FullName = model.FullName?.Trim();
-            SessionState.UserSession.AddItemInDataCollection<FamilyMembersDetails>(Constants.FamilyResearch_FamilyMembers_Table, model);
+            if (ModelState.IsValid == true)
+            {
+                model.FullName = model.FullName?.Trim();
+                SessionState.UserSession.AddItemInDataCollection<FamilyMembersDetails>(Constants.FamilyResearch_FamilyMembers_Table, model);              
+            }
 
-            return Ok();
+            var familyMembersDetails = new FamilyMembersViewModel();
+            familyMembersDetails.LoadMaritalStatuses(familyResearchRepository);
+            familyMembersDetails.LoadRelationships(familyResearchRepository);
+            familyMembersDetails.Age = model.Age;
+            familyMembersDetails.CurrentOccupation = model.CurrentOccupation;
+            familyMembersDetails.Education = model.Education;
+            familyMembersDetails.FullName = model.FullName;
+            familyMembersDetails.MaritalStatusId = model.MaritalStatusId;
+            familyMembersDetails.RelationshipId = model.RelationshipId;
+
+            return PartialView("_FamilyMembersForm", familyMembersDetails);
         }
 
         [HttpGet]

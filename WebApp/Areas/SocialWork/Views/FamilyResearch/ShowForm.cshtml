@@ -430,7 +430,7 @@
                                             else
                                             {
                                                 <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.CanItRead"
-                                                    value="@Model.Minor.FormalEducation.CanItRead" />
+                                                       value="@Model.Minor.FormalEducation.CanItRead" />
                                             }
                                             <label class="form-check-label">¿Sabe leer?</label>
                                         </div>
@@ -442,7 +442,7 @@
                                             else
                                             {
                                                 <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.CanItWrite"
-                                                    value="@Model.Minor.FormalEducation.CanItWrite" />
+                                                       value="@Model.Minor.FormalEducation.CanItWrite" />
                                             }
                                             <label class="form-check-label">¿Sabe escribir?</label>
                                         </div>
@@ -454,7 +454,7 @@
                                             else
                                             {
                                                 <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.IsItStudyingNow"
-                                                    value="@Model.Minor.FormalEducation.IsItStudyingNow" />
+                                                       value="@Model.Minor.FormalEducation.IsItStudyingNow" />
                                             }
                                             <label class="form-check-label">¿Actualmente estudia?</label>
                                         </div>
@@ -1577,28 +1577,10 @@
     </div>
 </form>
 
-<div class="modal fade" id="familyMembersModalWindow" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Agregar familiar</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id = "familyMembersForm"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button id="familyMembersbtnyes" class="btn btn-primary">Guardar</button>
-            </div>
-        </div>
-    </div>
-</div>
+<div id="modal-placeholder-familymembersmodalwindow"></div>
 
 
-@section Scripts {
+@section Scripts {   
     <script type="text/javascript">
 
         $('#StatesOfMexico').change(function () {
@@ -1628,10 +1610,10 @@
 
             let url = '@Url.Action("GetFamilyMembersForm", "FamilyResearch", new { Area = "SocialWork" })';
 
-            $("#familyMembersForm").load(url, function () {
+             $("#modal-placeholder-familymembersmodalwindow").load(url, function () {
                 $("#familyMembersModalWindow").modal("show");
 
-            });            
+            });
         }
 
         let GetFamilyMembersTable = function () {
@@ -1642,19 +1624,20 @@
                 type: "GET",
                 url: url,
                 cache: false,
-                success: function (response) {                    
+                success: function (response) {
                     $('#FamilyMembersTableId').html(response);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     alert(" conection to the server failed ");
                 }
             });
-        }            
+        }
 
-        $("#familyMembersbtnyes").click(function() {
-            var model = 
-            { 
-                'FullName': $('#FamilyMembersDetails-FullName').val(), 
+        $("#modal-placeholder-familymembersmodalwindow").on('click', '[data-save="modal-familymembers"]', function (event) {
+            event.preventDefault();
+            var model =
+            {
+                'FullName': $('#FamilyMembersDetails-FullName').val(),
                 'Age': $('#FamilyMembersDetails-Age').val(),
                 'MaritalStatusId' : $("#FamilyMembersDetails-MaritalStatusId").val(),
                 'RelationshipId' : $("#FamilyMembersDetails-RelationshipId").val(),
@@ -1662,15 +1645,22 @@
                 'CurrentOccupation' : $('#FamilyMembersDetails-CurrentOccupation').val()
             };
 
+            var placeholderElement = $('#modal-placeholder-familymembersmodalwindow');
+
             $.ajax({
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
                     url: '@Url.Action("AddItemInFamilyMembersTable", "FamilyResearch", new { Area = "SocialWork" })',
                     data: JSON.stringify(model),
                     datatype: "json",
-                    success: function (result) {
+                success: function (result) {
+                    var newBody = $('.modal-body', result);
+                    placeholderElement.find('.modal-body').replaceWith(newBody);
+                    var isValid = newBody.find('[name="IsValid"]').val() == 'True';
+                    if (isValid) {
+                        placeholderElement.find('.modal').modal('hide');
                         GetFamilyMembersTable();
-                        $("#familyMembersModalWindow").modal("hide");
+                    }
                     },
                     error: function (xmlhttprequest, textstatus, errorthrown) {
                         alert(" conection to the server failed ");
@@ -1681,11 +1671,11 @@
 
         $("#FamilyMembersTableId").on('click','.btn-danger',function(){
             // get the current row
-            var currentRow = $(this).closest("tr"); 
-            
+            var currentRow = $(this).closest("tr");
+
             // get current row 1st TD value
-            var model = 
-            { 
+            var model =
+            {
                 name: currentRow.find("td:eq(0)").text()
             };
 
@@ -1701,7 +1691,7 @@
                         alert(" conection to the server failed ");
                         console.log("error: " + errorthrown);
                     }
-            });         
+            });
         });
 
         $(document).ready(function () {

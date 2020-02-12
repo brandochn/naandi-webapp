@@ -1,49 +1,79 @@
 @model WebApp.Areas.SocialWork.Models.FamilyMembersViewModel
 
-<div class="container">
-     <div class="row">
-         <div class="col-12">
-             <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label>Nombre</label>
-                    <input id="FamilyMembersDetails-FullName" type="text" asp-for="FamilyMembersDetails.FullName"  class="form-control" />
-                </div>
-             </div>
 
-              <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label>Edad</label>
-                    <input id="FamilyMembersDetails-Age" type="text" asp-for="FamilyMembersDetails.Age"  class="form-control" />
-                </div>
-             </div>
+<div class="modal fade" id="familyMembersModalWindow" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Agregar familiar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="AddItemInFamilyMembersTable">
+                    <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label>Nombre</label>
+                                        <input id="FamilyMembersDetails-FullName" type="text" asp-for="FullName" class="form-control" />
+                                        <span asp-validation-for="FullName" class="text-danger"></span>
+                                    </div>
+                                </div>
 
-              <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label>Edo. Civil</label>
-                    @Html.DropDownListFor(x => Model.FamilyMembersDetails.MaritalStatusId, new SelectList(Model.MaritalStatusList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "FamilyMembersDetails-MaritalStatusId"})
-                </div>
-             </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label>Edad</label>
+                                        <input id="FamilyMembersDetails-Age" type="text" asp-for="Age" class="form-control" />
+                                        <span asp-validation-for="Age" class="text-danger"></span>
+                                    </div>
+                                </div>
 
-             <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label>Parentesco</label>
-                    @Html.DropDownListFor(x => Model.FamilyMembersDetails.RelationshipId, new SelectList(Model.RelationshipList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "FamilyMembersDetails-RelationshipId" })
-                </div>
-             </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label>Edo. Civil</label>
+                                        @Html.DropDownListFor(x => Model.MaritalStatusId, new SelectList(Model.MaritalStatusList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "FamilyMembersDetails-MaritalStatusId" })
+                                        <span asp-validation-for="MaritalStatusId" class="text-danger"></span>
+                                    </div>
+                                </div>
 
-             <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label>Escolaridad</label>
-                    <input id="FamilyMembersDetails-Education" type="text" asp-for="FamilyMembersDetails.Education"  class="form-control" />
-                </div>
-             </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label>Parentesco</label>
+                                        @Html.DropDownListFor(x => Model.RelationshipId, new SelectList(Model.RelationshipList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "FamilyMembersDetails-RelationshipId" })
+                                        <span asp-validation-for="RelationshipId" class="text-danger"></span>
+                                    </div>
+                                </div>
 
-             <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label>Ocupación</label>
-                    <input id="FamilyMembersDetails-CurrentOccupation" type="text" asp-for="FamilyMembersDetails.CurrentOccupation"  class="form-control" />
-                </div>
-             </div>
-         </div>
-     </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label>Escolaridad</label>
+                                        <input id="FamilyMembersDetails-Education" type="text" asp-for="Education" class="form-control" />
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label>Ocupación</label>
+                                        <input id="FamilyMembersDetails-CurrentOccupation" type="text" asp-for="CurrentOccupation" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button id="familyMembersbtnyes" data-save="modal-familymembers" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+
