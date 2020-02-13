@@ -642,7 +642,7 @@ DROP TABLE IF EXISTS `BenefitsProvided`;
 
 CREATE TABLE `BenefitsProvided` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `RedesDeApoyoFamiliares` varchar(400),
+  `CreationDate` datetime NOT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='Apoyos y Servicios Otorgados no tengo la traducción correcta para algunas columnas';
 
@@ -734,6 +734,7 @@ CREATE TABLE `FamilyResearch` (
   `VisitTime` time NOT NULL,
   `Family` varchar(100) NOT NULL,
   `RequestReasons` varchar(300) NOT NULL,
+  `RedesDeApoyoFamiliares` varchar(400) DEFAULT NULL,
   `SituationsOfDomesticViolence` varchar(200) DEFAULT NULL,
   `FamilyExpectations` varchar(300) DEFAULT NULL,
   `FamilyDiagnostic` varchar(300) DEFAULT NULL,
@@ -2341,10 +2342,8 @@ BEGIN
  
 	IF BenefitsProvidedId = 0 THEN							
 		
-		INSERT INTO BenefitsProvided (`RedesDeApoyoFamiliares`)
-		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RedesDeApoyoFamiliares'))	
-		FROM JSON_TABLE;
+		INSERT INTO BenefitsProvided (`CreationDate`)
+		SELECT UTC_TIMESTAMP()
 		SET BenefitsProvidedId = LAST_INSERT_ID();
 
 		CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.BenefitsProvidedDetails') FROM JSON_TABLE), BenefitsProvidedId, 'AddOrUpdateBenefitsProvidedDetails');
@@ -2358,11 +2357,6 @@ BEGIN
 			SET MESSAGE_TEXT = 'BenefitsProvided not found';
 		ELSE			
 						
-			UPDATE BenefitsProvided
-			SET
-				RedesDeApoyoFamiliares = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.RedesDeApoyoFamiliares')) FROM JSON_TABLE)			
-			WHERE Id = BenefitsProvidedId;
-
 			DELETE FROM BenefitsProvidedDetails  WHERE `BenefitsProvidedId` = BenefitsProvidedId;
 
 			CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.BenefitsProvidedDetails') FROM JSON_TABLE), BenefitsProvidedId, 'AddOrUpdateBenefitsProvidedDetails');
@@ -2490,7 +2484,8 @@ BEGIN
 			VisitDate 
 			,VisitTime 
 			,Family 
-			,RequestReasons 
+			,RequestReasons
+			,RedesDeApoyoFamiliares 
 			,SituationsOfDomesticViolence 
 			,FamilyExpectations 
 			,FamilyDiagnostic
@@ -2516,6 +2511,7 @@ BEGIN
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisitTime'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Family'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RequestReasons'))
+			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RedesDeApoyoFamiliares'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SituationsOfDomesticViolence'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyExpectations'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyDiagnostic'))
@@ -2551,10 +2547,11 @@ BEGIN
 			SET
 				 `Family` =                        (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Family')) FROM JSON_TABLE)
 				,`RequestReasons` =                (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RequestReasons')) FROM JSON_TABLE)
+				,`RedesDeApoyoFamiliares` =        (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RedesDeApoyoFamiliares')) FROM JSON_TABLE)
 				,`SituationsOfDomesticViolence` =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SituationsOfDomesticViolence')) FROM JSON_TABLE)
 				,`FamilyExpectations` =            (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyExpectations')) FROM JSON_TABLE)
 				,`FamilyDiagnostic` =              (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyDiagnostic')) FROM JSON_TABLE)
-				,`ProblemsIdentified` =              (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ProblemsIdentified')) FROM JSON_TABLE)
+				,`ProblemsIdentified` =            (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ProblemsIdentified')) FROM JSON_TABLE)
 				,`CaseStudyConclusion` =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CaseStudyConclusion')) FROM JSON_TABLE)
 				,`Recommendations` =               (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Recommendations')) FROM JSON_TABLE)
 				,`VisualSupports` =                (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisualSupports')) FROM JSON_TABLE)

@@ -1397,25 +1397,11 @@
                                     Apoyos y Servicios Otorgados
                                 </h5>
                                 <div class="card-body">
-                                    <div class="mb-3 ml-3">
-                                        @Html.ActionLink("+ Agregar", "Action", "Controller", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-success" })
+                                    <div class="mb-3 ml-3">                                        
+                                        <input type="button" value="+ Agregar" class="btn btn-success" onclick="GetFamilyMembersForm()">
                                     </div>
                                     <div class="col-12">
                                         @await Html.PartialAsync("_BenefitsProvidedTable", Model)
-                                    </div>
-
-                                    <div class="form-row mt-4">
-                                        <div class="form-group col-md-12">
-                                            <label>Dinamica familiar</label>
-                                            @if (Model.BenefitsProvided == null || Model.BenefitsProvided.RedesDeApoyoFamiliares == null)
-                                            {
-                                                <textarea rows="1" asp-for="BenefitsProvided.RedesDeApoyoFamiliares" class="form-control"></textarea>
-                                            }
-                                            else
-                                            {
-                                                <textarea rows="1" asp-for="BenefitsProvided.RedesDeApoyoFamiliares" class="form-control">@Model.BenefitsProvided.RedesDeApoyoFamiliares</textarea>
-                                            }
-                                        </div>
                                     </div>
                                 </div>
                             </div>
