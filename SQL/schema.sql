@@ -2343,7 +2343,7 @@ BEGIN
 	IF BenefitsProvidedId = 0 THEN							
 		
 		INSERT INTO BenefitsProvided (`CreationDate`)
-		SELECT UTC_TIMESTAMP()
+		SELECT UTC_TIMESTAMP();
 		SET BenefitsProvidedId = LAST_INSERT_ID();
 
 		CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.BenefitsProvidedDetails') FROM JSON_TABLE), BenefitsProvidedId, 'AddOrUpdateBenefitsProvidedDetails');
