@@ -10,6 +10,7 @@ namespace Naandi.Shared.Models
         public string Family { get; set; }
         public string RequestReasons { get; set; }
         public string SituationsOfDomesticViolence { get; set; }
+        public string RedesDeApoyoFamiliares { get; set; }
         public string FamilyExpectations { get; set; }
         public string FamilyDiagnostic { get; set; }
         public string CaseStudyConclusion { get; set; }

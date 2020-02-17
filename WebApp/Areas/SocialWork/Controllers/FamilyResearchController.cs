@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using WebApp.Areas.SocialWork.Models;
+using WebApp.ExtensionMethods;
 
 namespace WebApp.Areas.SocialWork.Controllers
 {
@@ -155,7 +156,7 @@ namespace WebApp.Areas.SocialWork.Controllers
             if (ModelState.IsValid == true)
             {
                 model.FullName = model.FullName?.Trim();
-                SessionState.UserSession.AddItemInDataCollection<FamilyMembersDetails>(Constants.FamilyResearch_FamilyMembers_Table, model);              
+                SessionState.UserSession.AddItemInDataCollection<FamilyMembersDetails>(Constants.FamilyResearch_FamilyMembers_Table, model);
             }
 
             var familyMembersDetails = new FamilyMembersViewModel();
@@ -204,7 +205,7 @@ namespace WebApp.Areas.SocialWork.Controllers
             {
                 return BadRequest("name cannot be null or empty");
             }
-            
+
             var details = SessionState.UserSession.GetDataCollection<List<FamilyMembersDetails>>(Constants.FamilyResearch_FamilyMembers_Table);
 
             if (details != null)
@@ -214,6 +215,69 @@ namespace WebApp.Areas.SocialWork.Controllers
                 if (index >= 0 && index < details.Count)
                 {
                     SessionState.UserSession.RemoveItemInDataCollection<FamilyMembersDetails>(Constants.FamilyResearch_FamilyMembers_Table, index);
+                }
+            }
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("/SocialWork/FamilyResearch/GetBenefitsProvidedForm")]
+        public IActionResult GetBenefitsProvidedForm()
+        {
+            var model = new BenefitsProvidedViewModel();
+
+            return PartialView("_BenefitsProvidedForm", model);
+        }
+
+        [HttpPost]
+        [Route("/SocialWork/FamilyResearch/AddItemInBenefitsProvidedTable")]
+        public IActionResult AddItemInBenefitsProvidedTable([FromBody]BenefitsProvidedDetails model)
+        {
+            BenefitsProvidedViewModel benefitsProvidedViewModel = new BenefitsProvidedViewModel()
+            {
+                ApoyoRecibido = model?.ApoyoRecibido,
+                Institucion = model?.Institucion,
+                Monto = model?.Monto,
+                Periodo = model?.Periodo
+            };
+
+            if (ModelState.IsValid == true)
+            {
+                benefitsProvidedViewModel.Key = string.Empty.GetUniqueKey();
+                SessionState.UserSession.AddItemInDataCollection<BenefitsProvidedViewModel>(Constants.FamilyResearch_BenefitsProvided_Table, benefitsProvidedViewModel);
+            }
+
+            return PartialView("_BenefitsProvidedForm", benefitsProvidedViewModel);
+        }
+
+        [HttpGet]
+        [Route("/SocialWork/FamilyResearch/GetBenefitsProvidedTable")]
+        public IActionResult GetBenefitsProvidedTable()
+        {
+            List<BenefitsProvidedViewModel> model = SessionState.UserSession.GetDataCollection<List<BenefitsProvidedViewModel>>(Constants.FamilyResearch_BenefitsProvided_Table);
+
+            return PartialView("_BenefitsProvidedTable", model);
+        }
+
+        [HttpPost]
+        [Route("/SocialWork/FamilyResearch/RemoveItemInBenefitsProvidedTable")]
+        public IActionResult RemoveItemInBenefitsProvidedTable(string key)
+        {
+            if (string.IsNullOrEmpty(key) == true)
+            {
+                return BadRequest("key cannot be null or empty");
+            }
+
+            var table = SessionState.UserSession.GetDataCollection<List<BenefitsProvidedViewModel>>(Constants.FamilyResearch_BenefitsProvided_Table);
+
+            if (table != null)
+            {
+                var index = table.FindIndex(d => string.Equals(d.Key, key, StringComparison.OrdinalIgnoreCase));
+
+                if (index >= 0 && index < table.Count)
+                {
+                    SessionState.UserSession.RemoveItemInDataCollection<BenefitsProvidedViewModel>(Constants.FamilyResearch_BenefitsProvided_Table, index);
                 }
             }
 

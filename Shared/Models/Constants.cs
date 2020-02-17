@@ -6,5 +6,6 @@
 
         // Session Key Names
         public const string FamilyResearch_FamilyMembers_Table = nameof(FamilyResearch_FamilyMembers_Table);
+        public const string FamilyResearch_BenefitsProvided_Table = nameof(FamilyResearch_BenefitsProvided_Table);
     }
 }
