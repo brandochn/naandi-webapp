@@ -1397,7 +1397,7 @@
                                     Apoyos y Servicios Otorgados
                                 </h5>
                                 <div class="card-body">
-                                    <div class="mb-3 ml-3">                                        
+                                    <div class="mb-3 ml-3">
                                         <input type="button" value="+ Agregar" class="btn btn-success" onclick="GetBenefitsProvidedForm()">
                                     </div>
                                     <div class="col-12">
@@ -1477,7 +1477,7 @@
                             </div>
                         </section>
 
-                         <section>
+                        <section>
                             <div class="card">
                                 <h5 class="card-header text-center text-white   bg-primary">
                                     Redes de Apoyo
@@ -1582,7 +1582,7 @@
 <div id="modal-placeholder-benefitsprovidedwindow"></div>
 
 
-@section Scripts {   
+@section Scripts {
     <script type="text/javascript">
 
         $('#StatesOfMexico').change(function () {
@@ -1701,7 +1701,11 @@
             let url = '@Url.Action("GetBenefitsProvidedForm", "FamilyResearch", new { Area = "SocialWork" })';
 
                 $("#modal-placeholder-benefitsprovidedwindow").load(url, function () {
-                $("#benefitsProvidedModalWindow").modal("show");
+                    $('#benefitsProvidedDetails-Monto').keypress(function (event) {
+                        return isNumber(event, this)
+                    });
+
+                    $("#benefitsProvidedModalWindow").modal("show");
 
             });
         }
@@ -1744,6 +1748,10 @@
                 success: function (result) {
                     var newBody = $('.modal-body', result);
                     placeholderElement.find('.modal-body').replaceWith(newBody);
+                    $('#benefitsProvidedDetails-Monto').keypress(function (event) {
+                        return isNumber(event, this)
+                    });
+
                     var isValid = newBody.find('[name="IsValid"]').val() == 'True';
                     if (isValid) {
                         placeholderElement.find('.modal').modal('hide');

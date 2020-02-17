@@ -148,11 +148,6 @@ namespace WebApp.Areas.SocialWork.Controllers
         [Route("/SocialWork/FamilyResearch/AddItemInFamilyMembersTable")]
         public IActionResult AddItemInFamilyMembersTable([FromBody]FamilyMembersDetails model)
         {
-            if (model == null)
-            {
-                return BadRequest();
-            }
-
             if (ModelState.IsValid == true)
             {
                 model.FullName = model.FullName?.Trim();
@@ -162,12 +157,12 @@ namespace WebApp.Areas.SocialWork.Controllers
             var familyMembersDetails = new FamilyMembersViewModel();
             familyMembersDetails.LoadMaritalStatuses(familyResearchRepository);
             familyMembersDetails.LoadRelationships(familyResearchRepository);
-            familyMembersDetails.Age = model.Age;
-            familyMembersDetails.CurrentOccupation = model.CurrentOccupation;
-            familyMembersDetails.Education = model.Education;
-            familyMembersDetails.FullName = model.FullName;
-            familyMembersDetails.MaritalStatusId = model.MaritalStatusId;
-            familyMembersDetails.RelationshipId = model.RelationshipId;
+            familyMembersDetails.Age = model?.Age;
+            familyMembersDetails.CurrentOccupation = model?.CurrentOccupation;
+            familyMembersDetails.Education = model?.Education;
+            familyMembersDetails.FullName = model?.FullName;
+            familyMembersDetails.MaritalStatusId = model?.MaritalStatusId ?? 0;
+            familyMembersDetails.RelationshipId = model?.RelationshipId ?? 0;
 
             return PartialView("_FamilyMembersForm", familyMembersDetails);
         }
@@ -273,7 +268,7 @@ namespace WebApp.Areas.SocialWork.Controllers
 
             if (table != null)
             {
-                var index = table.FindIndex(d => string.Equals(d.Key, key, StringComparison.OrdinalIgnoreCase));
+                var index = table.FindIndex(r => string.Equals(r.Key, key, StringComparison.OrdinalIgnoreCase));
 
                 if (index >= 0 && index < table.Count)
                 {

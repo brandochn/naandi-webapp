@@ -13,6 +13,7 @@ namespace Naandi.Shared.Models
         public string ApoyoRecibido { get; set; }
 
         [RegularExpression(@"^-?[0-9]*\.?[0-9]+$", ErrorMessage = "Especifque un monto valido")]
+        [Required(ErrorMessage = "El monto es requerido")]
         public decimal? Monto { get; set; }
         
         [Required(ErrorMessage = "El periodo es requerido")]
