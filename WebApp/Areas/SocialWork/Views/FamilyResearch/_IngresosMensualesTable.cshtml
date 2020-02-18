@@ -1,4 +1,4 @@
-﻿@model WebApp.Areas.SocialWork.Models.FamilyResearchViewModel
+﻿@model List<WebApp.Areas.SocialWork.Models.IngresosMensualesViewModel>
 
 <div class="row">
     <div class="col">
@@ -7,20 +7,23 @@
                 <tr>
                     <th>Ingreso</th>
                     <th>Monto</th>
+                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model.IngresosEgresosMensuales != null && Model.IngresosEgresosMensuales.IngresosEgresosMensualesMovimientoRelation != null)
+                @if (Model != null)
                 {
-                    foreach (var item in Model.IngresosEgresosMensuales.IngresosEgresosMensualesMovimientoRelation)
+                    foreach (var item in Model)
                     {
-                        if (item.Movimiento.TipoMovimiento.Name == "Ingreso")
+                        if (item.Movimiento != null && 
+                            item.Movimiento.TipoMovimiento != null && 
+                            item.Movimiento.TipoMovimiento.Name == "Ingreso")
                         {
                             <tr>
                                 <td>@Html.DisplayFor(model => item.Movimiento.Name)</td>
                                 <td>@Html.DisplayFor(model => item.Monto)</td>
                                 <td>
-                                    @Html.ActionLink("Eliminar", "Action", "Controller", new { id = item.Id, area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-danger" })
+                                    <input type="button" value="Eliminar" class="btn btn-danger">
                                 </td>
                             </tr>
                         }
