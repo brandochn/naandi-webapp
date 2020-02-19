@@ -21,6 +21,7 @@ namespace Naandi.Shared.Services
         IEnumerable<FamilyResearch> GetFamilyResearches();
         void Update(FamilyResearch familyResearch);
         IEnumerable<FamilyResearch> GetFamilyResearchByMinorName(string minorName);
+        IEnumerable<Movimiento> GetMovimientosByTipoMovimiento(string tipoMovimiento);
 
     }
 }

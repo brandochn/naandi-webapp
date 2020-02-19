@@ -1125,7 +1125,7 @@ namespace WebApi.Services
 
                 statesOfMexicoList = connection.Query<StatesOfMexico>(sql);
             }
-
+            
             return statesOfMexicoList;
         }
 
@@ -1239,7 +1239,7 @@ namespace WebApi.Services
             return foods;
         }
 
-         public IEnumerable<Frequency> GetFrequencies()
+        public IEnumerable<Frequency> GetFrequencies()
         {
             IEnumerable<Frequency> frequencies;
 
@@ -1255,7 +1255,7 @@ namespace WebApi.Services
 
         public FamilyResearch GetFamilyResearchById(int id)
         {
-           FamilyResearch familyResearch = null;
+            FamilyResearch familyResearch = null;
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
             {
@@ -1533,9 +1533,9 @@ namespace WebApi.Services
                         familyResearch.District.Description = reader.GetString(index);
 
                     }
-                }                
+                }
             }
-            
+
             return familyResearch;
         }
 
@@ -1673,7 +1673,7 @@ namespace WebApi.Services
                             LEFT JOIN `District` ON `District`.Id = `FamilyResearch`.DistrictId";
 
                 cmd.CommandType = System.Data.CommandType.Text;
-               
+
                 connection.Open();
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -1814,9 +1814,9 @@ namespace WebApi.Services
                         familyResearches.Add(familyResearch);
 
                     }
-                }                
+                }
             }
-            
+
             return familyResearches;
         }
 
@@ -1828,6 +1828,29 @@ namespace WebApi.Services
         public IEnumerable<FamilyResearch> GetFamilyResearchByMinorName(string minorName)
         {
             throw new NotImplementedException();
+        }
+
+        public IEnumerable<Movimiento> GetMovimientosByTipoMovimiento(string tipoMovimiento)
+        {
+            IEnumerable<Movimiento> items;
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                string sql = @"SELECT * FROM Movimiento m
+                                JOIN TipoMovimiento tm ON tm.Id = m.TipoMovimientoId 
+                                WHERE tm.Name = @tipoMovimiento ORDER BY m.Name;";
+
+                items = connection.Query<Movimiento, TipoMovimiento, Movimiento>(sql,
+                (m, tm) =>
+                {
+                    m.TipoMovimiento = tm;
+                    m.TipoMovimientoId = tm.Id;
+                    return m;
+
+                }, new { tipoMovimiento });
+            }
+
+            return items;
         }
     }
 }

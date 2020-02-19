@@ -174,5 +174,18 @@ namespace WebApp.Services
         {
             throw new System.NotImplementedException();
         }
+
+        public IEnumerable<Movimiento> GetMovimientosByTipoMovimiento(string tipoMovimiento)
+        {
+            IList<Movimiento> items;
+
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/FamilyResearch/GetMovimientosByTipoMovimiento/{tipoMovimiento}", Method.GET);
+            request.AddUrlSegment("tipoMovimiento", tipoMovimiento);
+
+            items = client.GetCall<List<Movimiento>>(request);
+
+            return items;
+        }
     }
 }

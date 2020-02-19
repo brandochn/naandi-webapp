@@ -51,7 +51,7 @@ namespace WebApi.Controllers
             {
                 familyResearchRepository.Add(familyResearch);
             }
-            catch(BusinessLogicException ble)
+            catch (BusinessLogicException ble)
             {
                 logger.LogWarning(ble.Message);
                 return StatusCode(StatusCodes.Status400BadRequest, ble.Message);
@@ -160,6 +160,20 @@ namespace WebApi.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("GetMovimientosByTipoMovimiento/{tipoMovimiento}")]
+        public IActionResult GetMovimientosByTipoMovimiento(string tipoMovimiento)
+        {
+            var items = familyResearchRepository.GetMovimientosByTipoMovimiento(tipoMovimiento);
+
+            if (items == null)
+            {
+                return NotFound("No record found");
+            }
+
+            return Ok(items);
         }
     }
 }
