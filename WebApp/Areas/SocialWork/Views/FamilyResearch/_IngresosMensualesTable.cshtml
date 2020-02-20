@@ -5,6 +5,7 @@
         <table id="IngresosMensualesTableId" class="table table-responsive-lg table-hover">
             <thead class="">
                 <tr>
+                    <th style="display:none">key</th>
                     <th>Ingreso</th>
                     <th>Monto</th>
                     <th>Acción</th>
@@ -20,6 +21,7 @@
                             item.Movimiento.TipoMovimiento.Name == "Ingreso")
                         {
                             <tr>
+                                <td style="display:none">@Html.DisplayFor(Model=> item.Key)</td>
                                 <td>@Html.DisplayFor(model => item.Movimiento.Name)</td>
                                 <td>@Html.DisplayFor(model => item.Monto)</td>
                                 <td>

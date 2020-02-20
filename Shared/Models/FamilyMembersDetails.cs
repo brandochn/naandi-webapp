@@ -14,11 +14,13 @@ namespace Naandi.Shared.Models
 
         
         [Range(1, 20, ErrorMessage = "El estado civil es requerido")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "El estado civil es requerido")]
         public int? MaritalStatusId { get; set; }
 
         public MaritalStatus MaritalStatus { get; set; }
 
         [Range(1, 20, ErrorMessage = "El parentesco es requerido")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "El parentesco es requerido")]
         public int? RelationshipId { get; set; }
         
         public Relationship Relationship { get; set; }

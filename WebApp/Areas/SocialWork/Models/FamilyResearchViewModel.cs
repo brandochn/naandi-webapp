@@ -22,6 +22,7 @@ namespace WebApp.Areas.SocialWork.Models
         public int[] FrequencyIdsSelected { get; set; }
         public IList<FamilyResearch> FamilyResearches { get; set; }
         public IList<BenefitsProvidedViewModel> BenefitsProvidedList { get; set; }
+        public IList<IngresosMensualesViewModel> IngresosMensualesList { get; set; }
 
 
         public bool IsValid(object value)

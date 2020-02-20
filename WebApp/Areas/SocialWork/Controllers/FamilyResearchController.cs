@@ -278,5 +278,79 @@ namespace WebApp.Areas.SocialWork.Controllers
 
             return Ok();
         }
+
+        [HttpGet]
+        [Route("/SocialWork/FamilyResearch/GetIngresosMensualesForm")]
+        public IActionResult GetIngresosMensualesForm()
+        {
+            var model = new IngresosMensualesViewModel();
+            model.LoadMovimientoList(familyResearchRepository);
+
+            return PartialView("_IngresosMensualesForm", model);
+        }
+
+        [HttpPost]
+        [Route("/SocialWork/FamilyResearch/AddItemInIngresosMensualesTable")]
+        public IActionResult AddItemInIngresosMensualesTable([FromBody]IngresosEgresosMensualesMovimientoRelation model)
+        {
+            IngresosMensualesViewModel ingresosMensualesViewModel = new IngresosMensualesViewModel()
+            {
+                Monto = model?.Monto,
+                MovimientoId = model?.MovimientoId
+            };
+
+            ingresosMensualesViewModel.LoadMovimientoList(familyResearchRepository);
+
+            if (ModelState.IsValid == true)
+            {
+                ingresosMensualesViewModel.Key = string.Empty.GetUniqueKey();
+                SessionState.UserSession.AddItemInDataCollection<IngresosMensualesViewModel>(Constants.FamilyResearch_IngresosMensuales_Table, ingresosMensualesViewModel);
+            }
+
+            return PartialView("_IngresosMensualesForm", ingresosMensualesViewModel);
+        }
+
+        [HttpGet]
+        [Route("/SocialWork/FamilyResearch/GetIngresosMensualesTable")]
+        public IActionResult GetIngresosMensualesTable()
+        {
+            IngresosMensualesViewModel ingresosMensualesViewModel = new IngresosMensualesViewModel();
+            List<IngresosMensualesViewModel> table = SessionState.UserSession.GetDataCollection<List<IngresosMensualesViewModel>>(Constants.FamilyResearch_IngresosMensuales_Table);
+            if (table != null)
+            {
+                ingresosMensualesViewModel.LoadMovimientoList(familyResearchRepository);
+
+                foreach (var iter in table)
+                {
+                    iter.Movimiento = ingresosMensualesViewModel.MovimientoList.Where(m => m.Id == iter.MovimientoId).FirstOrDefault();
+                }
+            }
+
+            return PartialView("_IngresosMensualesTable", table);
+        }
+
+        [HttpPost]
+        [Route("/SocialWork/FamilyResearch/RemoveItemInIngresosMensualesTable")]
+        public IActionResult RemoveItemInIngresosMensualesTable(string key)
+        {
+            if (string.IsNullOrEmpty(key) == true)
+            {
+                return BadRequest("key cannot be null or empty");
+            }
+
+            var table = SessionState.UserSession.GetDataCollection<List<IngresosMensualesViewModel>>(Constants.FamilyResearch_IngresosMensuales_Table);
+
+            if (table != null)
+            {
+                var index = table.FindIndex(r => string.Equals(r.Key, key, StringComparison.OrdinalIgnoreCase));
+
+                if (index >= 0 && index < table.Count)
+                {
+                    SessionState.UserSession.RemoveItemInDataCollection<IngresosMensualesViewModel>(Constants.FamilyResearch_IngresosMensuales_Table, index);
+                }
+            }
+
+            return Ok();
+        }
     }
 }

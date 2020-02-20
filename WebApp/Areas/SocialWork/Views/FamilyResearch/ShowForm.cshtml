@@ -1401,7 +1401,7 @@
                                         <input type="button" value="+ Agregar" class="btn btn-success" onclick="GetBenefitsProvidedForm()">
                                     </div>
                                     <div class="col-12">
-                                        @await Html.PartialAsync("_BenefitsProvidedTable", Model.BenefitsProvidedList)
+                                        @await Html.PartialAsync("_BenefitsProvidedTable", Model.IngresosMensualesList)
                                     </div>
                                 </div>
                             </div>
@@ -1420,10 +1420,10 @@
                                             </h5>
                                             <div class="card-body">
                                                 <div class="mb-3 ml-3">
-                                                    @Html.ActionLink("+ Agregar", "Action", "Controller", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-success" })
+                                                    <input type="button" value="+ Agregar" class="btn btn-success" onclick="GetIngresosMensualesForm()">
                                                 </div>
                                                 <div class="col-12">
-                                                    @await Html.PartialAsync("_IngresosMensualesTable", Model)
+                                                    @await Html.PartialAsync("_IngresosMensualesTable", Model.IngresosMensualesList)
                                                 </div>
                                             </div>
                                         </div>
@@ -1580,6 +1580,7 @@
 
 <div id="modal-placeholder-familymembersmodalwindow"></div>
 <div id="modal-placeholder-benefitsprovidedwindow"></div>
+<div id="modal-placeholder-ingresosmensualeswindow"></div>
 
 
 @section Scripts {
@@ -1782,6 +1783,98 @@
                     data: model,
                     success: function (result) {
                         GetBenefitsProvidedTable();
+                    },
+                    error: function (xmlhttprequest, textstatus, errorthrown) {
+                        alert(" conection to the server failed ");
+                        console.log("error: " + errorthrown);
+                    }
+            });
+        });
+
+        let GetIngresosMensualesForm = function () {
+
+            let url = '@Url.Action("GetIngresosMensualesForm", "FamilyResearch", new { Area = "SocialWork" })';
+
+                $("#modal-placeholder-ingresosmensualeswindow").load(url, function () {
+                    $('#ingresosMensuales-Monto').keypress(function (event) {
+                        return isNumber(event, this)
+                    });
+
+                    $("#ingresosMensualesModalWindow").modal("show");
+
+            });
+        }
+
+        let GetIngresosMensualesTable = function () {
+
+	    let url = '@Url.Action("GetIngresosMensualesTable", "FamilyResearch", new { Area = "SocialWork" })';
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                cache: false,
+                success: function (response) {
+                    $('#IngresosMensualesTableId').html(response);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(" conection to the server failed ");
+                }
+            });
+        }
+
+        $("#modal-placeholder-ingresosmensualeswindow").on('click', '[data-save="modal-ingresosMensuales"]', function (event) {
+            event.preventDefault();
+            var model =
+            {
+                'Monto' : $('#ingresosMensuales-Monto').val(),
+                'MovimientoId' : $("#ingresosMensuales-MovimientoId").val()
+            };
+
+            var placeholderElement = $('#modal-placeholder-ingresosmensualeswindow');
+
+            $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("AddItemInIngresosMensualesTable", "FamilyResearch", new { Area = "SocialWork" })',
+                    data: JSON.stringify(model),
+                    datatype: "json",
+                success: function (result) {
+                    var newBody = $('.modal-body', result);
+                    placeholderElement.find('.modal-body').replaceWith(newBody);
+                    $('#ingresosMensuales-Monto').keypress(function (event) {
+                        return isNumber(event, this)
+                    });
+
+                    var isValid = newBody.find('[name="IsValid"]').val() == 'True';
+                    if (isValid) {
+                        placeholderElement.find('.modal').modal('hide');
+                        GetIngresosMensualesTable();
+                    }
+                    },
+                    error: function (xmlhttprequest, textstatus, errorthrown) {
+                        alert(" conection to the server failed ");
+                        console.log("error: " + errorthrown);
+                    }
+                });
+        });
+
+        $("#IngresosMensualesTableId").on('click','.btn-danger',function(){
+            // get the current row
+            var currentRow = $(this).closest("tr");
+
+            // get current row 1st TD value
+            var model =
+            {
+                key: currentRow.find("td:eq(0)").text()
+            };
+
+            $.ajax({
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    url: '@Url.Action("RemoveItemInIngresosMensualesTable", "FamilyResearch", new { Area = "SocialWork" })',
+                    data: model,
+                    success: function (result) {
+                        GetIngresosMensualesTable();
                     },
                     error: function (xmlhttprequest, textstatus, errorthrown) {
                         alert(" conection to the server failed ");
