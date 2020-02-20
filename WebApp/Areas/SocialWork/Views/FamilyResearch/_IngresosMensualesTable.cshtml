@@ -1,5 +1,6 @@
 ﻿@model List<WebApp.Areas.SocialWork.Models.IngresosMensualesViewModel>
 
+
 <div class="row">
     <div class="col">
         <table id="IngresosMensualesTableId" class="table table-responsive-lg table-hover">
@@ -16,12 +17,12 @@
                 {
                     foreach (var item in Model)
                     {
-                        if (item.Movimiento != null && 
-                            item.Movimiento.TipoMovimiento != null && 
+                        if (item.Movimiento != null &&
+                            item.Movimiento.TipoMovimiento != null &&
                             item.Movimiento.TipoMovimiento.Name == "Ingreso")
                         {
                             <tr>
-                                <td style="display:none">@Html.DisplayFor(Model=> item.Key)</td>
+                                <td style="display:none">@Html.DisplayFor(Model => item.Key)</td>
                                 <td>@Html.DisplayFor(model => item.Movimiento.Name)</td>
                                 <td>@Html.DisplayFor(model => item.Monto)</td>
                                 <td>
@@ -33,5 +34,21 @@
                 }
             </tbody>
         </table>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col">
+        <div>
+            @if (Model != null)
+            {
+                decimal total = 0;
+                foreach (var iter in Model)
+                {
+                    total = total + (iter.Monto ?? 0);
+                }
+                <label>Total:</label>
+                <input readonly type="text" class="form-control" value="@total.ToString("C")" />
+            }
+        </div>
     </div>
 </div>

@@ -11,6 +11,7 @@ namespace WebApp.Areas.SocialWork.Models
 
         public string Key { get => key; set => key = value; }
         public IList<Movimiento> MovimientoList { get; set; }
+        public decimal TotalAmount { get; set; }
 
         public void LoadMovimientoList(IFamilyResearch familyResearchRepository)
         {
