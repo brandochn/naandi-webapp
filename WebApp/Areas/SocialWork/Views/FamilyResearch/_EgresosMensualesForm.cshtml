@@ -1,10 +1,10 @@
-@model WebApp.Areas.SocialWork.Models.IngresosMensualesViewModel
+@model WebApp.Areas.SocialWork.Models.EgresosMensualesViewModel
 
-<div class="modal fade" id="ingresosMensualesModalWindow" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+<div class="modal fade" id="egresosMensualesModalWindow" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Agregar ingresos</h5>
+                <h5 class="modal-title" id="ModalLabel">Agregar egresos</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -20,7 +20,7 @@
                         </button>
                     </div>
                 }
-                
+
                 <form method="POST">
                     <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <div class="container">
@@ -30,7 +30,7 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-12">
                                         <label>Movimiento</label>
-                                        @Html.DropDownListFor(x => Model.MovimientoId, new SelectList(Model.MovimientoList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "ingresosMensuales-MovimientoId" })
+                                        @Html.DropDownListFor(x => Model.MovimientoId, new SelectList(Model.MovimientoList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "egresosMensuales-MovimientoId" })
                                         <span asp-validation-for="MovimientoId" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -38,7 +38,7 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-12">
                                         <label>Monto</label>
-                                        <input id="ingresosMensuales-Monto" type="text" asp-for="Monto" class="form-control" />
+                                        <input id="egresosMensuales-Monto" type="text" asp-for="Monto" class="form-control" />
                                         <span asp-validation-for="Monto" class="text-danger"></span>
                                     </div>
                                 </div>                              
@@ -51,7 +51,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button id="ingresosMensualesbtnyes" data-save="modal-ingresosMensuales" class="btn btn-primary">Guardar</button>
+                <button id="egresosMensualesbtnyes" data-save="modal-egresosMensuales" class="btn btn-primary">Guardar</button>
             </div>
         </div>
     </div>

@@ -1435,10 +1435,10 @@
                                             </h5>
                                             <div class="card-body">
                                                 <div class="mb-3 ml-3">
-                                                    @Html.ActionLink("+ Agregar", "Action", "Controller", new { Area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-success" })
+                                                    <input type="button" value="+ Agregar" class="btn btn-success" onclick="GetEgresosMensualesForm()">
                                                 </div>
                                                 <div class="col-12">
-                                                    @await Html.PartialAsync("_EgresosMensualesTable", Model)
+                                                    @await Html.PartialAsync("_EgresosMensualesTable", Model.EgresosMensualesList)
                                                 </div>
                                             </div>
                                         </div>
@@ -1581,6 +1581,7 @@
 <div id="modal-placeholder-familymembersmodalwindow"></div>
 <div id="modal-placeholder-benefitsprovidedwindow"></div>
 <div id="modal-placeholder-ingresosmensualeswindow"></div>
+<div id="modal-placeholder-egresosmensualeswindow"></div>
 
 
 @section Scripts {
@@ -1846,7 +1847,9 @@
                     });
 
                     var isValid = newBody.find('[name="IsValid"]').val() == 'True';
-                    if (isValid) {
+                    var hasErrorMessage = newBody.find('[name="HasErrorMessage"]').val() == 'True';
+
+                    if (isValid == true && hasErrorMessage == false) {
                         placeholderElement.find('.modal').modal('hide');
                         GetIngresosMensualesTable();
                     }
@@ -1884,8 +1887,99 @@
         });
 
 
-        $(document).ready(function () {
-            $('#EgresosMensualesTableId').DataTable({ searching: false });
+        let GetEgresosMensualesForm = function () {
+
+        let url = '@Url.Action("GetEgresosMensualesForm", "FamilyResearch", new { Area = "SocialWork" })';
+
+            $("#modal-placeholder-egresosmensualeswindow").load(url, function () {
+                $('#egresosMensuales-Monto').keypress(function (event) {
+                    return isNumber(event, this)
+                });
+
+                $("#egresosMensualesModalWindow").modal("show");
+
+            });
+        }
+
+        let GetEgresosMensualesTable = function () {
+
+            let url = '@Url.Action("GetEgresosMensualesTable", "FamilyResearch", new { Area = "SocialWork" })';
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                cache: false,
+                success: function (response) {
+                    $('#EgresosMensualesTableId').html(response);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(" conection to the server failed ");
+                }
+            });
+        }
+
+        $("#modal-placeholder-egresosmensualeswindow").on('click', '[data-save="modal-egresosMensuales"]', function (event) {
+            event.preventDefault();
+            var model =
+            {
+                'Monto' : $('#egresosMensuales-Monto').val(),
+                'MovimientoId' : $("#egresosMensuales-MovimientoId").val()
+            };
+
+            var placeholderElement = $('#modal-placeholder-egresosmensualeswindow');
+
+            $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("AddItemInEgresosMensualesTable", "FamilyResearch", new { Area = "SocialWork" })',
+                    data: JSON.stringify(model),
+                    datatype: "json",
+                success: function (result) {
+                    var newBody = $('.modal-body', result);
+                    placeholderElement.find('.modal-body').replaceWith(newBody);
+                    $('#egresosMensuales-Monto').keypress(function (event) {
+                        return isNumber(event, this)
+                    });
+
+                    var isValid = newBody.find('[name="IsValid"]').val() == 'True';
+                    var hasErrorMessage = newBody.find('[name="HasErrorMessage"]').val() == 'True';
+
+
+                    if (isValid == true && hasErrorMessage == false) {
+                        placeholderElement.find('.modal').modal('hide');
+                        GetEgresosMensualesTable();
+                    }
+                    },
+                    error: function (xmlhttprequest, textstatus, errorthrown) {
+                        alert(" conection to the server failed ");
+                        console.log("error: " + errorthrown);
+                    }
+                });
+        });
+
+        $("#EgresosMensualesTableId").on('click','.btn-danger',function(){
+            // get the current row
+            var currentRow = $(this).closest("tr");
+
+            // get current row 1st TD value
+            var model =
+            {
+                key: currentRow.find("td:eq(0)").text()
+            };
+
+            $.ajax({
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    url: '@Url.Action("RemoveItemInEgresosMensualesTable", "FamilyResearch", new { Area = "SocialWork" })',
+                    data: model,
+                    success: function (result) {
+                        GetEgresosMensualesTable();
+                    },
+                    error: function (xmlhttprequest, textstatus, errorthrown) {
+                        alert(" conection to the server failed ");
+                        console.log("error: " + errorthrown);
+                    }
+            });
         });
 
     </script>

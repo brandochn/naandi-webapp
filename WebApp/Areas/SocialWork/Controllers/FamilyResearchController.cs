@@ -285,6 +285,7 @@ namespace WebApp.Areas.SocialWork.Controllers
         {
             var model = new IngresosMensualesViewModel();
             model.LoadMovimientoList(familyResearchRepository);
+            ViewBag.HasErrorMessage = false;
 
             return PartialView("_IngresosMensualesForm", model);
         }
@@ -299,12 +300,33 @@ namespace WebApp.Areas.SocialWork.Controllers
                 MovimientoId = model?.MovimientoId
             };
 
+            ViewBag.HasErrorMessage = false;
+
             ingresosMensualesViewModel.LoadMovimientoList(familyResearchRepository);
 
             if (ModelState.IsValid == true)
             {
-                ingresosMensualesViewModel.Key = string.Empty.GetUniqueKey();
-                SessionState.UserSession.AddItemInDataCollection<IngresosMensualesViewModel>(Constants.FamilyResearch_IngresosMensuales_Table, ingresosMensualesViewModel);
+                bool IsItemValid = true;
+                List<IngresosMensualesViewModel> table = SessionState.UserSession.GetDataCollection<List<IngresosMensualesViewModel>>(Constants.FamilyResearch_IngresosMensuales_Table);
+                if (table != null)
+                {
+                    foreach (var iter in table)
+                    {
+                        if (iter.MovimientoId == model.MovimientoId)
+                        {
+                            ViewBag.ErrorMessage = "No puede duplicar los ingresos";
+                            ViewBag.HasErrorMessage = true;
+                            IsItemValid = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (IsItemValid == true)
+                {
+                    ingresosMensualesViewModel.Key = string.Empty.GetUniqueKey();
+                    SessionState.UserSession.AddItemInDataCollection<IngresosMensualesViewModel>(Constants.FamilyResearch_IngresosMensuales_Table, ingresosMensualesViewModel);
+                }
             }
 
             return PartialView("_IngresosMensualesForm", ingresosMensualesViewModel);
@@ -347,6 +369,102 @@ namespace WebApp.Areas.SocialWork.Controllers
                 if (index >= 0 && index < table.Count)
                 {
                     SessionState.UserSession.RemoveItemInDataCollection<IngresosMensualesViewModel>(Constants.FamilyResearch_IngresosMensuales_Table, index);
+                }
+            }
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("/SocialWork/FamilyResearch/GetEgresosMensualesForm")]
+        public IActionResult GetEgresosMensualesForm()
+        {
+            var model = new EgresosMensualesViewModel();
+            model.LoadMovimientoList(familyResearchRepository);
+            ViewBag.HasErrorMessage = false;
+
+            return PartialView("_EgresosMensualesForm", model);
+        }
+
+        [HttpPost]
+        [Route("/SocialWork/FamilyResearch/AddItemInEgresosMensualesTable")]
+        public IActionResult AddItemInEgresosMensualesTable([FromBody]IngresosEgresosMensualesMovimientoRelation model)
+        {
+            EgresosMensualesViewModel egresosMensualesViewModel = new EgresosMensualesViewModel()
+            {
+                Monto = model?.Monto,
+                MovimientoId = model?.MovimientoId
+            };
+
+            ViewBag.HasErrorMessage = false;
+
+            egresosMensualesViewModel.LoadMovimientoList(familyResearchRepository);
+
+            if (ModelState.IsValid == true)
+            {
+                bool IsItemValid = true;
+                List<EgresosMensualesViewModel> table = SessionState.UserSession.GetDataCollection<List<EgresosMensualesViewModel>>(Constants.FamilyResearch_EgresosMensuales_Table);
+                if (table != null)
+                {
+                    foreach (var iter in table)
+                    {
+                        if (iter.MovimientoId == model.MovimientoId)
+                        {
+                            ViewBag.ErrorMessage = "No puede duplicar los egresos";
+                            ViewBag.HasErrorMessage = true;
+                            IsItemValid = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (IsItemValid == true)
+                {
+                    egresosMensualesViewModel.Key = string.Empty.GetUniqueKey();
+                    SessionState.UserSession.AddItemInDataCollection<EgresosMensualesViewModel>(Constants.FamilyResearch_EgresosMensuales_Table, egresosMensualesViewModel);
+                }
+            }
+
+            return PartialView("_EgresosMensualesForm", egresosMensualesViewModel);
+        }
+
+        [HttpGet]
+        [Route("/SocialWork/FamilyResearch/GetEgresosMensualesTable")]
+        public IActionResult GetEgresosMensualesTable()
+        {
+            EgresosMensualesViewModel egresosMensualesViewModel = new EgresosMensualesViewModel();
+            List<EgresosMensualesViewModel> table = SessionState.UserSession.GetDataCollection<List<EgresosMensualesViewModel>>(Constants.FamilyResearch_EgresosMensuales_Table);
+            if (table != null)
+            {
+                egresosMensualesViewModel.LoadMovimientoList(familyResearchRepository);
+
+                foreach (var iter in table)
+                {
+                    iter.Movimiento = egresosMensualesViewModel.MovimientoList.Where(m => m.Id == iter.MovimientoId).FirstOrDefault();
+                }
+            }
+
+            return PartialView("_EgresosMensualesTable", table);
+        }
+
+        [HttpPost]
+        [Route("/SocialWork/FamilyResearch/RemoveItemInEgresosMensualesTable")]
+        public IActionResult RemoveItemInEgresosMensualesTable(string key)
+        {
+            if (string.IsNullOrEmpty(key) == true)
+            {
+                return BadRequest("key cannot be null or empty");
+            }
+
+            var table = SessionState.UserSession.GetDataCollection<List<EgresosMensualesViewModel>>(Constants.FamilyResearch_EgresosMensuales_Table);
+
+            if (table != null)
+            {
+                var index = table.FindIndex(r => string.Equals(r.Key, key, StringComparison.OrdinalIgnoreCase));
+
+                if (index >= 0 && index < table.Count)
+                {
+                    SessionState.UserSession.RemoveItemInDataCollection<EgresosMensualesViewModel>(Constants.FamilyResearch_EgresosMensuales_Table, index);
                 }
             }
 

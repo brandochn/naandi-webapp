@@ -23,6 +23,7 @@ namespace WebApp.Areas.SocialWork.Models
         public IList<FamilyResearch> FamilyResearches { get; set; }
         public IList<BenefitsProvidedViewModel> BenefitsProvidedList { get; set; }
         public IList<IngresosMensualesViewModel> IngresosMensualesList { get; set; }
+        public IList<EgresosMensualesViewModel> EgresosMensualesList { get; set; }
 
 
         public bool IsValid(object value)

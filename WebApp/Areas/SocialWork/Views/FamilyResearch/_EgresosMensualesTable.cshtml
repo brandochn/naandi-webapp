@@ -1,26 +1,29 @@
-﻿@model WebApp.Areas.SocialWork.Models.FamilyResearchViewModel
+﻿@model List<WebApp.Areas.SocialWork.Models.EgresosMensualesViewModel>
 
 <div class="row">
     <div class="col">
         <table id="EgresosMensualesTableId" class="table table-responsive-lg table-hover">
             <thead class="">
                 <tr>
+                    <th style="display:none">key</th>
                     <th>Egreso</th>
                     <th>Monto</th>
+                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model.IngresosEgresosMensuales != null && Model.IngresosEgresosMensuales.IngresosEgresosMensualesMovimientoRelation != null)
+                @if (Model != null)
                 {
-                    foreach (var item in Model.IngresosEgresosMensuales.IngresosEgresosMensualesMovimientoRelation)
+                    foreach (var item in Model)
                     {
                         if (item.Movimiento.TipoMovimiento.Name == "Egreso")
                         {
                             <tr>
+                                <td style="display:none">@Html.DisplayFor(Model => item.Key)</td>
                                 <td>@Html.DisplayFor(model => item.Movimiento.Name)</td>
                                 <td>@Html.DisplayFor(model => item.Monto)</td>
                                 <td>
-                                    @Html.ActionLink("Eliminar", "Action", "Controller", new { id = item.Id, area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-danger" })
+                                    <input type="button" value="Eliminar" class="btn btn-danger">
                                 </td>
                             </tr>
                         }
@@ -28,5 +31,21 @@
                 }
             </tbody>
         </table>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col">
+        <div>
+            @if (Model != null)
+            {
+                decimal total = 0;
+                foreach (var iter in Model)
+                {
+                    total = total + (iter.Monto ?? 0);
+                }
+                <label>Total:</label>
+                <input readonly type="text" class="form-control" value="@total.ToString("C")" />
+            }
+        </div>
     </div>
 </div>
