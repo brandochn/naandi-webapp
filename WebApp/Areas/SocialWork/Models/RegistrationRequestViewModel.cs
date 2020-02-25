@@ -137,7 +137,8 @@ namespace WebApp.Areas.SocialWork.Models
 
         public void LoadMunicipalitiesOfMexico(IRegistrationRequest registrationRequestRepository)
         {
-            if (string.IsNullOrEmpty(Requestor?.Address?.State))
+            if (string.IsNullOrEmpty(Requestor?.Address?.State) ||
+                Requestor?.Address?.State.StartsWith("Selecciona") == true)
             {
                 MunicipalitiesOfMexico = new List<MunicipalitiesOfMexico>();
                 MunicipalitiesOfMexico.Add(new MunicipalitiesOfMexico()

@@ -3,6 +3,7 @@ using Naandi.Shared.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace WebApp.Areas.SocialWork.Models
 {
@@ -28,7 +29,86 @@ namespace WebApp.Areas.SocialWork.Models
 
         public bool IsValid(object value)
         {
-            throw new System.NotImplementedException();
+            var valid = true;
+            var modelState = value as ModelStateDictionary;
+            if (modelState != null)
+            {
+                if (string.IsNullOrEmpty(LegalGuardian?.FullName))
+                {
+                    modelState.AddModelError(string.Empty, "El nombre del tutor es requerido");
+                    valid = false;
+                }
+
+                if (LegalGuardian == null || LegalGuardian.Age <= 0 || LegalGuardian.Age > 100)
+                {
+                    modelState.AddModelError(string.Empty, "La edad del tutor deber ser un número entre 1 al 100");
+                    valid = false;
+                }
+
+                if (LegalGuardian == null || LegalGuardian.MaritalStatusId == 0)
+                {
+                    modelState.AddModelError(string.Empty, "El estado civil es requerido");
+                    valid = false;
+                }
+
+                if (LegalGuardian == null || LegalGuardian.RelationshipId == 0)
+                {
+                    modelState.AddModelError(string.Empty, "El parentesco es requerido");
+                    valid = false;
+                }
+
+                if (string.IsNullOrEmpty(LegalGuardian?.PlaceOfBirth))
+                {
+                    modelState.AddModelError(string.Empty, "El lugar de nacimiento del solicitante es requerido");
+                    valid = false;
+                }
+
+                if (LegalGuardian == null || (DateTime.Now - LegalGuardian.DateOfBirth).TotalDays > 27375 // 75 years old
+                   || (DateTime.Now - LegalGuardian.DateOfBirth).TotalDays < 1)
+                {
+                    modelState.AddModelError(string.Empty, "La fecha de nacimiento del tutor no es valida");
+                    valid = false;
+                }
+
+                if (string.IsNullOrEmpty(LegalGuardian?.Address?.Street))
+                {
+                    modelState.AddModelError(string.Empty, "La dirección del tutor es requerido");
+                    valid = false;
+                }
+
+                if (string.IsNullOrEmpty(LegalGuardian?.Address?.City))
+                {
+                    modelState.AddModelError(string.Empty, "El municipio del tutor es requerido");
+                    valid = false;
+                }
+
+                if (string.IsNullOrEmpty(Minor?.FullName))
+                {
+                    modelState.AddModelError(string.Empty, "El nombre de la menor es requerido");
+                    valid = false;
+                }
+
+                if (Minor == null || (DateTime.Now - Minor.DateOfBirth).TotalDays > 6570 // 18 years old
+                    || (DateTime.Now - Minor.DateOfBirth).TotalDays < 1)
+                {
+                    modelState.AddModelError(string.Empty, "La fecha de nacimiento de la menor no es valida");
+                    valid = false;
+                }
+
+                if (Minor == null || Minor.Age <= 0 || Minor.Age > 100)
+                {
+                    modelState.AddModelError(string.Empty, "La edad de la menor deber ser un número entre 1 al 100");
+                    valid = false;
+                }
+
+                if (string.IsNullOrEmpty(Minor?.PlaceOfBirth))
+                {
+                    modelState.AddModelError(string.Empty, "El lugar de nacimiento de la menor es requerido");
+                    valid = false;
+                }
+            }
+
+            return valid;
         }
 
         public void LoadMaritalStatuses(IFamilyResearch familyResearchRepository)
@@ -62,7 +142,8 @@ namespace WebApp.Areas.SocialWork.Models
 
         public void LoadMunicipalitiesOfMexico(IFamilyResearch familyResearchRepository)
         {
-            if (string.IsNullOrEmpty(LegalGuardian?.Address?.State))
+            if (string.IsNullOrEmpty(LegalGuardian?.Address?.State) || 
+                LegalGuardian?.Address?.State.StartsWith("Selecciona") == true)
             {
                 MunicipalitiesOfMexico = new List<MunicipalitiesOfMexico>();
                 MunicipalitiesOfMexico.Add(new MunicipalitiesOfMexico()
