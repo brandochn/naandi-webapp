@@ -24,7 +24,7 @@ namespace WebApp.Areas.SocialWork.Controllers
         {
             RegistrationRequestViewModel model = new RegistrationRequestViewModel
             {
-                RegistrationRequests = registrationRequestRepository.GetRegistrationRequests().ToList()
+                RegistrationRequests = registrationRequestRepository.GetRegistrationRequests()?.ToList()
             };
             return View(model);
         }
@@ -145,11 +145,11 @@ namespace WebApp.Areas.SocialWork.Controllers
 
             if (string.Equals(minorName, "_all_", StringComparison.OrdinalIgnoreCase))
             {
-                model.RegistrationRequests = registrationRequestRepository.GetRegistrationRequests().ToList();
+                model.RegistrationRequests = registrationRequestRepository.GetRegistrationRequests()?.ToList();
             }
             else
             {
-                model.RegistrationRequests = registrationRequestRepository.GetRegistrationRequestsByMinorName(minorName).ToList();
+                model.RegistrationRequests = registrationRequestRepository.GetRegistrationRequestsByMinorName(minorName)?.ToList();
             }
 
             return PartialView("_RegistrationRequestTable", model);

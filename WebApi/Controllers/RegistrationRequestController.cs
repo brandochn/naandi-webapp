@@ -28,7 +28,7 @@ namespace WebApi.Controllers
         [Route("GetRegistrationRequests")]
         public IEnumerable<RegistrationRequest> GetRegistrationRequests()
         {
-            return registrationRequestRepository.GetRegistrationRequests().ToList();
+            return registrationRequestRepository.GetRegistrationRequests()?.ToList();
         }
 
         [HttpGet]
