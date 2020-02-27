@@ -1,35 +1,27 @@
+using System.Collections.Generic;
+
 namespace WebApp.Areas.SocialWork.Models
 {
     public class PatrimonyViewModelCollection
     {
-        private PatrimonyViewModel[] collection = new PatrimonyViewModel[100];
+        private Dictionary<string, PatrimonyViewModel> entries = new Dictionary<string, PatrimonyViewModel>();
 
-        public PatrimonyViewModel this[int index]
+        public PatrimonyViewModel this[string key]
         {
             get
             {
-                return collection[index];
-            }
-
-            set
-            {
-                collection[index] = value;
-            }
-        }
-
-        public PatrimonyViewModel this[string name]
-        {
-            get
-            {
-                foreach (PatrimonyViewModel iter in collection)
+                // Return the value for this key or the default value.
+                if (entries.ContainsKey(key))
                 {
-                    if (string.Equals(iter.Name, name, System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        return iter;
-                    }
+                    return entries[key];
                 }
 
                 return null;
+            }
+            set
+            {
+                // Set the property's value for the key.
+                entries.Add(key, value);
             }
         }
     }
