@@ -193,7 +193,7 @@ namespace WebApp.Areas.SocialWork.Models
         }
         public void LoadPatrimonyViewModelCollection(IFamilyResearch familyResearchRepository)
         {
-            var patrimonies = familyResearchRepository.GetPatrimonies()?.OrderBy(o => o.Name)?.ToList();
+            var patrimonies = familyResearchRepository.GetPatrimonies()?.OrderBy(o => o.Id)?.ToList();
             if (patrimonies == null)
             {
                 return;
@@ -202,13 +202,11 @@ namespace WebApp.Areas.SocialWork.Models
             PatrimonyViewModelCollection = new PatrimonyViewModelCollection();
             for (int i = 0; i < patrimonies.Count; i++)
             {
-                var item = new PatrimonyViewModel()
+                PatrimonyViewModelCollection[i] = new PatrimonyViewModel()
                 {
                     Name = patrimonies[i].Name,
                     Value = string.Empty
                 };
-
-                PatrimonyViewModelCollection[item.Name] = item;
             }
         }
 

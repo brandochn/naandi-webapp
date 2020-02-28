@@ -1,10 +1,8 @@
-using Naandi.Shared.Models;
-
 namespace WebApp.Areas.SocialWork.Models
 {
-    public class PatrimonyViewModel : Patrimony
+    public class PatrimonyViewModel
     {
-        public string Value { get; set; }
-        public string PatrimonyValue { get; set; }
+        public string Name { get; set; }
+        public string Value { get; set; }        
     }
 }

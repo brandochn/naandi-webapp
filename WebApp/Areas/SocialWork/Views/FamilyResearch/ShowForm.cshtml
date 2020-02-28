@@ -1171,23 +1171,35 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
                                             <label>Automóvil</label>
-                                            @{
-                                                string KeyName = "Automovil";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].Value" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[0] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[0].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[0].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[0].Value" />
                                             }
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label>Modelo</label>
-                                            @{
-                                                KeyName = "Modelo";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].Value" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[1] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[1].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[1].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[1].Value" />
                                             }
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label>Valor</label>
-                                            @{
-                                                KeyName = "Automovil";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].PatrimonyValue" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].PatrimonyValue" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[1] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[1].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[1].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[1].Value" />
                                             }
                                         </div>
                                     </div>
@@ -1195,23 +1207,35 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
                                             <label>Casa habitación</label>
-                                            @{
-                                                KeyName = "CasaHabitacion";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].Value" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[2] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[2].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[2].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[2].Value" />
                                             }
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label>Ubicación</label>
-                                            @{
-                                                KeyName = "CasaHabitacionUbicacion";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].Value" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[3] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[3].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[3].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[3].Value" />
                                             }
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label>Valor</label>
-                                            @{
-                                                KeyName = "CasaHabitacion";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].PatrimonyValue" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].PatrimonyValue" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[3] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[3].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[3].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[3].Value" />
                                             }
                                         </div>
                                     </div>
@@ -1219,23 +1243,35 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
                                             <label>Terreno</label>
-                                            @{
-                                                KeyName = "Terreno";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].Value" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[4] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[4].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[4].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[4].Value" />
                                             }
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label>Ubicación</label>
-                                            @{
-                                                KeyName = "TerrenoUbicacion";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].Value" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[5] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[5].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[5].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[5].Value" />
                                             }
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label>Valor</label>
-                                            @{
-                                                KeyName = "Terreno";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].PatrimonyValue" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].PatrimonyValue" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[5] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[5].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[5].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[5].Value" />
                                             }
                                         </div>
                                     </div>
@@ -1243,9 +1279,13 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-12">
                                             <label>Otros</label>
-                                            @{
-                                                KeyName = "Otros";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].PatrimonyValue" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].PatrimonyValue" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[6] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[6].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[6].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[6].Value" />
                                             }
                                         </div>
                                     </div>
@@ -1253,23 +1293,35 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
                                             <label>Ahorros</label>
-                                            @{
-                                                KeyName = "Ahorros";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].PatrimonyValue" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].PatrimonyValue" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[7] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[7].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[7].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[7].Value" />
                                             }
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label>Frecuencia de ahorro</label>
-                                            @{
-                                                KeyName = "FrecuenciaDeAhorro";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].PatrimonyValue" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].PatrimonyValue" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[8] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[8].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[8].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[8].Value" />
                                             }
                                         </div>
                                         <div class="form-group col-md-4">
                                             <label>Valor</label>
-                                            @{
-                                                KeyName = "Ahorros";
-                                                <input type="text" asp-for="PatrimonyViewModelCollection[@KeyName].PatrimonyValue" class="form-control" value="@Model.PatrimonyViewModelCollection[KeyName].PatrimonyValue" />
+                                            @if (Model.EconomicSituation == null || Model.PatrimonyViewModelCollection[8] == null)
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[8].Value" class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input type="text" asp-for="PatrimonyViewModelCollection[8].Value" class="form-control" value="@Model.PatrimonyViewModelCollection[8].Value" />
                                             }
                                         </div>
                                     </div>
