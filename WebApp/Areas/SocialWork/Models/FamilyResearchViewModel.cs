@@ -17,7 +17,7 @@ namespace WebApp.Areas.SocialWork.Models
         public IList<TypesOfHouses> TypesOfHousesList { get; set; }
         public IList<TipoDeMobiliario> TipoDeMobiliarioList { get; set; }
         public IList<TypeOfDistrict> TypeOfDistrictList { get; set; }
-        public PatrimonyViewModelCollection PatrimonyViewModelCollection { get; set; }
+        public List<PatrimonyViewModel> PatrimonyViewModelCollection { get; set; }
         public IList<Food> Foods { get; set; }
         public IList<Frequency> Frequencies { get; set; }
         public int[] FrequencyIdsSelected { get; set; }
@@ -142,7 +142,7 @@ namespace WebApp.Areas.SocialWork.Models
 
         public void LoadMunicipalitiesOfMexico(IFamilyResearch familyResearchRepository)
         {
-            if (string.IsNullOrEmpty(LegalGuardian?.Address?.State) || 
+            if (string.IsNullOrEmpty(LegalGuardian?.Address?.State) ||
                 LegalGuardian?.Address?.State.StartsWith("Selecciona") == true)
             {
                 MunicipalitiesOfMexico = new List<MunicipalitiesOfMexico>();
@@ -199,14 +199,87 @@ namespace WebApp.Areas.SocialWork.Models
                 return;
             }
 
-            PatrimonyViewModelCollection = new PatrimonyViewModelCollection();
-            for (int i = 0; i < patrimonies.Count; i++)
+            PatrimonyViewModelCollection = new List<PatrimonyViewModel>();
+            foreach (var p in patrimonies)
             {
-                PatrimonyViewModelCollection[i] = new PatrimonyViewModel()
+                switch (p.Name)
                 {
-                    Name = patrimonies[i].Name,
-                    Value = string.Empty
-                };
+                    case "Automovil":
+                        PatrimonyViewModelCollection.Insert(0, new PatrimonyViewModel()
+                        {
+                            Name = p.Name,
+                            Value = "Honda"
+                        });
+                        break;
+                    case "Modelo":
+
+                        PatrimonyViewModelCollection.Insert(1, new PatrimonyViewModel()
+                        {
+                            Name = p.Name,
+                            Value = string.Empty
+                        });
+                        break;
+                    case "CasaHabitacion":
+
+                        PatrimonyViewModelCollection.Insert(2, new PatrimonyViewModel()
+                        {
+                            Name = p.Name,
+                            Value = string.Empty
+                        });
+                        break;
+                    case "CasaHabitacionUbicacion":
+
+                        PatrimonyViewModelCollection.Insert(3, new PatrimonyViewModel()
+                        {
+                            Name = p.Name,
+                            Value = string.Empty
+                        });
+                        break;
+                    case "Terreno":
+
+                        PatrimonyViewModelCollection.Insert(4, new PatrimonyViewModel()
+                        {
+                            Name = p.Name,
+                            Value = string.Empty
+                        });
+                        break;
+                    case "TerrenoUbicacion":
+
+                        PatrimonyViewModelCollection.Insert(5, new PatrimonyViewModel()
+                        {
+                            Name = p.Name,
+                            Value = string.Empty
+                        });
+                        break;
+                    case "Otros":
+
+                        PatrimonyViewModelCollection.Insert(6, new PatrimonyViewModel()
+                        {
+                            Name = p.Name,
+                            Value = string.Empty
+                        });
+                        break;
+                    case "Ahorros":
+
+                        PatrimonyViewModelCollection.Insert(7, new PatrimonyViewModel()
+                        {
+                            Name = p.Name,
+                            Value = string.Empty
+                        });
+                        break;
+                    case "FrecuenciaDeAhorro":
+
+                        PatrimonyViewModelCollection.Insert(8, new PatrimonyViewModel()
+                        {
+                            Name = p.Name,
+                            Value = string.Empty
+                        });
+                        break;
+                    default:
+                        throw new Exception("Patrimony not supported");
+
+                }
+
             }
         }
 
