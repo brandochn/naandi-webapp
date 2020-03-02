@@ -5,7 +5,5 @@ namespace WebApp.Areas.SocialWork.Models
     public class PatrimonyViewModel : Patrimony
     {
         public string Value { get; set; }
-
-        public decimal? PatrimonyValue { get; set; }
     }
 }

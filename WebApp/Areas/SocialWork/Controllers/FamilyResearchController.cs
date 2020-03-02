@@ -92,6 +92,9 @@ namespace WebApp.Areas.SocialWork.Controllers
                 }
                 else // add new item
                 {
+                    //TODO: Add missing custom list to the model before call Add method
+
+                    model.LoadEconomicSituationPatrimonyRelation(familyResearchRepository);
                     familyResearchRepository.Add(model);
                 }
             }
