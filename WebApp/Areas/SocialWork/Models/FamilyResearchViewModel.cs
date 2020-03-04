@@ -276,28 +276,28 @@ namespace WebApp.Areas.SocialWork.Models
                         });
                         break;
                     case "AutomovilValor":
-                        PatrimonyViewModelCollection.Insert(10, new PatrimonyViewModel()
+                        PatrimonyViewModelCollection.Insert(9, new PatrimonyViewModel()
                         {
                             Name = p.Name,
                             Value = string.Empty
                         });
                         break;
                     case "CasaHabitacionValor":
-                        PatrimonyViewModelCollection.Insert(11, new PatrimonyViewModel()
+                        PatrimonyViewModelCollection.Insert(10, new PatrimonyViewModel()
                         {
                             Name = p.Name,
                             Value = string.Empty
                         });
                         break;
                     case "TerrenoValor":
-                        PatrimonyViewModelCollection.Insert(12, new PatrimonyViewModel()
+                        PatrimonyViewModelCollection.Insert(11, new PatrimonyViewModel()
                         {
                             Name = p.Name,
                             Value = string.Empty
                         });
                         break;
                     case "AhorrosValor":
-                        PatrimonyViewModelCollection.Insert(13, new PatrimonyViewModel()
+                        PatrimonyViewModelCollection.Insert(12, new PatrimonyViewModel()
                         {
                             Name = p.Name,
                             Value = string.Empty
@@ -319,7 +319,7 @@ namespace WebApp.Areas.SocialWork.Models
         public void LoadFrequencies(IFamilyResearch familyResearchRepository)
         {
             Frequencies = familyResearchRepository.GetFrequencies().OrderBy(o => o.Id).ToList();
-            int size = Frequencies.Count;
+            int size = Foods.Count;
             FrequencyIdsSelected = new Frequency[size];
         }
 
@@ -331,27 +331,47 @@ namespace WebApp.Areas.SocialWork.Models
                 return;
             }
 
+            if (EconomicSituation == null)
+            {
+                EconomicSituation = new EconomicSituation();
+            }
+
             EconomicSituation.EconomicSituationPatrimonyRelation = new EconomicSituationPatrimonyRelation[PatrimonyViewModelCollection.Count];
+            EconomicSituation.EconomicSituationPatrimonyRelation[0] = new EconomicSituationPatrimonyRelation();
+            EconomicSituation.EconomicSituationPatrimonyRelation[1] = new EconomicSituationPatrimonyRelation();
+            EconomicSituation.EconomicSituationPatrimonyRelation[2] = new EconomicSituationPatrimonyRelation();
+            EconomicSituation.EconomicSituationPatrimonyRelation[3] = new EconomicSituationPatrimonyRelation();
+            EconomicSituation.EconomicSituationPatrimonyRelation[4] = new EconomicSituationPatrimonyRelation();
+            EconomicSituation.EconomicSituationPatrimonyRelation[5] = new EconomicSituationPatrimonyRelation();
+            EconomicSituation.EconomicSituationPatrimonyRelation[6] = new EconomicSituationPatrimonyRelation();
+            EconomicSituation.EconomicSituationPatrimonyRelation[7] = new EconomicSituationPatrimonyRelation();
+            EconomicSituation.EconomicSituationPatrimonyRelation[8] = new EconomicSituationPatrimonyRelation();
+            EconomicSituation.EconomicSituationPatrimonyRelation[9] = new EconomicSituationPatrimonyRelation();
+            EconomicSituation.EconomicSituationPatrimonyRelation[10] = new EconomicSituationPatrimonyRelation();
+            EconomicSituation.EconomicSituationPatrimonyRelation[11] = new EconomicSituationPatrimonyRelation();
+            EconomicSituation.EconomicSituationPatrimonyRelation[12] = new EconomicSituationPatrimonyRelation();
+
+
             EconomicSituation.EconomicSituationPatrimonyRelation[0].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "Automovil", StringComparison.OrdinalIgnoreCase)).Id;
             EconomicSituation.EconomicSituationPatrimonyRelation[0].Value = PatrimonyViewModelCollection[0].Value;
             EconomicSituation.EconomicSituationPatrimonyRelation[1].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "Modelo", StringComparison.OrdinalIgnoreCase)).Id;
             EconomicSituation.EconomicSituationPatrimonyRelation[1].Value = PatrimonyViewModelCollection[1].Value;
-            EconomicSituation.EconomicSituationPatrimonyRelation[10].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "AutomovilValor", StringComparison.OrdinalIgnoreCase)).Id;
-            EconomicSituation.EconomicSituationPatrimonyRelation[10].Value = PatrimonyViewModelCollection[10].Value;
+            EconomicSituation.EconomicSituationPatrimonyRelation[9].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "AutomovilValor", StringComparison.OrdinalIgnoreCase)).Id;
+            EconomicSituation.EconomicSituationPatrimonyRelation[9].Value = PatrimonyViewModelCollection[9].Value;
 
             EconomicSituation.EconomicSituationPatrimonyRelation[2].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "CasaHabitacion", StringComparison.OrdinalIgnoreCase)).Id;
             EconomicSituation.EconomicSituationPatrimonyRelation[2].Value = PatrimonyViewModelCollection[2].Value;
             EconomicSituation.EconomicSituationPatrimonyRelation[3].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "CasaHabitacionUbicacion", StringComparison.OrdinalIgnoreCase)).Id;
             EconomicSituation.EconomicSituationPatrimonyRelation[3].Value = PatrimonyViewModelCollection[3].Value;
-            EconomicSituation.EconomicSituationPatrimonyRelation[11].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "CasaHabitacionValor", StringComparison.OrdinalIgnoreCase)).Id;
-            EconomicSituation.EconomicSituationPatrimonyRelation[11].Value = PatrimonyViewModelCollection[11].Value;
+            EconomicSituation.EconomicSituationPatrimonyRelation[10].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "CasaHabitacionValor", StringComparison.OrdinalIgnoreCase)).Id;
+            EconomicSituation.EconomicSituationPatrimonyRelation[10].Value = PatrimonyViewModelCollection[10].Value;
 
             EconomicSituation.EconomicSituationPatrimonyRelation[4].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "Terreno", StringComparison.OrdinalIgnoreCase)).Id;
             EconomicSituation.EconomicSituationPatrimonyRelation[4].Value = PatrimonyViewModelCollection[4].Value;
             EconomicSituation.EconomicSituationPatrimonyRelation[5].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "TerrenoUbicacion", StringComparison.OrdinalIgnoreCase)).Id;
             EconomicSituation.EconomicSituationPatrimonyRelation[5].Value = PatrimonyViewModelCollection[5].Value;
-            EconomicSituation.EconomicSituationPatrimonyRelation[12].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "TerrenoValor", StringComparison.OrdinalIgnoreCase)).Id;
-            EconomicSituation.EconomicSituationPatrimonyRelation[12].Value = PatrimonyViewModelCollection[12].Value;
+            EconomicSituation.EconomicSituationPatrimonyRelation[11].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "TerrenoValor", StringComparison.OrdinalIgnoreCase)).Id;
+            EconomicSituation.EconomicSituationPatrimonyRelation[11].Value = PatrimonyViewModelCollection[11].Value;
 
             EconomicSituation.EconomicSituationPatrimonyRelation[6].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "Otros", StringComparison.OrdinalIgnoreCase)).Id;
             EconomicSituation.EconomicSituationPatrimonyRelation[6].Value = PatrimonyViewModelCollection[6].Value;
@@ -360,8 +380,8 @@ namespace WebApp.Areas.SocialWork.Models
             EconomicSituation.EconomicSituationPatrimonyRelation[7].Value = PatrimonyViewModelCollection[7].Value;
             EconomicSituation.EconomicSituationPatrimonyRelation[8].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "FrecuenciaDeAhorro", StringComparison.OrdinalIgnoreCase)).Id;
             EconomicSituation.EconomicSituationPatrimonyRelation[8].Value = PatrimonyViewModelCollection[8].Value;
-            EconomicSituation.EconomicSituationPatrimonyRelation[13].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "AhorrosValor", StringComparison.OrdinalIgnoreCase)).Id;
-            EconomicSituation.EconomicSituationPatrimonyRelation[13].Value = PatrimonyViewModelCollection[13].Value;
+            EconomicSituation.EconomicSituationPatrimonyRelation[12].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "AhorrosValor", StringComparison.OrdinalIgnoreCase)).Id;
+            EconomicSituation.EconomicSituationPatrimonyRelation[12].Value = PatrimonyViewModelCollection[12].Value;
         }
     }
 }
