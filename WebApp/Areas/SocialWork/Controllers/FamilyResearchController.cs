@@ -95,6 +95,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                     //TODO: Add missing custom list to the model before call Add method
 
                     model.LoadEconomicSituationPatrimonyRelation(familyResearchRepository);
+                    model.LoadFamilyNutritionFoodRelation(familyResearchRepository);
                     familyResearchRepository.Add(model);
                 }
             }

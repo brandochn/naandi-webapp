@@ -313,7 +313,7 @@ namespace WebApp.Areas.SocialWork.Models
 
         public void LoadFoods(IFamilyResearch familyResearchRepository)
         {
-            Foods = familyResearchRepository.GetFoods().ToList();
+            Foods = familyResearchRepository.GetFoods().OrderBy(o => o.Name).ToList();
         }
 
         public void LoadFrequencies(IFamilyResearch familyResearchRepository)
@@ -382,6 +382,24 @@ namespace WebApp.Areas.SocialWork.Models
             EconomicSituation.EconomicSituationPatrimonyRelation[8].Value = PatrimonyViewModelCollection[8].Value;
             EconomicSituation.EconomicSituationPatrimonyRelation[12].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "AhorrosValor", StringComparison.OrdinalIgnoreCase)).Id;
             EconomicSituation.EconomicSituationPatrimonyRelation[12].Value = PatrimonyViewModelCollection[12].Value;
+        }
+
+        public void LoadFamilyNutritionFoodRelation(IFamilyResearch familyResearchRepository)
+        {
+            var _foods = familyResearchRepository.GetFoods().OrderBy(o => o.Name).ToList();
+
+            if (FamilyNutrition == null)
+            {
+                FamilyNutrition = new FamilyNutrition();
+            }
+
+            FamilyNutrition.FamilyNutritionFoodRelation = new FamilyNutritionFoodRelation[_foods.Count];
+            for (int index = 0; index < FrequencyIdsSelected.Length; index++)
+            {
+                FamilyNutrition.FamilyNutritionFoodRelation[index] = new FamilyNutritionFoodRelation();
+                FamilyNutrition.FamilyNutritionFoodRelation[index].FoodId = _foods[index].Id;
+                FamilyNutrition.FamilyNutritionFoodRelation[index].FrequencyId = FrequencyIdsSelected[index].Id;
+            }
         }
     }
 }
