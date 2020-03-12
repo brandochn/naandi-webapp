@@ -401,5 +401,19 @@ namespace WebApp.Areas.SocialWork.Models
                 FamilyNutrition.FamilyNutritionFoodRelation[index].FrequencyId = FrequencyIdsSelected[index].Id;
             }
         }
+
+        public void LoadBenefitsProvided(IFamilyResearch familyResearchRepository)
+        {
+            List<BenefitsProvidedViewModel> collection = SessionState.UserSession.GetDataCollection<List<BenefitsProvidedViewModel>>(Constants.FamilyResearch_BenefitsProvided_Table);
+            if (collection != null)
+            {
+                BenefitsProvided = new BenefitsProvided();
+                BenefitsProvided.BenefitsProvidedDetails = new BenefitsProvidedDetails[collection.Count];
+                for (int index = 0; index < collection.Count; index++)
+                {
+                    BenefitsProvided.BenefitsProvidedDetails[index] = collection[index];
+                }
+            }
+        }
     }
 }
