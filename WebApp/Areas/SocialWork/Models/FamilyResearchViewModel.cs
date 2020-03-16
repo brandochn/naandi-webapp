@@ -432,7 +432,7 @@ namespace WebApp.Areas.SocialWork.Models
                 for (int index = 0; index < ingresosCollection.Count; index++)
                 {
                     IngresosEgresosMensuales.IngresosEgresosMensualesMovimientoRelation[index] = ingresosCollection[index];
-                    uniqueIndex+=1;
+                    uniqueIndex = index;
                 }
             }
 

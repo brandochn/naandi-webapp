@@ -26,7 +26,7 @@ namespace WebApp.Areas.SocialWork.Controllers
         {
             FamilyResearchViewModel model = new FamilyResearchViewModel
             {
-                FamilyResearches = familyResearchRepository.GetFamilyResearches().ToList()
+                FamilyResearches = familyResearchRepository.GetFamilyResearches()?.ToList()
             };
             return View(model);
         }

@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Naandi.Shared.Models;
 using Naandi.Shared.Services;
+using Newtonsoft.Json;
 using RestSharp;
 using WebApp.Data;
 using WebApp.ExtensionMethods;
@@ -17,7 +19,18 @@ namespace WebApp.Services
         }
         public void Add(FamilyResearch familyResearch)
         {
-            throw new System.NotImplementedException();
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/FamilyResearch/AddFamilyResearch", Method.POST);
+            request.AddParameter("application/json; charset=utf-8", JsonConvert.SerializeObject(familyResearch), ParameterType.RequestBody);
+
+            var response = client.Post(request);
+
+            if (response.ErrorException != null)
+            {
+                string message = Constants.UNHANDLED_EXCEPTION_MESSAGE;
+                var exception = new ApplicationException(message, response.ErrorException);
+                throw exception;
+            }
         }
 
         public IEnumerable<HomeAcquisition> GetHomeAcquisitions()

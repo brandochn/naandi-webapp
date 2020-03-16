@@ -75,7 +75,8 @@ namespace WebApi.Services
         {
             int spouseId;
 
-            if (spouse == null)
+            if (spouse == null ||
+                spouse.FullName == null)
             {
                 return null;
             }
@@ -1125,7 +1126,7 @@ namespace WebApi.Services
 
                 statesOfMexicoList = connection.Query<StatesOfMexico>(sql);
             }
-            
+
             return statesOfMexicoList;
         }
 

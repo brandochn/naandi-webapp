@@ -132,7 +132,7 @@ namespace WebApi.Controllers
         [Route("GetFamilyResearches")]
         public IEnumerable<FamilyResearch> GetFamilyResearches()
         {
-            return familyResearchRepository.GetFamilyResearches().ToList();
+            return familyResearchRepository.GetFamilyResearches()?.ToList();
         }
 
         [HttpPut]
