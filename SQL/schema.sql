@@ -474,21 +474,21 @@ DROP TABLE IF EXISTS `HouseLayout`;
 
 CREATE TABLE `HouseLayout` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `Bedroom` varchar(100) NOT NULL,
-  `Dinningroom` varchar(100) NOT NULL,
-  `Kitchen` varchar(100) NOT NULL,
-  `Livingroom` varchar(100) NOT NULL,
-  `Bathroom` varchar(100) NOT NULL,
-  `Patio` varchar(100) NOT NULL,
-  `Garage` varchar(100) NOT NULL,
-  `Backyard` varchar(100) NOT NULL,
-  `Other` varchar(100) NOT NULL,
-  `Ground` varchar(100) NOT NULL,
-  `Walls` varchar(100) NOT NULL,
-  `Roof` varchar(100) NOT NULL,
-  `Description` varchar(400) NOT NULL,
+  `Bedroom` varchar(100) NULL,
+  `Dinningroom` varchar(100) NULL,
+  `Kitchen` varchar(100) NULL,
+  `Livingroom` varchar(100) NULL,
+  `Bathroom` varchar(100) NULL,
+  `Patio` varchar(100) NULL,
+  `Garage` varchar(100) NULL,
+  `Backyard` varchar(100) NULL,
+  `Other` varchar(100) NULL,
+  `Ground` varchar(100) NULL,
+  `Walls` varchar(100) NULL,
+  `Roof` varchar(100) NULL,
+  `Description` varchar(400) NULL,
   `TipoDeMobiliarioId` INT NULL,
-  `CharacteristicsOfFurniture` varchar(400) NOT NULL,
+  `CharacteristicsOfFurniture` varchar(400) NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_HouseLayout_TipoDeMobiliario` (`TipoDeMobiliarioId`),
   CONSTRAINT `FK_HouseLayout_TipoDeMobiliario` FOREIGN KEY (`TipoDeMobiliarioId`) REFERENCES `TipoDeMobiliario` (`Id`)
@@ -1626,9 +1626,9 @@ BEGIN
 		
 		INSERT INTO FormalEducation (CanItRead, CanItWrite, IsItStudyingNow, CurrentGrade, ReasonsToStopStudying)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItRead'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItWrite'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IsItStudyingNow'))
+			 CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItRead'))) = 'TRUE' THEN 1 ELSE 0 END
+			,CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItWrite'))) = 'TRUE' THEN 1 ELSE 0 END
+			,CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IsItStudyingNow'))) = 'TRUE' THEN 1 ELSE 0 END
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentGrade'))
 			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ReasonsToStopStudying'))
 		FROM JSON_TABLE;
@@ -1645,10 +1645,10 @@ BEGIN
 						
 			UPDATE FormalEducation
 			SET
-				 CanItRead = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItRead')) FROM JSON_TABLE)
-				,CanItWrite = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItWrite')) FROM JSON_TABLE)
-				,IsItStudyingNow = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IsItStudyingNow')) FROM JSON_TABLE)
-				,CurrentGrade =   (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentGrade')) FROM JSON_TABLE)
+				 CanItRead = 		(SELECT CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItRead'))) = 'TRUE' THEN 1 ELSE 0 END FROM JSON_TABLE)
+				,CanItWrite = 		(SELECT CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItWrite'))) = 'TRUE' THEN 1 ELSE 0 END FROM JSON_TABLE)
+				,IsItStudyingNow = 	(SELECT CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IsItStudyingNow'))) = 'TRUE' THEN 1 ELSE 0 END FROM JSON_TABLE)
+				,CurrentGrade =   	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentGrade')) FROM JSON_TABLE)
 				,ReasonsToStopStudying = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ReasonsToStopStudying')) FROM JSON_TABLE)
 			WHERE Id = FormalEducationId;
 		END IF;

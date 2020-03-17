@@ -423,39 +423,15 @@
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between">
                                         <div class="form-check form-check-inline">
-                                            @if (Model.Minor == null || Model.Minor.FormalEducation == null)
-                                            {
-                                                <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.CanItRead" />
-                                            }
-                                            else
-                                            {
-                                                <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.CanItRead"
-                                                       value="@Model.Minor.FormalEducation.CanItRead" />
-                                            }
+                                            <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.CanItRead" />                                           
                                             <label class="form-check-label">¿Sabe leer?</label>
                                         </div>
-                                        <div class="form-check form-check-inline">
-                                            @if (Model.Minor == null || Model.Minor.FormalEducation == null)
-                                            {
-                                                <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.CanItWrite" />
-                                            }
-                                            else
-                                            {
-                                                <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.CanItWrite"
-                                                       value="@Model.Minor.FormalEducation.CanItWrite" />
-                                            }
+                                        <div class="form-check form-check-inline">                                        
+                                            <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.CanItWrite" />                                           
                                             <label class="form-check-label">¿Sabe escribir?</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            @if (Model.Minor == null || Model.Minor.FormalEducation == null)
-                                            {
-                                                <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.IsItStudyingNow" />
-                                            }
-                                            else
-                                            {
-                                                <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.IsItStudyingNow"
-                                                       value="@Model.Minor.FormalEducation.IsItStudyingNow" />
-                                            }
+                                            <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.IsItStudyingNow" />
                                             <label class="form-check-label">¿Actualmente estudia?</label>
                                         </div>
                                     </div>
