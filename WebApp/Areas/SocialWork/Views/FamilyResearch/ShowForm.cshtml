@@ -932,7 +932,7 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
                                             <label>Tipo de colonia</label>
-                                            @Html.DropDownListFor(x => Model.DistrictId, new SelectList(Model.TypeOfDistrictList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "TypeOfDistrict" })
+                                            @Html.DropDownListFor(x => Model.District.TypeOfDistrictId, new SelectList(Model.TypeOfDistrictList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "TypeOfDistrict" })
                                         </div>
                                     </div>
                                     <div class="form-row">

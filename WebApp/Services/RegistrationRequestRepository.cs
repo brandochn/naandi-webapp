@@ -26,7 +26,7 @@ namespace WebApp.Services
 
             var response = client.Post(request);
 
-            if (response.ErrorException != null)
+            if (response.ErrorException != null || response.IsSuccessful == false)
             {
                 string message = Constants.UNHANDLED_EXCEPTION_MESSAGE;
                 var exception = new ApplicationException(message, response.ErrorException);
@@ -91,7 +91,7 @@ namespace WebApp.Services
                 return new List<RegistrationRequest>();
             }
 
-            if (response.ErrorException != null)
+            if (response.ErrorException != null || response.IsSuccessful == false)
             {
                 const string message = Constants.UNHANDLED_EXCEPTION_MESSAGE;
                 var exception = new ApplicationException(message, response.ErrorException);

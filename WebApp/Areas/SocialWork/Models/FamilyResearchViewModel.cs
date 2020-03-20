@@ -106,6 +106,33 @@ namespace WebApp.Areas.SocialWork.Models
                     modelState.AddModelError(string.Empty, "El lugar de nacimiento de la menor es requerido");
                     valid = false;
                 }
+
+                if (SocioEconomicStudy == null || SocioEconomicStudy.TypesOfHousesId == 0)
+                {
+                    modelState.AddModelError(string.Empty, "El tipo de vivienda es requerido");
+                    valid = false;
+                }
+
+                if (SocioEconomicStudy == null || SocioEconomicStudy.HomeAcquisitionId == 0)
+                {
+                    modelState.AddModelError(string.Empty, "Vivienda es requerido");
+                    valid = false;
+                }
+
+                if (SocioEconomicStudy == null ||
+                    SocioEconomicStudy.HouseLayout == null ||
+                    SocioEconomicStudy.HouseLayout.TipoDeMobiliarioId == 0)
+                {
+                    modelState.AddModelError(string.Empty, "Tipo de mobiliario es requerido");
+                    valid = false;
+                }
+
+                if (District == null ||
+                   District.TypeOfDistrictId == 0)
+                {
+                    modelState.AddModelError(string.Empty, "Tipo de colonia es requerido");
+                    valid = false;
+                }
             }
 
             return valid;

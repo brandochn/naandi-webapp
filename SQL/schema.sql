@@ -445,22 +445,22 @@ DROP TABLE IF EXISTS `District`;
 CREATE TABLE `District` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `TypeOfDistrictId` int(11) NOT NULL,
-  `AguaPotable` varchar(100) NOT NULL,
-  `Telefono` varchar(10) NOT NULL,
-  `Electricidad` varchar(100) NOT NULL,
-  `Drenaje` varchar(100) NOT NULL,
-  `Hospital` varchar(100) NOT NULL,
-  `Correo` varchar(100) NOT NULL,
-  `Escuela` varchar(100) NOT NULL,
-  `Policia` varchar(100) NOT NULL,
-  `AlumbradoPublico` varchar(100) NOT NULL,
-  `ViasDeAcceso` varchar(100) NOT NULL,
-  `TransportePublico` varchar(100) NOT NULL,
-  `AseoPublico` varchar(100) NOT NULL,
-  `Iglesia` varchar(100) NOT NULL,
-  `Mercado` varchar(100) NOT NULL,
-  `Otros` varchar(100) NOT NULL,
-  `Description` varchar(100) NOT NULL,
+  `AguaPotable` varchar(100)  NULL,
+  `Telefono` varchar(10)  NULL,
+  `Electricidad` varchar(100)  NULL,
+  `Drenaje` varchar(100)  NULL,
+  `Hospital` varchar(100)  NULL,
+  `Correo` varchar(100)  NULL,
+  `Escuela` varchar(100)  NULL,
+  `Policia` varchar(100)  NULL,
+  `AlumbradoPublico` varchar(100)  NULL,
+  `ViasDeAcceso` varchar(100)  NULL,
+  `TransportePublico` varchar(100)  NULL,
+  `AseoPublico` varchar(100)  NULL,
+  `Iglesia` varchar(100)  NULL,
+  `Mercado` varchar(100)  NULL,
+  `Otros` varchar(100)  NULL,
+  `Description` varchar(100)  NULL,
   PRIMARY KEY (`Id`),
   KEY `FK_District_TypeOfDistrict` (`TypeOfDistrictId`),
   CONSTRAINT `FK_District_TypeOfDistrict` FOREIGN KEY (`TypeOfDistrictId`) REFERENCES `TypeOfDistrict` (`Id`)
@@ -530,7 +530,7 @@ CREATE TABLE `EconomicSituationPatrimonyRelation` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `EconomicSituationId` int(11) NOT NULL ,
   `PatrimonyId`  int(11) NOT NULL,
-  `Value` varchar(100) NOT NULL DEFAULT '',
+  `Value` varchar(100) NULL DEFAULT '',
   PRIMARY KEY (`Id`),
   UNIQUE KEY `EconomicSituationId_PatrimonyId` (`EconomicSituationId`,`PatrimonyId`),
   KEY `FK_EconomicSituationPatrimonyRelation_Patrimony` (`PatrimonyId`),
@@ -582,7 +582,7 @@ DROP TABLE IF EXISTS `FamilyNutrition`;
 
 CREATE TABLE `FamilyNutrition` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `Comments` varchar(400),
+  `Comments` varchar(400) DEFAULT NULL,
   `FoodAllergy` varchar(200),
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='ALIMENTACION FAMILIAR';
@@ -699,7 +699,7 @@ DROP TABLE IF EXISTS `IngresosEgresosMensuales`;
 
 CREATE TABLE `IngresosEgresosMensuales` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `Comments` varchar(400) NOT NULL,
+  `Comments` varchar(400) DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB COMMENT='INGRESOS Y EGRESOS  MENSUALES no tengo la traducción correcta al ingles para esta tabla';
 
