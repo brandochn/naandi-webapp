@@ -8,6 +8,7 @@ using Naandi.Shared.Models;
 using Naandi.Shared.Services;
 using WebApi.Data;
 using Dapper;
+using WebApi.ExtensionMethods;
 
 namespace WebApi.Services
 {
@@ -221,102 +222,102 @@ namespace WebApi.Services
 
                         registrationRequest = new RegistrationRequest
                         {
-                            Id = reader.GetInt32(index++),
-                            HowYouHearAboutUs = reader.GetString(index++),
+                            Id = reader.GetValueOrDefault<int>(index++),
+                            HowYouHearAboutUs = reader.GetValueOrNull<string>(index++),
                             CreationDate = reader.GetDateTime(index++),
-                            RequestorId = reader.GetInt32(index++),
-                            MinorId = reader.GetInt32(index++),
-                            Reasons = reader.GetString(index++),
-                            FamilyComposition = reader.GetString(index++),
-                            FamilyInteraction = reader.GetString(index++),
-                            EconomicSituation = reader.GetString(index++),
-                            SituationsOfDomesticViolence = reader.GetString(index++),
-                            FamilyHealthStatus = reader.GetString(index++),
-                            Comments = reader.GetString(index++),
-                            RegistrationRequestStatusId = reader.GetInt32(index++),
+                            RequestorId = reader.GetValueOrDefault<int>(index++),
+                            MinorId = reader.GetValueOrDefault<int>(index++),
+                            Reasons = reader.GetValueOrNull<string>(index++),
+                            FamilyComposition = reader.GetValueOrNull<string>(index++),
+                            FamilyInteraction = reader.GetValueOrNull<string>(index++),
+                            EconomicSituation = reader.GetValueOrNull<string>(index++),
+                            SituationsOfDomesticViolence = reader.GetValueOrNull<string>(index++),
+                            FamilyHealthStatus = reader.GetValueOrNull<string>(index++),
+                            Comments = reader.GetValueOrNull<string>(index++),
+                            RegistrationRequestStatusId = reader.GetValueOrDefault<int>(index++),
                             RegistrationRequestStatus = new RegistrationRequestStatus
                             {
-                                Id = reader.GetInt32(index++),
-                                Name = reader.GetString(index++)
+                                Id = reader.GetValueOrDefault<int>(index++),
+                                Name = reader.GetValueOrNull<string>(index++)
                             },
 
                             Requestor = new Requestor
                             {
-                                Id = reader.GetInt32(index++),
-                                FullName = reader.GetString(index++),
-                                Age = reader.GetInt32(index++),
+                                Id = reader.GetValueOrDefault<int>(index++),
+                                FullName = reader.GetValueOrNull<string>(index++),
+                                Age = reader.GetValueOrDefault<int>(index++),
                                 DateOfBirth = reader.GetDateTime(index++),
-                                PlaceOfBirth = reader.GetString(index++),
-                                MaritalStatusId = reader.GetInt32(index++),
-                                Education = reader.GetString(index++),
-                                CurrentOccupation = reader.GetString(index++),
-                                RelationshipId = reader.GetInt32(index++),
-                                AddressId = reader.GetInt32(index++),
-                                JobId = reader.GetInt32(index++),
+                                PlaceOfBirth = reader.GetValueOrNull<string>(index++),
+                                MaritalStatusId = reader.GetValueOrDefault<int>(index++),
+                                Education = reader.GetValueOrNull<string>(index++),
+                                CurrentOccupation = reader.GetValueOrNull<string>(index++),
+                                RelationshipId = reader.GetValueOrDefault<int>(index++),
+                                AddressId = reader.GetValueOrDefault<int>(index++),
+                                JobId = reader.GetValueOrDefault<int>(index++),
 
                                 Maritalstatus = new MaritalStatus
                                 {
-                                    Id = reader.GetInt32(index++),
-                                    Name = reader.GetString(index++)
+                                    Id = reader.GetValueOrDefault<int>(index++),
+                                    Name = reader.GetValueOrNull<string>(index++)
                                 },
 
                                 Relationship = new Relationship
                                 {
-                                    Id = reader.GetInt32(index++),
-                                    Name = reader.GetString(index++),
+                                    Id = reader.GetValueOrDefault<int>(index++),
+                                    Name = reader.GetValueOrNull<string>(index++),
                                 },
 
                                 Address = new Address
                                 {
-                                    Id = reader.GetInt32(index++),
-                                    Street = reader.GetString(index++),
-                                    HouseNumber = reader.GetString(index++),
-                                    PoBox = reader.GetString(index++),
-                                    PhoneNumber = reader.GetString(index++),
-                                    City = reader.GetString(index++),
-                                    Zip = reader.GetString(index++),
-                                    State = reader.GetString(index++),
-                                    Neighborhood = reader.GetString(index++),
-                                    Reference = reader.GetString(index++)
+                                    Id = reader.GetValueOrDefault<int>(index++),
+                                    Street = reader.GetValueOrNull<string>(index++),
+                                    HouseNumber = reader.GetValueOrNull<string>(index++),
+                                    PoBox = reader.GetValueOrNull<string>(index++),
+                                    PhoneNumber = reader.GetValueOrNull<string>(index++),
+                                    City = reader.GetValueOrNull<string>(index++),
+                                    Zip = reader.GetValueOrNull<string>(index++),
+                                    State = reader.GetValueOrNull<string>(index++),
+                                    Neighborhood = reader.GetValueOrNull<string>(index++),
+                                    Reference = reader.GetValueOrNull<string>(index++)
                                 },
 
                                 Job = new Job
                                 {
-                                    Id = reader.GetInt32(index++),
-                                    Location = reader.GetString(index++),
-                                    JobTitle = reader.GetString(index++),
-                                    OfficialHours = reader.GetString(index++),
-                                    YearsOfService = reader.GetInt32(index++),
+                                    Id = reader.GetValueOrDefault<int>(index++),
+                                    Location = reader.GetValueOrNull<string>(index++),
+                                    JobTitle = reader.GetValueOrNull<string>(index++),
+                                    OfficialHours = reader.GetValueOrNull<string>(index++),
+                                    YearsOfService = reader.GetValueOrDefault<int>(index++),
                                     Salary = reader.GetDecimal(index++),
-                                    AddressId = reader.GetInt32(index++),
-                                    ManagerName = reader.GetString(index++),
-                                    ManagerPosition = reader.GetString(index++),
+                                    AddressId = reader.GetValueOrDefault<int>(index++),
+                                    ManagerName = reader.GetValueOrNull<string>(index++),
+                                    ManagerPosition = reader.GetValueOrNull<string>(index++),
 
                                     Address = new Address
                                     {
-                                        Id = reader.GetInt32(index++),
-                                        Street = reader.GetString(index++),
-                                        HouseNumber = reader.GetString(index++),
-                                        PoBox = reader.GetString(index++),
-                                        PhoneNumber = reader.GetString(index++),
-                                        City = reader.GetString(index++),
-                                        Zip = reader.GetString(index++),
-                                        State = reader.GetString(index++),
-                                        Neighborhood = reader.GetString(index++),
-                                        Reference = reader.GetString(index++)
+                                        Id = reader.GetValueOrDefault<int>(index++),
+                                        Street = reader.GetValueOrNull<string>(index++),
+                                        HouseNumber = reader.GetValueOrNull<string>(index++),
+                                        PoBox = reader.GetValueOrNull<string>(index++),
+                                        PhoneNumber = reader.GetValueOrNull<string>(index++),
+                                        City = reader.GetValueOrNull<string>(index++),
+                                        Zip = reader.GetValueOrNull<string>(index++),
+                                        State = reader.GetValueOrNull<string>(index++),
+                                        Neighborhood = reader.GetValueOrNull<string>(index++),
+                                        Reference = reader.GetValueOrNull<string>(index++)
                                     }
                                 }
                             },
 
                             Minor = new Minor
                             {
-                                Id = reader.GetInt32(index++),
-                                FullName = reader.GetString(index++),
+                                Id = reader.GetValueOrDefault<int>(index++),
+                                FullName = reader.GetValueOrNull<string>(index++),
                                 DateOfBirth = reader.GetDateTime(index++),
-                                PlaceOfBirth = reader.GetString(index++),
-                                Age = reader.GetInt32(index++),
-                                Education = reader.GetString(index++),
-                                CurrentOccupation = reader.GetString(index++)
+                                PlaceOfBirth = reader.GetValueOrNull<string>(index++),
+                                Age = reader.GetValueOrDefault<int>(index++),
+                                Education = reader.GetValueOrNull<string>(index++),
+                                CurrentOccupation = reader.GetValueOrNull<string>(index++)
                             }
                         };
 
@@ -437,102 +438,102 @@ namespace WebApi.Services
 
                         registrationRequest = new RegistrationRequest
                         {
-                            Id = reader.GetInt32(index++),
-                            HowYouHearAboutUs = reader.GetString(index++),
+                            Id = reader.GetValueOrDefault<int>(index++),
+                            HowYouHearAboutUs = reader.GetValueOrNull<string>(index++),
                             CreationDate = reader.GetDateTime(index++),
-                            RequestorId = reader.GetInt32(index++),
-                            MinorId = reader.GetInt32(index++),
-                            Reasons = reader.GetString(index++),
-                            FamilyComposition = reader.GetString(index++),
-                            FamilyInteraction = reader.GetString(index++),
-                            EconomicSituation = reader.GetString(index++),
-                            SituationsOfDomesticViolence = reader.GetString(index++),
-                            FamilyHealthStatus = reader.GetString(index++),
-                            Comments = reader.GetString(index++),
-                            RegistrationRequestStatusId = reader.GetInt32(index++),
+                            RequestorId = reader.GetValueOrDefault<int>(index++),
+                            MinorId = reader.GetValueOrDefault<int>(index++),
+                            Reasons = reader.GetValueOrNull<string>(index++),
+                            FamilyComposition = reader.GetValueOrNull<string>(index++),
+                            FamilyInteraction = reader.GetValueOrNull<string>(index++),
+                            EconomicSituation = reader.GetValueOrNull<string>(index++),
+                            SituationsOfDomesticViolence = reader.GetValueOrNull<string>(index++),
+                            FamilyHealthStatus = reader.GetValueOrNull<string>(index++),
+                            Comments = reader.GetValueOrNull<string>(index++),
+                            RegistrationRequestStatusId = reader.GetValueOrDefault<int>(index++),
                             RegistrationRequestStatus = new RegistrationRequestStatus
                             {
-                                Id = reader.GetInt32(index++),
-                                Name = reader.GetString(index++)
+                                Id = reader.GetValueOrDefault<int>(index++),
+                                Name = reader.GetValueOrNull<string>(index++)
                             },
 
                             Requestor = new Requestor
                             {
-                                Id = reader.GetInt32(index++),
-                                FullName = reader.GetString(index++),
-                                Age = reader.GetInt32(index++),
+                                Id = reader.GetValueOrDefault<int>(index++),
+                                FullName = reader.GetValueOrNull<string>(index++),
+                                Age = reader.GetValueOrDefault<int>(index++),
                                 DateOfBirth = reader.GetDateTime(index++),
-                                PlaceOfBirth = reader.GetString(index++),
-                                MaritalStatusId = reader.GetInt32(index++),
-                                Education = reader.GetString(index++),
-                                CurrentOccupation = reader.GetString(index++),
-                                RelationshipId = reader.GetInt32(index++),
-                                AddressId = reader.GetInt32(index++),
-                                JobId = reader.GetInt32(index++),
+                                PlaceOfBirth = reader.GetValueOrNull<string>(index++),
+                                MaritalStatusId = reader.GetValueOrDefault<int>(index++),
+                                Education = reader.GetValueOrNull<string>(index++),
+                                CurrentOccupation = reader.GetValueOrNull<string>(index++),
+                                RelationshipId = reader.GetValueOrDefault<int>(index++),
+                                AddressId = reader.GetValueOrDefault<int>(index++),
+                                JobId = reader.GetValueOrDefault<int>(index++),
 
                                 Maritalstatus = new MaritalStatus
                                 {
-                                    Id = reader.GetInt32(index++),
-                                    Name = reader.GetString(index++)
+                                    Id = reader.GetValueOrDefault<int>(index++),
+                                    Name = reader.GetValueOrNull<string>(index++)
                                 },
 
                                 Relationship = new Relationship
                                 {
-                                    Id = reader.GetInt32(index++),
-                                    Name = reader.GetString(index++),
+                                    Id = reader.GetValueOrDefault<int>(index++),
+                                    Name = reader.GetValueOrNull<string>(index++),
                                 },
 
                                 Address = new Address
                                 {
-                                    Id = reader.GetInt32(index++),
-                                    Street = reader.GetString(index++),
-                                    HouseNumber = reader.GetString(index++),
-                                    PoBox = reader.GetString(index++),
-                                    PhoneNumber = reader.GetString(index++),
-                                    City = reader.GetString(index++),
-                                    Zip = reader.GetString(index++),
-                                    State = reader.GetString(index++),
-                                    Neighborhood = reader.GetString(index++),
-                                    Reference = reader.GetString(index++)
+                                    Id = reader.GetValueOrDefault<int>(index++),
+                                    Street = reader.GetValueOrNull<string>(index++),
+                                    HouseNumber = reader.GetValueOrNull<string>(index++),
+                                    PoBox = reader.GetValueOrNull<string>(index++),
+                                    PhoneNumber = reader.GetValueOrNull<string>(index++),
+                                    City = reader.GetValueOrNull<string>(index++),
+                                    Zip = reader.GetValueOrNull<string>(index++),
+                                    State = reader.GetValueOrNull<string>(index++),
+                                    Neighborhood = reader.GetValueOrNull<string>(index++),
+                                    Reference = reader.GetValueOrNull<string>(index++)
                                 },
 
                                 Job = new Job
                                 {
-                                    Id = reader.GetInt32(index++),
-                                    Location = reader.GetString(index++),
-                                    JobTitle = reader.GetString(index++),
-                                    OfficialHours = reader.GetString(index++),
-                                    YearsOfService = reader.GetInt32(index++),
+                                    Id = reader.GetValueOrDefault<int>(index++),
+                                    Location = reader.GetValueOrNull<string>(index++),
+                                    JobTitle = reader.GetValueOrNull<string>(index++),
+                                    OfficialHours = reader.GetValueOrNull<string>(index++),
+                                    YearsOfService = reader.GetValueOrDefault<int>(index++),
                                     Salary = reader.GetDecimal(index++),
-                                    AddressId = reader.GetInt32(index++),
-                                    ManagerName = reader.GetString(index++),
-                                    ManagerPosition = reader.GetString(index++),
+                                    AddressId = reader.GetValueOrDefault<int>(index++),
+                                    ManagerName = reader.GetValueOrNull<string>(index++),
+                                    ManagerPosition = reader.GetValueOrNull<string>(index++),
 
                                     Address = new Address
                                     {
-                                        Id = reader.GetInt32(index++),
-                                        Street = reader.GetString(index++),
-                                        HouseNumber = reader.GetString(index++),
-                                        PoBox = reader.GetString(index++),
-                                        PhoneNumber = reader.GetString(index++),
-                                        City = reader.GetString(index++),
-                                        Zip = reader.GetString(index++),
-                                        State = reader.GetString(index++),
-                                        Neighborhood = reader.GetString(index++),
-                                        Reference = reader.GetString(index++)
+                                        Id = reader.GetValueOrDefault<int>(index++),
+                                        Street = reader.GetValueOrNull<string>(index++),
+                                        HouseNumber = reader.GetValueOrNull<string>(index++),
+                                        PoBox = reader.GetValueOrNull<string>(index++),
+                                        PhoneNumber = reader.GetValueOrNull<string>(index++),
+                                        City = reader.GetValueOrNull<string>(index++),
+                                        Zip = reader.GetValueOrNull<string>(index++),
+                                        State = reader.GetValueOrNull<string>(index++),
+                                        Neighborhood = reader.GetValueOrNull<string>(index++),
+                                        Reference = reader.GetValueOrNull<string>(index++)
                                     }
                                 }
                             },
 
                             Minor = new Minor
                             {
-                                Id = reader.GetInt32(index++),
-                                FullName = reader.GetString(index++),
+                                Id = reader.GetValueOrDefault<int>(index++),
+                                FullName = reader.GetValueOrNull<string>(index++),
                                 DateOfBirth = reader.GetDateTime(index++),
-                                PlaceOfBirth = reader.GetString(index++),
-                                Age = reader.GetInt32(index++),
-                                Education = reader.GetString(index++),
-                                CurrentOccupation = reader.GetString(index++)
+                                PlaceOfBirth = reader.GetValueOrNull<string>(index++),
+                                Age = reader.GetValueOrDefault<int>(index++),
+                                Education = reader.GetValueOrNull<string>(index++),
+                                CurrentOccupation = reader.GetValueOrNull<string>(index++)
                             }
                         };
 
@@ -645,102 +646,102 @@ namespace WebApi.Services
 
                         registrationRequest = new RegistrationRequest
                         {
-                            Id = reader.GetInt32(index++),
-                            HowYouHearAboutUs = reader.GetString(index++),
+                            Id = reader.GetValueOrDefault<int>(index++),
+                            HowYouHearAboutUs = reader.GetValueOrNull<string>(index++),
                             CreationDate = reader.GetDateTime(index++),
-                            RequestorId = reader.GetInt32(index++),
-                            MinorId = reader.GetInt32(index++),
-                            Reasons = reader.GetString(index++),
-                            FamilyComposition = reader.GetString(index++),
-                            FamilyInteraction = reader.GetString(index++),
-                            EconomicSituation = reader.GetString(index++),
-                            SituationsOfDomesticViolence = reader.GetString(index++),
-                            FamilyHealthStatus = reader.GetString(index++),
-                            Comments = reader.GetString(index++),
-                            RegistrationRequestStatusId = reader.GetInt32(index++),
+                            RequestorId = reader.GetValueOrDefault<int>(index++),
+                            MinorId = reader.GetValueOrDefault<int>(index++),
+                            Reasons = reader.GetValueOrNull<string>(index++),
+                            FamilyComposition = reader.GetValueOrNull<string>(index++),
+                            FamilyInteraction = reader.GetValueOrNull<string>(index++),
+                            EconomicSituation = reader.GetValueOrNull<string>(index++),
+                            SituationsOfDomesticViolence = reader.GetValueOrNull<string>(index++),
+                            FamilyHealthStatus = reader.GetValueOrNull<string>(index++),
+                            Comments = reader.GetValueOrNull<string>(index++),
+                            RegistrationRequestStatusId = reader.GetValueOrDefault<int>(index++),
                             RegistrationRequestStatus = new RegistrationRequestStatus
                             {
-                                Id = reader.GetInt32(index++),
-                                Name = reader.GetString(index++)
+                                Id = reader.GetValueOrDefault<int>(index++),
+                                Name = reader.GetValueOrNull<string>(index++)
                             },
 
                             Requestor = new Requestor
                             {
-                                Id = reader.GetInt32(index++),
-                                FullName = reader.GetString(index++),
-                                Age = reader.GetInt32(index++),
+                                Id = reader.GetValueOrDefault<int>(index++),
+                                FullName = reader.GetValueOrNull<string>(index++),
+                                Age = reader.GetValueOrDefault<int>(index++),
                                 DateOfBirth = reader.GetDateTime(index++),
-                                PlaceOfBirth = reader.GetString(index++),
-                                MaritalStatusId = reader.GetInt32(index++),
-                                Education = reader.GetString(index++),
-                                CurrentOccupation = reader.GetString(index++),
-                                RelationshipId = reader.GetInt32(index++),
-                                AddressId = reader.GetInt32(index++),
-                                JobId = reader.GetInt32(index++),
+                                PlaceOfBirth = reader.GetValueOrNull<string>(index++),
+                                MaritalStatusId = reader.GetValueOrDefault<int>(index++),
+                                Education = reader.GetValueOrNull<string>(index++),
+                                CurrentOccupation = reader.GetValueOrNull<string>(index++),
+                                RelationshipId = reader.GetValueOrDefault<int>(index++),
+                                AddressId = reader.GetValueOrDefault<int>(index++),
+                                JobId = reader.GetValueOrDefault<int>(index++),
 
                                 Maritalstatus = new MaritalStatus
                                 {
-                                    Id = reader.GetInt32(index++),
-                                    Name = reader.GetString(index++)
+                                    Id = reader.GetValueOrDefault<int>(index++),
+                                    Name = reader.GetValueOrNull<string>(index++)
                                 },
 
                                 Relationship = new Relationship
                                 {
-                                    Id = reader.GetInt32(index++),
-                                    Name = reader.GetString(index++),
+                                    Id = reader.GetValueOrDefault<int>(index++),
+                                    Name = reader.GetValueOrNull<string>(index++),
                                 },
 
                                 Address = new Address
                                 {
-                                    Id = reader.GetInt32(index++),
-                                    Street = reader.GetString(index++),
-                                    HouseNumber = reader.GetString(index++),
-                                    PoBox = reader.GetString(index++),
-                                    PhoneNumber = reader.GetString(index++),
-                                    City = reader.GetString(index++),
-                                    Zip = reader.GetString(index++),
-                                    State = reader.GetString(index++),
-                                    Neighborhood = reader.GetString(index++),
-                                    Reference = reader.GetString(index++)
+                                    Id = reader.GetValueOrDefault<int>(index++),
+                                    Street = reader.GetValueOrNull<string>(index++),
+                                    HouseNumber = reader.GetValueOrNull<string>(index++),
+                                    PoBox = reader.GetValueOrNull<string>(index++),
+                                    PhoneNumber = reader.GetValueOrNull<string>(index++),
+                                    City = reader.GetValueOrNull<string>(index++),
+                                    Zip = reader.GetValueOrNull<string>(index++),
+                                    State = reader.GetValueOrNull<string>(index++),
+                                    Neighborhood = reader.GetValueOrNull<string>(index++),
+                                    Reference = reader.GetValueOrNull<string>(index++)
                                 },
 
                                 Job = new Job
                                 {
-                                    Id = reader.GetInt32(index++),
-                                    Location = reader.GetString(index++),
-                                    JobTitle = reader.GetString(index++),
-                                    OfficialHours = reader.GetString(index++),
-                                    YearsOfService = reader.GetInt32(index++),
+                                    Id = reader.GetValueOrDefault<int>(index++),
+                                    Location = reader.GetValueOrNull<string>(index++),
+                                    JobTitle = reader.GetValueOrNull<string>(index++),
+                                    OfficialHours = reader.GetValueOrNull<string>(index++),
+                                    YearsOfService = reader.GetValueOrDefault<int>(index++),
                                     Salary = reader.GetDecimal(index++),
-                                    AddressId = reader.GetInt32(index++),
-                                    ManagerName = reader.GetString(index++),
-                                    ManagerPosition = reader.GetString(index++),
+                                    AddressId = reader.GetValueOrDefault<int>(index++),
+                                    ManagerName = reader.GetValueOrNull<string>(index++),
+                                    ManagerPosition = reader.GetValueOrNull<string>(index++),
 
                                     Address = new Address
                                     {
-                                        Id = reader.GetInt32(index++),
-                                        Street = reader.GetString(index++),
-                                        HouseNumber = reader.GetString(index++),
-                                        PoBox = reader.GetString(index++),
-                                        PhoneNumber = reader.GetString(index++),
-                                        City = reader.GetString(index++),
-                                        Zip = reader.GetString(index++),
-                                        State = reader.GetString(index++),
-                                        Neighborhood = reader.GetString(index++),
-                                        Reference = reader.GetString(index++)
+                                        Id = reader.GetValueOrDefault<int>(index++),
+                                        Street = reader.GetValueOrNull<string>(index++),
+                                        HouseNumber = reader.GetValueOrNull<string>(index++),
+                                        PoBox = reader.GetValueOrNull<string>(index++),
+                                        PhoneNumber = reader.GetValueOrNull<string>(index++),
+                                        City = reader.GetValueOrNull<string>(index++),
+                                        Zip = reader.GetValueOrNull<string>(index++),
+                                        State = reader.GetValueOrNull<string>(index++),
+                                        Neighborhood = reader.GetValueOrNull<string>(index++),
+                                        Reference = reader.GetValueOrNull<string>(index++)
                                     }
                                 }
                             },
 
                             Minor = new Minor
                             {
-                                Id = reader.GetInt32(index++),
-                                FullName = reader.GetString(index++),
+                                Id = reader.GetValueOrDefault<int>(index++),
+                                FullName = reader.GetValueOrNull<string>(index++),
                                 DateOfBirth = reader.GetDateTime(index++),
-                                PlaceOfBirth = reader.GetString(index++),
-                                Age = reader.GetInt32(index++),
-                                Education = reader.GetString(index++),
-                                CurrentOccupation = reader.GetString(index++)
+                                PlaceOfBirth = reader.GetValueOrNull<string>(index++),
+                                Age = reader.GetValueOrDefault<int>(index++),
+                                Education = reader.GetValueOrNull<string>(index++),
+                                CurrentOccupation = reader.GetValueOrNull<string>(index++)
                             }
                         };
 

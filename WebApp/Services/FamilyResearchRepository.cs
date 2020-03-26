@@ -200,5 +200,30 @@ namespace WebApp.Services
 
             return items;
         }
+
+        public FamilyMembers GetFamilyFamilyMembersById(int familyMembersId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public EconomicSituation GetEconomicSituationById(int economicSituationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FamilyNutrition GetFamilyNutritionById(int familyNutritionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BenefitsProvided GetBenefitsProvidedById(int benefitsProvidedId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IngresosEgresosMensuales GetIngresosEgresosMensualesById(int Id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

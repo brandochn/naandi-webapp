@@ -1,0 +1,37 @@
+﻿@model WebApp.Areas.SocialWork.Models.FamilyResearchViewModel
+
+<div class="row">
+    <div class="col">
+        <table id="RegistrationRequestTableId" class="table table-responsive-lg table-hover">
+            <thead class="">
+                <tr>
+                    <th>Id</th>
+                    <th>Solicitante</th>
+                    <th>Menor</th>
+                    <th>Fecha</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.FamilyResearches != null)
+                {
+                    foreach (var item in Model.FamilyResearches)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(model => item.Id)</td>
+                            <td>@Html.DisplayFor(model => item.LegalGuardian.FullName)</td>
+                            <td>@Html.DisplayFor(model => item.Minor.FullName)</td>
+                            <td>@item.VisitDate.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @Html.ActionLink("Editar", "ShowForm", "FamilyResearch", new { id = item.Id, area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-info" })
+                                <button id="btn-print" type="button" class="btn btn-secondary d-inline">
+                                    Imprimir
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

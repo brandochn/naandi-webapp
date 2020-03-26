@@ -731,7 +731,7 @@ DROP TABLE IF EXISTS `FamilyResearch`;
 CREATE TABLE `FamilyResearch` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `VisitDate` datetime NOT NULL,
-  `VisitTime` time NOT NULL,
+  `VisitTime` datetime NOT NULL,
   `Family` varchar(100) NOT NULL,
   `RequestReasons` varchar(300) NOT NULL,
   `RedesDeApoyoFamiliares` varchar(400) DEFAULT NULL,
