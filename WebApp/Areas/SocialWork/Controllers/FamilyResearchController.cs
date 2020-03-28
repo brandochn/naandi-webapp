@@ -96,8 +96,10 @@ namespace WebApp.Areas.SocialWork.Controllers
 
                     model.LoadEconomicSituationPatrimonyRelationFromSession(familyResearchRepository);
                     model.LoadFamilyNutritionFoodRelationFromSession(familyResearchRepository);
-                    model.LoadBenefitsProvidedFromSession(familyResearchRepository);
-                    model.LoadIngresosMensualesFromSession(familyResearchRepository);
+                    model.LoadBenefitsProvidedFromSession();
+                    model.LoadIngresosMensualesFromSession();
+                    model.LoadFamilyMembers();
+
                     familyResearchRepository.Add(model);
                 }
             }
