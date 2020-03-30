@@ -454,6 +454,12 @@ namespace WebApp.Areas.SocialWork.Models
             IngresosEgresosMensuales.IngresosEgresosMensualesMovimientoRelation = new IngresosEgresosMensualesMovimientoRelation[size];
             int uniqueIndex = 0;
 
+            if (ingresosCollection == null && egresosCollection == null)
+            {
+                IngresosEgresosMensuales = null;
+                return;
+            }
+
             if (ingresosCollection != null)
             {
                 for (int index = 0; index < ingresosCollection.Count; index++)
@@ -485,7 +491,7 @@ namespace WebApp.Areas.SocialWork.Models
 
         public void LoadFamilyMembers()
         {
-            var collection =  SessionState.UserSession.GetDataCollection<List<FamilyMembersDetails>>(Constants.FamilyResearch_FamilyMembers_Table);
+            var collection = SessionState.UserSession.GetDataCollection<List<FamilyMembersDetails>>(Constants.FamilyResearch_FamilyMembers_Table);
             if (collection != null)
             {
                 FamilyMembers = new FamilyMembers();

@@ -55,17 +55,17 @@ namespace WebApi.Services
 
                 int? ingresosEgresosMensualesId = AddOrUpdateIngresosEgresosMensuales(_familyResearch.IngresosEgresosMensuales);
 
-                _familyResearch.LegalGuardianId = legalGuardianId ?? default;
-                _familyResearch.MinorId = minorId ?? default;
-                _familyResearch.PreviousFoundationId = previousFoundationId ?? default;
-                _familyResearch.FamilyHealthId = familyHealthId ?? default;
-                _familyResearch.FamilyMembersId = familyMembersId ?? default;
-                _familyResearch.SocioEconomicStudyId = socioEconomicStudyId ?? default;
-                _familyResearch.DistrictId = districtId ?? default;
-                _familyResearch.EconomicSituationId = economicSituationId ?? default;
-                _familyResearch.FamilyNutritionId = familyNutritionId ?? default;
-                _familyResearch.BenefitsProvidedId = benefitsProvidedId ?? default;
-                _familyResearch.IngresosEgresosMensualesId = ingresosEgresosMensualesId ?? default;
+                _familyResearch.LegalGuardianId = legalGuardianId;
+                _familyResearch.MinorId = minorId;
+                _familyResearch.PreviousFoundationId = previousFoundationId;
+                _familyResearch.FamilyHealthId = familyHealthId;
+                _familyResearch.FamilyMembersId = familyMembersId;
+                _familyResearch.SocioEconomicStudyId = socioEconomicStudyId;
+                _familyResearch.DistrictId = districtId;
+                _familyResearch.EconomicSituationId = economicSituationId;
+                _familyResearch.FamilyNutritionId = familyNutritionId;
+                _familyResearch.BenefitsProvidedId = benefitsProvidedId;
+                _familyResearch.IngresosEgresosMensualesId = ingresosEgresosMensualesId;
 
                 int? familyResearchId = AddOrUpdateFamilyResearch(_familyResearch);
 
@@ -1728,17 +1728,17 @@ namespace WebApi.Services
                         familyResearch.Recommendations = reader.GetValueOrNull<string>(index++);
                         familyResearch.VisualSupports = reader.GetValueOrNull<string>(index++);
                         familyResearch.Sketch = reader.GetValueOrNull<string>(index++);
-                        familyResearch.LegalGuardianId = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.MinorId = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.PreviousFoundationId = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.FamilyHealthId = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.FamilyMembersId = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.SocioEconomicStudyId = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.DistrictId = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.EconomicSituationId = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.FamilyNutritionId = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.BenefitsProvidedId = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.IngresosEgresosMensualesId = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.LegalGuardianId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.MinorId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.PreviousFoundationId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.FamilyHealthId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.FamilyMembersId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.SocioEconomicStudyId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.DistrictId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.EconomicSituationId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.FamilyNutritionId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.BenefitsProvidedId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.IngresosEgresosMensualesId = reader.GetValueOrNullable<int>(index++);
 
                         familyResearch.LegalGuardian = new LegalGuardian();
                         familyResearch.LegalGuardian.Id = reader.GetValueOrDefault<int>(index++);
@@ -1934,8 +1934,13 @@ namespace WebApi.Services
             return items;
         }
 
-        public FamilyMembers GetFamilyFamilyMembersById(int familyMembersId)
+        public FamilyMembers GetFamilyFamilyMembersById(int? familyMembersId)
         {
+            if (familyMembersId == null)
+            {
+                return null;
+            }
+
             FamilyMembers familyMembers = new FamilyMembers();
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
@@ -1959,8 +1964,13 @@ namespace WebApi.Services
             return familyMembers;
         }
 
-        public EconomicSituation GetEconomicSituationById(int economicSituationId)
+        public EconomicSituation GetEconomicSituationById(int? economicSituationId)
         {
+            if (economicSituationId == null)
+            {
+                return null;
+            }
+
             EconomicSituation economicSituation = new EconomicSituation();
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
@@ -1980,8 +1990,13 @@ namespace WebApi.Services
             return economicSituation;
         }
 
-        public FamilyNutrition GetFamilyNutritionById(int familyNutritionId)
+        public FamilyNutrition GetFamilyNutritionById(int? familyNutritionId)
         {
+            if (familyNutritionId == null)
+            {
+                return null;
+            }
+
             FamilyNutrition familyNutrition = new FamilyNutrition();
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
@@ -2001,8 +2016,13 @@ namespace WebApi.Services
             return familyNutrition;
         }
 
-        public BenefitsProvided GetBenefitsProvidedById(int benefitsProvidedId)
+        public BenefitsProvided GetBenefitsProvidedById(int? benefitsProvidedId)
         {
+            if (benefitsProvidedId == null)
+            {
+                return null;
+            }
+
             BenefitsProvided benefitsProvided = new BenefitsProvided();
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
@@ -2022,8 +2042,13 @@ namespace WebApi.Services
             return benefitsProvided;
         }
 
-        public IngresosEgresosMensuales GetIngresosEgresosMensualesById(int Id)
+        public IngresosEgresosMensuales GetIngresosEgresosMensualesById(int? Id)
         {
+            if (Id == null)
+            {
+                return null;
+            }
+
             IngresosEgresosMensuales ingresosEgresosMensuales = new IngresosEgresosMensuales();
 
             using (MySqlConnection connection = applicationDbContext.GetConnection())
