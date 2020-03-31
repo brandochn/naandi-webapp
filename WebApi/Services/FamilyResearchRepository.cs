@@ -1412,8 +1412,8 @@ namespace WebApi.Services
 
                         familyResearch = new FamilyResearch();
                         familyResearch.Id = reader.GetValueOrDefault<int>(index);
-                        familyResearch.VisitDate = reader.GetDateTime(index);
-                        familyResearch.VisitTime = reader.GetDateTime(index);
+                        familyResearch.VisitDate = reader.GetValueOrDefault<DateTime>(index);
+                        familyResearch.VisitTime = reader.GetValueOrDefault<DateTime>(index);
                         familyResearch.Family = reader.GetValueOrNull<string>(index);
                         familyResearch.RequestReasons = reader.GetValueOrNull<string>(index);
                         familyResearch.SituationsOfDomesticViolence = reader.GetValueOrNull<string>(index);
@@ -1449,7 +1449,7 @@ namespace WebApi.Services
                         familyResearch.LegalGuardian.PhoneNumber = reader.GetValueOrNull<string>(index);
                         familyResearch.LegalGuardian.Errand = reader.GetValueOrNull<string>(index);
                         familyResearch.LegalGuardian.SpouseId = reader.GetValueOrDefault<int>(index);
-                        familyResearch.LegalGuardian.DateOfBirth = reader.GetDateTime(index);
+                        familyResearch.LegalGuardian.DateOfBirth = reader.GetValueOrDefault<DateTime>(index);
 
                         familyResearch.LegalGuardian.MaritalStatus = new MaritalStatus();
                         familyResearch.LegalGuardian.MaritalStatus.Id = reader.GetValueOrDefault<int>(index);
@@ -1472,7 +1472,7 @@ namespace WebApi.Services
                         familyResearch.Minor = new Minor();
                         familyResearch.Minor.Id = reader.GetValueOrDefault<int>(index);
                         familyResearch.Minor.FullName = reader.GetValueOrNull<string>(index);
-                        familyResearch.Minor.DateOfBirth = reader.GetDateTime(index);
+                        familyResearch.Minor.DateOfBirth = reader.GetValueOrDefault<DateTime>(index);
                         familyResearch.Minor.PlaceOfBirth = reader.GetValueOrNull<string>(index);
                         familyResearch.Minor.Age = reader.GetValueOrDefault<int>(index);
                         familyResearch.Minor.Education = reader.GetValueOrNull<string>(index);
@@ -1481,9 +1481,9 @@ namespace WebApi.Services
 
                         familyResearch.Minor.FormalEducation = new FormalEducation();
                         familyResearch.Minor.FormalEducation.Id = reader.GetValueOrDefault<int>(index);
-                        familyResearch.Minor.FormalEducation.CanItRead = reader.GetBoolean(index);
-                        familyResearch.Minor.FormalEducation.CanItWrite = reader.GetBoolean(index);
-                        familyResearch.Minor.FormalEducation.IsItStudyingNow = reader.GetBoolean(index);
+                        familyResearch.Minor.FormalEducation.CanItRead = reader.GetValueOrDefault<bool>(index);
+                        familyResearch.Minor.FormalEducation.CanItWrite = reader.GetValueOrDefault<bool>(index);
+                        familyResearch.Minor.FormalEducation.IsItStudyingNow = reader.GetValueOrDefault<bool>(index);
                         familyResearch.Minor.FormalEducation.CurrentGrade = reader.GetValueOrNull<string>(index);
                         familyResearch.Minor.FormalEducation.ReasonsToStopStudying = reader.GetValueOrNull<string>(index);
 
@@ -1717,8 +1717,8 @@ namespace WebApi.Services
 
                         familyResearch = new FamilyResearch();
                         familyResearch.Id = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.VisitDate = reader.GetDateTime(index++);
-                        familyResearch.VisitTime = reader.GetDateTime(index++);
+                        familyResearch.VisitDate = reader.GetValueOrDefault<DateTime>(index++);
+                        familyResearch.VisitTime = reader.GetValueOrDefault<DateTime>(index++);
                         familyResearch.Family = reader.GetValueOrNull<string>(index++);
                         familyResearch.RequestReasons = reader.GetValueOrNull<string>(index++);
                         familyResearch.SituationsOfDomesticViolence = reader.GetValueOrNull<string>(index++);
@@ -1754,7 +1754,7 @@ namespace WebApi.Services
                         familyResearch.LegalGuardian.PhoneNumber = reader.GetValueOrNull<string>(index++);
                         familyResearch.LegalGuardian.Errand = reader.GetValueOrNull<string>(index++);
                         familyResearch.LegalGuardian.SpouseId = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.LegalGuardian.DateOfBirth = reader.GetDateTime(index++);
+                        familyResearch.LegalGuardian.DateOfBirth = reader.GetValueOrDefault<DateTime>(index++);
 
                         familyResearch.LegalGuardian.MaritalStatus = new MaritalStatus();
                         familyResearch.LegalGuardian.MaritalStatus.Id = reader.GetValueOrDefault<int>(index++);
@@ -1787,7 +1787,7 @@ namespace WebApi.Services
                         familyResearch.Minor = new Minor();
                         familyResearch.Minor.Id = reader.GetValueOrDefault<int>(index++);
                         familyResearch.Minor.FullName = reader.GetValueOrNull<string>(index++);
-                        familyResearch.Minor.DateOfBirth = reader.GetDateTime(index++);
+                        familyResearch.Minor.DateOfBirth = reader.GetValueOrDefault<DateTime>(index++);
                         familyResearch.Minor.PlaceOfBirth = reader.GetValueOrNull<string>(index++);
                         familyResearch.Minor.Age = reader.GetValueOrDefault<int>(index++);
                         familyResearch.Minor.Education = reader.GetValueOrNull<string>(index++);
@@ -1796,9 +1796,9 @@ namespace WebApi.Services
 
                         familyResearch.Minor.FormalEducation = new FormalEducation();
                         familyResearch.Minor.FormalEducation.Id = reader.GetValueOrDefault<int>(index++);
-                        familyResearch.Minor.FormalEducation.CanItRead = reader.GetBoolean(index++);
-                        familyResearch.Minor.FormalEducation.CanItWrite = reader.GetBoolean(index++);
-                        familyResearch.Minor.FormalEducation.IsItStudyingNow = reader.GetBoolean(index++);
+                        familyResearch.Minor.FormalEducation.CanItRead = reader.GetValueOrDefault<bool>(index++);
+                        familyResearch.Minor.FormalEducation.CanItWrite = reader.GetValueOrDefault<bool>(index++);
+                        familyResearch.Minor.FormalEducation.IsItStudyingNow = reader.GetValueOrDefault<bool>(index++);
                         familyResearch.Minor.FormalEducation.CurrentGrade = reader.GetValueOrNull<string>(index++);
                         familyResearch.Minor.FormalEducation.ReasonsToStopStudying = reader.GetValueOrNull<string>(index++);
 
