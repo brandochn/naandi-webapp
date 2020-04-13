@@ -21,6 +21,18 @@
                         investigación familiar
                     </h2>
                     <div class="card-body">
+                        <input type="hidden" asp-for="Id" value="@Model.Id" />
+                        <input type="hidden" asp-for="LegalGuardianId" value="@Model.LegalGuardianId" />
+                        <input type="hidden" asp-for="MinorId" value="@Model.MinorId" />
+                        <input type="hidden" asp-for="PreviousFoundationId" value="@Model.PreviousFoundationId" />
+                        <input type="hidden" asp-for="FamilyHealthId" value="@Model.FamilyHealthId" />
+                        <input type="hidden" asp-for="FamilyMembersId" value="@Model.FamilyMembersId" />
+                        <input type="hidden" asp-for="SocioEconomicStudyId" value="@Model.SocioEconomicStudyId" />
+                        <input type="hidden" asp-for="DistrictId" value="@Model.DistrictId" />
+                        <input type="hidden" asp-for="EconomicSituationId" value="@Model.EconomicSituationId" />
+                        <input type="hidden" asp-for="FamilyNutritionId" value="@Model.FamilyNutritionId" />
+                        <input type="hidden" asp-for="BenefitsProvidedId" value="@Model.BenefitsProvidedId" />
+                        <input type="hidden" asp-for="IngresosEgresosMensualesId" value="@Model.IngresosEgresosMensualesId" />
                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label>Fecha de visita</label>
@@ -423,11 +435,11 @@
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.CanItRead" />                                           
+                                            <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.CanItRead" />
                                             <label class="form-check-label">¿Sabe leer?</label>
                                         </div>
-                                        <div class="form-check form-check-inline">                                        
-                                            <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.CanItWrite" />                                           
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input form-control" type="checkbox" asp-for="Minor.FormalEducation.CanItWrite" />
                                             <label class="form-check-label">¿Sabe escribir?</label>
                                         </div>
                                         <div class="form-check form-check-inline">

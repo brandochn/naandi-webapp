@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using WebApp.ExtensionMethods;
 
 namespace WebApp.Areas.SocialWork.Models
 {
@@ -350,7 +351,7 @@ namespace WebApp.Areas.SocialWork.Models
             FrequencyIdsSelected = new Frequency[size];
         }
 
-        public void LoadEconomicSituationPatrimonyRelationFromSession(IFamilyResearch familyResearchRepository)
+        public void GetEconomicSituationPatrimonyRelationFromViewModel(IFamilyResearch familyResearchRepository)
         {
             var patrimonies = familyResearchRepository.GetPatrimonies()?.ToList();
             if (patrimonies == null)
@@ -378,6 +379,23 @@ namespace WebApp.Areas.SocialWork.Models
             EconomicSituation.EconomicSituationPatrimonyRelation[11] = new EconomicSituationPatrimonyRelation();
             EconomicSituation.EconomicSituationPatrimonyRelation[12] = new EconomicSituationPatrimonyRelation();
 
+            if (EconomicSituationId > 0)
+            {
+                EconomicSituation.Id = Convert.ToInt32(EconomicSituationId);
+                EconomicSituation.EconomicSituationPatrimonyRelation[0].EconomicSituationId = EconomicSituation.Id;
+                EconomicSituation.EconomicSituationPatrimonyRelation[1].EconomicSituationId = EconomicSituation.Id;
+                EconomicSituation.EconomicSituationPatrimonyRelation[2].EconomicSituationId = EconomicSituation.Id;
+                EconomicSituation.EconomicSituationPatrimonyRelation[3].EconomicSituationId = EconomicSituation.Id;
+                EconomicSituation.EconomicSituationPatrimonyRelation[4].EconomicSituationId = EconomicSituation.Id;
+                EconomicSituation.EconomicSituationPatrimonyRelation[5].EconomicSituationId = EconomicSituation.Id;
+                EconomicSituation.EconomicSituationPatrimonyRelation[6].EconomicSituationId = EconomicSituation.Id;
+                EconomicSituation.EconomicSituationPatrimonyRelation[7].EconomicSituationId = EconomicSituation.Id;
+                EconomicSituation.EconomicSituationPatrimonyRelation[8].EconomicSituationId = EconomicSituation.Id;
+                EconomicSituation.EconomicSituationPatrimonyRelation[9].EconomicSituationId = EconomicSituation.Id;
+                EconomicSituation.EconomicSituationPatrimonyRelation[10].EconomicSituationId = EconomicSituation.Id;
+                EconomicSituation.EconomicSituationPatrimonyRelation[11].EconomicSituationId = EconomicSituation.Id;
+                EconomicSituation.EconomicSituationPatrimonyRelation[12].EconomicSituationId = EconomicSituation.Id;
+            }
 
             EconomicSituation.EconomicSituationPatrimonyRelation[0].PatrimonyId = patrimonies.First(p => string.Equals(p.Name, "Automovil", StringComparison.OrdinalIgnoreCase)).Id;
             EconomicSituation.EconomicSituationPatrimonyRelation[0].Value = PatrimonyViewModelCollection[0].Value;
@@ -411,7 +429,7 @@ namespace WebApp.Areas.SocialWork.Models
             EconomicSituation.EconomicSituationPatrimonyRelation[12].Value = PatrimonyViewModelCollection[12].Value;
         }
 
-        public void LoadFamilyNutritionFoodRelationFromSession(IFamilyResearch familyResearchRepository)
+        public void GetFamilyNutritionFoodRelationFromViewModel(IFamilyResearch familyResearchRepository)
         {
             var _foods = familyResearchRepository.GetFoods().OrderBy(o => o.Name).ToList();
 
@@ -420,30 +438,49 @@ namespace WebApp.Areas.SocialWork.Models
                 FamilyNutrition = new FamilyNutrition();
             }
 
+            if (FamilyNutritionId > 0)
+            {
+                FamilyNutrition.Id = Convert.ToInt32(FamilyNutritionId);
+            }
+
             FamilyNutrition.FamilyNutritionFoodRelation = new FamilyNutritionFoodRelation[_foods.Count];
             for (int index = 0; index < FrequencyIdsSelected.Length; index++)
             {
                 FamilyNutrition.FamilyNutritionFoodRelation[index] = new FamilyNutritionFoodRelation();
                 FamilyNutrition.FamilyNutritionFoodRelation[index].FoodId = _foods[index].Id;
                 FamilyNutrition.FamilyNutritionFoodRelation[index].FrequencyId = FrequencyIdsSelected[index].Id;
+                if (FamilyNutritionId > 0)
+                {
+                    FamilyNutrition.FamilyNutritionFoodRelation[index].FamilyNutritionId = FamilyNutrition.Id;
+                }
             }
         }
 
-        public void LoadBenefitsProvidedFromSession()
+        public void GetBenefitsProvidedFromSession()
         {
             List<BenefitsProvidedViewModel> collection = SessionState.UserSession.GetDataCollection<List<BenefitsProvidedViewModel>>(Constants.FamilyResearch_BenefitsProvided_Table);
             if (collection != null)
             {
                 BenefitsProvided = new BenefitsProvided();
                 BenefitsProvided.BenefitsProvidedDetails = new BenefitsProvidedDetails[collection.Count];
+
+                if (BenefitsProvidedId > 0)
+                {
+                    BenefitsProvided.Id = Convert.ToInt32(BenefitsProvidedId);
+                }
+
                 for (int index = 0; index < collection.Count; index++)
                 {
                     BenefitsProvided.BenefitsProvidedDetails[index] = collection[index];
+                    if (BenefitsProvidedId > 0)
+                    {
+                        BenefitsProvided.BenefitsProvidedDetails[index].BenefitsProvidedId = BenefitsProvided.Id;
+                    }
                 }
             }
         }
 
-        public void LoadIngresosMensualesFromSession()
+        public void GetIngresosMensualesFromSession()
         {
             List<IngresosMensualesViewModel> ingresosCollection = SessionState.UserSession.GetDataCollection<List<IngresosMensualesViewModel>>(Constants.FamilyResearch_IngresosMensuales_Table);
             List<EgresosMensualesViewModel> egresosCollection = SessionState.UserSession.GetDataCollection<List<EgresosMensualesViewModel>>(Constants.FamilyResearch_EgresosMensuales_Table);
@@ -489,18 +526,157 @@ namespace WebApp.Areas.SocialWork.Models
             }
         }
 
-        public void LoadFamilyMembers()
+        public void GetFamilyMembersFromSession()
         {
             var collection = SessionState.UserSession.GetDataCollection<List<FamilyMembersDetails>>(Constants.FamilyResearch_FamilyMembers_Table);
             if (collection != null)
             {
                 FamilyMembers = new FamilyMembers();
                 FamilyMembers.FamilyMembersDetails = new FamilyMembersDetails[collection.Count];
+                if(FamilyMembersId > 0)
+                {
+                    FamilyMembers.Id = Convert.ToInt32(FamilyMembersId);
+                }
+
                 for (int index = 0; index < collection.Count; index++)
                 {
                     FamilyMembers.FamilyMembersDetails[index] = collection[index];
+                    if (FamilyMembersId > 0)
+                    {
+                        FamilyMembers.FamilyMembersDetails[index].FamilyMembersId = FamilyMembers.Id;
+                    }
                 }
             }
+        }
+
+        public List<IngresosMensualesViewModel> ConvertIngresosEgresosMensualesMovimientoRelationToIngresosMensualesViewModel(IngresosEgresosMensualesMovimientoRelation[] from)
+        {
+            if (from == null)
+            {
+                return null;
+            }
+
+            List<IngresosMensualesViewModel> to = new List<IngresosMensualesViewModel>();
+            foreach (var iter in from)
+            {
+                if (iter.Movimiento.TipoMovimiento.Name == "Ingreso")
+                {
+                    IngresosMensualesViewModel ingresosMensuales = new IngresosMensualesViewModel()
+                    {
+                        Id = iter.Id,
+                        Key = string.Empty.GetUniqueKey(),
+                        IngresosEgresosMensualesId = iter.IngresosEgresosMensualesId,
+                        Monto = iter.Monto,
+                        Movimiento = iter.Movimiento,
+                        MovimientoId = iter.MovimientoId,                        
+                    };
+
+                    to.Add(ingresosMensuales);
+                }
+            }
+
+            List<IngresosMensualesViewModel> collection = SessionState.UserSession.GetDataCollection<List<IngresosMensualesViewModel>>(Constants.FamilyResearch_IngresosMensuales_Table);
+            if (collection == null)
+            {
+                foreach (var iter in to)
+                {
+                    SessionState.UserSession.AddItemInDataCollection(Constants.FamilyResearch_IngresosMensuales_Table, iter);
+
+                }
+            }
+
+            return to;
+        }
+
+        public List<EgresosMensualesViewModel> ConvertIngresosEgresosMensualesMovimientoRelationToEgresosMensualesViewModel(IngresosEgresosMensualesMovimientoRelation[] from)
+        {
+            if (from == null)
+            {
+                return null;
+            }
+
+            List<EgresosMensualesViewModel> to = new List<EgresosMensualesViewModel>();
+            foreach (var iter in from)
+            {
+                if (iter.Movimiento.TipoMovimiento.Name == "Egreso")
+                {
+                    EgresosMensualesViewModel egresosMensuales = new EgresosMensualesViewModel()
+                    {
+                        Id = iter.Id,
+                        Key = string.Empty.GetUniqueKey(),
+                        IngresosEgresosMensualesId = iter.IngresosEgresosMensualesId,
+                        Monto = iter.Monto,
+                        Movimiento = iter.Movimiento,
+                        MovimientoId = iter.MovimientoId
+                    };
+
+                    to.Add(egresosMensuales);
+                }
+            }
+
+            List<IngresosMensualesViewModel> collection = SessionState.UserSession.GetDataCollection<List<IngresosMensualesViewModel>>(Constants.FamilyResearch_EgresosMensuales_Table);
+            if (collection == null)
+            {
+                foreach (var iter in to)
+                {
+                    SessionState.UserSession.AddItemInDataCollection(Constants.FamilyResearch_EgresosMensuales_Table, iter);
+                }
+            }
+
+            return to;
+        }
+
+        public void SetFamilyMembersInSession(FamilyMembers familyMembers)
+        {
+            if (familyMembers?.FamilyMembersDetails == null)
+            {
+                return;
+            }
+
+            var collection = SessionState.UserSession.GetDataCollection<List<FamilyMembersDetails>>(Constants.FamilyResearch_FamilyMembers_Table);
+            if (collection == null)
+            {
+                foreach (var iter in familyMembers.FamilyMembersDetails)
+                {
+                    SessionState.UserSession.AddItemInDataCollection<FamilyMembersDetails>(Constants.FamilyResearch_FamilyMembers_Table, iter);
+                }
+            }
+        }
+
+        public List<BenefitsProvidedViewModel> ConvertBenefitsProvidedToBenefitsProvidedViewModel(BenefitsProvidedDetails[] from)
+        {
+            if (from == null)
+            {
+                return null;
+            }
+
+            List<BenefitsProvidedViewModel> to = new List<BenefitsProvidedViewModel>();
+            foreach (var iter in from)
+            {
+                BenefitsProvidedViewModel benefitsProvided = new BenefitsProvidedViewModel()
+                {
+                    Id = iter.Id,
+                    Key = string.Empty.GetUniqueKey(),
+                    ApoyoRecibido = iter.ApoyoRecibido,
+                    BenefitsProvidedId = iter.BenefitsProvidedId,
+                    Institucion = iter.Institucion,
+                    Monto = iter.Monto,
+                    Periodo = iter.Periodo
+                };
+
+                to.Add(benefitsProvided);
+            }
+
+            List<BenefitsProvidedViewModel> collection = SessionState.UserSession.GetDataCollection<List<BenefitsProvidedViewModel>>(Constants.FamilyResearch_BenefitsProvided_Table);
+            if (collection == null)
+            {
+                foreach (var iter in to)
+                {
+                    SessionState.UserSession.AddItemInDataCollection<BenefitsProvidedViewModel>(Constants.FamilyResearch_BenefitsProvided_Table, iter);
+                }
+            }
+
+            return to;
         }
     }
 }
