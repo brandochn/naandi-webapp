@@ -1394,8 +1394,9 @@ namespace WebApi.Services
                                 `District`.TransportePublico, -- 128
                                 `District`.AseoPublico, -- 129
                                 `District`.Iglesia, -- 130
-                                `District`.Otros, -- 131
-                                `District`.Description -- 132
+                                `District`.Mercado, -- 131
+                                `District`.Otros, -- 132
+                                `District`.Description -- 133
 
                             FROM `FamilyResearch`
                             LEFT JOIN `LegalGuardian` ON `LegalGuardian`.Id =  `FamilyResearch`.LegalGuardianId
@@ -1597,6 +1598,7 @@ namespace WebApi.Services
                         familyResearch.District.TransportePublico = reader.GetValueOrNull<string>(index++);
                         familyResearch.District.AseoPublico = reader.GetValueOrNull<string>(index++);
                         familyResearch.District.Iglesia = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Mercado = reader.GetValueOrNull<string>(index++);
                         familyResearch.District.Otros = reader.GetValueOrNull<string>(index++);
                         familyResearch.District.Description = reader.GetValueOrNull<string>(index++);
 
@@ -2024,11 +2026,21 @@ namespace WebApi.Services
 
                 if (familyMembers != null)
                 {
-                    sql = @"select fmd.*
-                            from familymembersdetails fmd                               
+                    sql = @"select fmd.*, ms.*, rs.*
+                            from familymembersdetails fmd
+                            join maritalstatus ms on ms.Id = fmd.MaritalStatusId
+                            join relationship rs on rs.Id = fmd.RelationshipId
                             where fmd.FamilyMembersId = @familyMembersId;";
 
-                    familyMembers.FamilyMembersDetails = connection.Query<FamilyMembersDetails>(sql, new { familyMembersId }).ToArray();
+                    familyMembers.FamilyMembersDetails = connection.Query<FamilyMembersDetails, MaritalStatus, Relationship, FamilyMembersDetails>(sql,
+                        (fmd, ms, rs) =>
+                        {
+                            fmd.MaritalStatus = ms;
+                            fmd.Relationship = rs;
+
+                            return fmd;
+                        }
+                        , new { familyMembersId }).ToArray();
                 }
             }
 

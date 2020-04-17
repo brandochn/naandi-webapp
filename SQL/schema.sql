@@ -1579,12 +1579,12 @@ BEGIN
 						
 			UPDATE Minor
 			SET
-				 `FullName` =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.FullName')) FROM JSON_TABLE)
-				,`DateOfBirth` =       (SELECT CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.DateOfBirth')) AS datetime) FROM JSON_TABLE) 
-				,`PlaceOfBirth` =      (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.PlaceOfBirth')) FROM JSON_TABLE)
-				,`Age` =               (SELECT JSON_EXTRACT(Data, '$.Minor.Age') FROM JSON_TABLE)
-				,`Education` =         (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.Education')) FROM JSON_TABLE)
-				,`CurrentOccupation` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.CurrentOccupation')) FROM JSON_TABLE)
+				 `FullName` =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FullName')) FROM JSON_TABLE)
+				,`DateOfBirth` =       (SELECT CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DateOfBirth')) AS datetime) FROM JSON_TABLE) 
+				,`PlaceOfBirth` =      (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PlaceOfBirth')) FROM JSON_TABLE)
+				,`Age` =               (SELECT JSON_EXTRACT(Data, '$.Age') FROM JSON_TABLE)
+				,`Education` =         (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Education')) FROM JSON_TABLE)
+				,`CurrentOccupation` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation')) FROM JSON_TABLE)
 				,`FormalEducationId` =  FormalEducationId
 			WHERE Id = MinorId;
 		END IF;

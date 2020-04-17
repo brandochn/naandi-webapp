@@ -533,7 +533,7 @@ namespace WebApp.Areas.SocialWork.Models
             {
                 FamilyMembers = new FamilyMembers();
                 FamilyMembers.FamilyMembersDetails = new FamilyMembersDetails[collection.Count];
-                if(FamilyMembersId > 0)
+                if (FamilyMembersId > 0)
                 {
                     FamilyMembers.Id = Convert.ToInt32(FamilyMembersId);
                 }
@@ -568,7 +568,7 @@ namespace WebApp.Areas.SocialWork.Models
                         IngresosEgresosMensualesId = iter.IngresosEgresosMensualesId,
                         Monto = iter.Monto,
                         Movimiento = iter.Movimiento,
-                        MovimientoId = iter.MovimientoId,                        
+                        MovimientoId = iter.MovimientoId,
                     };
 
                     to.Add(ingresosMensuales);

@@ -72,12 +72,14 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.LegalGuardianId = familyResearch.LegalGuardianId;
                 model.Minor = familyResearch.Minor;
                 model.MinorId = familyResearch.MinorId;
+                model.Minor.FormalEducation = familyResearch.Minor.FormalEducation;
+                model.Minor.FormalEducationId = familyResearch.Minor.FormalEducationId;
                 model.PreviousFoundation = familyResearch.PreviousFoundation;
                 model.PreviousFoundationId = familyResearch.PreviousFoundationId;
                 model.ProblemsIdentified = familyResearch.ProblemsIdentified;
                 model.Recommendations = familyResearch.Recommendations;
                 model.RedesDeApoyoFamiliares = familyResearch.RedesDeApoyoFamiliares;
-                model.RequestReasons = model.RequestReasons;
+                model.RequestReasons = familyResearch.RequestReasons;
                 model.SituationsOfDomesticViolence = familyResearch.SituationsOfDomesticViolence;
                 model.Sketch = familyResearch.Sketch;
                 model.SocioEconomicStudy = familyResearch.SocioEconomicStudy;
@@ -135,12 +137,52 @@ namespace WebApp.Areas.SocialWork.Controllers
 
                 if (model.Id > 0) // update item
                 {
+                    if (model.LegalGuardianId > 0)
+                    {
+                        model.LegalGuardian.Id = Convert.ToInt32(model.LegalGuardianId);
+                    }
+
+                    if (model.MinorId > 0)
+                    {
+                        model.Minor.Id = Convert.ToInt32(model.MinorId);
+                    }
+
+                    if (model.PreviousFoundationId > 0)
+                    {
+                        model.PreviousFoundation.Id = Convert.ToInt32(model.PreviousFoundationId);
+                    }
+
+                    if (model.FamilyHealthId > 0)
+                    {
+                        model.FamilyHealth.Id = Convert.ToInt32(model.FamilyHealthId);
+                    }
+
+                    if (model.SocioEconomicStudyId > 0)
+                    {
+                        model.SocioEconomicStudy.Id = Convert.ToInt32(model.SocioEconomicStudyId);
+                    }
+
+                    if (model.IngresosEgresosMensualesId > 0)
+                    {
+                        model.IngresosEgresosMensuales.Id = Convert.ToInt32(model.IngresosEgresosMensualesId);
+                    }
+
+                    if (model.DistrictId > 0)
+                    {
+                        model.District.Id = Convert.ToInt32(model.DistrictId);
+                    }
+
+                    if (model.Minor.FormalEducationId > 0)
+                    {
+                        model.Minor.FormalEducation.Id = Convert.ToInt32(model.Minor.FormalEducationId);
+                    }
+
                     familyResearchRepository.Update(model);
                 }
                 else // add new item
-                {                    
+                {
                     familyResearchRepository.Add(model);
-                }               
+                }
             }
             catch (BusinessLogicException ex)
             {
