@@ -45,7 +45,7 @@ namespace WebApp.Areas.SocialWork.Controllers
             model.LoadHomeAcquisitionList(familyResearchRepository);
             model.LoadTipoDeMobiliarioList(familyResearchRepository);
             model.LoadTypeOfDistrictList(familyResearchRepository);
-            model.LoadPatrimonyViewModelCollection(familyResearchRepository);
+            model.SetPatrimonyViewModelCollection(familyResearchRepository);
             model.LoadFoods(familyResearchRepository);
             model.LoadFrequencies(familyResearchRepository);
             model.LoadTypesOfHousesList(familyResearchRepository);
@@ -58,8 +58,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.Id = familyResearch.Id;
                 model.CaseStudyConclusion = familyResearch.CaseStudyConclusion;
                 model.District = familyResearch.District;
-                model.DistrictId = familyResearch.DistrictId;
-                model.EconomicSituation = familyResearch.EconomicSituation;
+                model.DistrictId = familyResearch.DistrictId;                
                 model.EconomicSituationId = familyResearch.EconomicSituationId;
                 model.Family = familyResearch.Family;
                 model.FamilyDiagnostic = familyResearch.FamilyDiagnostic;
@@ -87,6 +86,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.VisualSupports = familyResearch.VisualSupports;
                 model.LoadMunicipalitiesOfMexico(familyResearchRepository);
 
+                model.LoadPatrimonyViewModelCollection(familyResearch.EconomicSituation);
                 model.FamilyMembers = familyResearch.FamilyMembers;
                 model.FamilyMembersId = familyResearch.FamilyMembersId;
                 model.SetFamilyMembersInSession(familyResearch.FamilyMembers);
@@ -121,7 +121,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                     model.LoadHomeAcquisitionList(familyResearchRepository);
                     model.LoadTipoDeMobiliarioList(familyResearchRepository);
                     model.LoadTypeOfDistrictList(familyResearchRepository);
-                    model.LoadPatrimonyViewModelCollection(familyResearchRepository);
+                    model.SetPatrimonyViewModelCollection(familyResearchRepository);
                     model.LoadFoods(familyResearchRepository);
                     model.LoadFrequencies(familyResearchRepository);
                     model.LoadTypesOfHousesList(familyResearchRepository);
@@ -194,7 +194,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.LoadHomeAcquisitionList(familyResearchRepository);
                 model.LoadTipoDeMobiliarioList(familyResearchRepository);
                 model.LoadTypeOfDistrictList(familyResearchRepository);
-                model.LoadPatrimonyViewModelCollection(familyResearchRepository);
+                model.SetPatrimonyViewModelCollection(familyResearchRepository);
                 model.LoadFoods(familyResearchRepository);
                 model.LoadFrequencies(familyResearchRepository);
                 model.LoadTypesOfHousesList(familyResearchRepository);

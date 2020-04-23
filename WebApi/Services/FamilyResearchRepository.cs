@@ -1754,8 +1754,9 @@ namespace WebApi.Services
                                 `District`.TransportePublico, -- 128
                                 `District`.AseoPublico, -- 129
                                 `District`.Iglesia, -- 130
-                                `District`.Otros, -- 131
-                                `District`.Description -- 132
+                                `District`.Mercado, -- 131
+                                `District`.Otros, -- 132
+                                `District`.Description -- 133
 
                             FROM `FamilyResearch`
                             LEFT JOIN `LegalGuardian` ON `LegalGuardian`.Id =  `FamilyResearch`.LegalGuardianId
@@ -1950,6 +1951,7 @@ namespace WebApi.Services
                         familyResearch.District.TransportePublico = reader.GetValueOrNull<string>(index++);
                         familyResearch.District.AseoPublico = reader.GetValueOrNull<string>(index++);
                         familyResearch.District.Iglesia = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Mercado = reader.GetValueOrNull<string>(index++);
                         familyResearch.District.Otros = reader.GetValueOrNull<string>(index++);
                         familyResearch.District.Description = reader.GetValueOrNull<string>(index++);
 
@@ -2064,9 +2066,18 @@ namespace WebApi.Services
 
                 if (economicSituation != null)
                 {
-                    sql = @"select * from EconomicSituationPatrimonyRelation where economicsituationId = @economicSituationId;";
+                    sql = @"select * from EconomicSituationPatrimonyRelation e 
+                            join patrimony p on p.Id = e.patrimonyId
+                            where economicsituationId = @economicSituationId;";
 
-                    economicSituation.EconomicSituationPatrimonyRelation = connection.Query<EconomicSituationPatrimonyRelation>(sql, new { economicSituationId }).ToArray();
+                    economicSituation.EconomicSituationPatrimonyRelation = connection.Query<EconomicSituationPatrimonyRelation, Patrimony, EconomicSituationPatrimonyRelation>(sql
+                        ,(e, p) => 
+                        {
+                            e.Patrimony = p;
+
+                            return e;
+                        } 
+                        , new { economicSituationId }).ToArray();
                 }
             }
 

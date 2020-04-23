@@ -219,7 +219,7 @@ namespace WebApp.Areas.SocialWork.Models
                 Name = "Selecciona uno"
             });
         }
-        public void LoadPatrimonyViewModelCollection(IFamilyResearch familyResearchRepository)
+        public void SetPatrimonyViewModelCollection(IFamilyResearch familyResearchRepository)
         {
             var patrimonies = familyResearchRepository.GetPatrimonies()?.OrderBy(o => o.Id)?.ToList();
             if (patrimonies == null)
@@ -677,6 +677,27 @@ namespace WebApp.Areas.SocialWork.Models
             }
 
             return to;
+        }
+
+        public void LoadPatrimonyViewModelCollection(EconomicSituation economicSituation)
+        {
+            if (economicSituation?.EconomicSituationPatrimonyRelation == null)
+            {
+                return;
+            }
+
+            PatrimonyViewModelCollection = new List<PatrimonyViewModel>();
+            foreach (var iter in economicSituation.EconomicSituationPatrimonyRelation)
+            {
+                PatrimonyViewModelCollection.Add(new PatrimonyViewModel() 
+                {
+                    Id = iter.Id,
+                    Name = iter.Patrimony.Name,
+                    Value = iter.Value
+                });
+            }
+
+
         }
     }
 }
