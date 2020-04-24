@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using MySqlX.XDevAPI.Common;
+using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Serialization;
+using System;
 
 namespace WebApp.Data
 {
@@ -12,8 +14,18 @@ namespace WebApp.Data
         public string Serialize(Parameter parameter) =>
             JsonConvert.SerializeObject(parameter.Value);
 
-        public T Deserialize<T>(IRestResponse response) =>
-            JsonConvert.DeserializeObject<T>(response.Content);
+        public T Deserialize<T>(IRestResponse response)
+        {
+            try
+            {
+                T result = JsonConvert.DeserializeObject<T>(response.Content);
+                return result;
+            }
+            catch(Exception)
+            {
+                return default;
+            }
+        }
 
         public string[] SupportedContentTypes { get; } =
         {

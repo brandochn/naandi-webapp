@@ -31,7 +31,7 @@
                     <div></div>
                 </div>
                 <div class="card-body pb-4">
-                    <div id="RegistrationRequestTable">
+                    <div id="FamilyResearchTable">
                         @await Html.PartialAsync("_FamilyResearchTable", Model)
                     </div>
                 </div>
@@ -43,13 +43,13 @@
 @section scripts {
     <script type="text/javascript">
 
-        let SearchRegistrationRequestsByMinorName = function (searchItem) {
+        let GetFamilyResearchByMinorName = function (searchItem) {
 
             if (searchItem === null || searchItem === '') {
                 searchItem = "_all_";
             }
 
-            let url = '@Url.Action("SearchRegistrationRequestsByMinorName", "RegistrationRequest", new { Area = "SocialWork", minorName = "replace1" }, null)';
+            let url = '@Url.Action("GetFamilyResearchByMinorName", "FamilyResearch", new { Area = "SocialWork", minorName = "replace1" }, null)';
 
             url = url.replace("replace1", searchItem);
 
@@ -58,8 +58,8 @@
                 url: url,
                 cache: false,
                 success: function (response) {
-                    $('#RegistrationRequestTable').html(response);
-                    $('#RegistrationRequestTableId').DataTable({ searching: false });
+                    $('#FamilyResearchTable').html(response);
+                    $('#FamilyResearchTableId').DataTable({ searching: false });
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     alert(errorThrown);
@@ -72,53 +72,22 @@
         let searchItem = "";
         if (event.which === 13) {
                 searchItem = $('#searchInput').val();
-                SearchRegistrationRequestsByMinorName(searchItem);
+                GetFamilyResearchByMinorName(searchItem);
                 event.preventDefault();
                 return false;
         } else if (event.which === 8 || event.which === 46) {
              searchItem = $('#searchInput').val();
             if (searchItem === null || (searchItem.length - 1) === 0) {
                     searchItem = "_all_";
-                    SearchRegistrationRequestsByMinorName(searchItem);
+                    GetFamilyResearchByMinorName(searchItem);
                     return false;
             }
         }
     }
 
-    $('#modalwindow').on('show.bs.modal', function (event) {
-
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var registrationrequestid = button.data('registrationrequestid'); // Extract info from data-* attributes
-        var minorfullname = button.data('minorfullname');
-        var modal = $(this);
-        modal.find('#btnyes').attr('data-registrationrequestid', registrationrequestid);
-        modal.find('.modal-body p').html('¿Deseas borrar la solicitud de registro de ' + '<span class="font-weight-bold">' + minorfullname + '</span>' + '?');
-    });
-
-    $(function() {
-        $("#btnyes").click( function(){
-            var button = $(this);
-            let id = button.attr('data-registrationrequestid');
-            $.ajax({
-                url: '@Url.Action("Delete", "RegistrationRequest", new { Area = "SocialWork" })',
-                type: 'POST',
-                dataType: 'json',
-                cache: false,
-                data: { Id: id },
-                success: function ( data, textStatus, jQxhr ) {
-                    location.reload(true);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    alert(errorThrown);
-                }
-            });
-
-           }
-        );
-    });
 
     $(document).ready( function () {
-        $('#RegistrationRequestTableId').DataTable({ searching: false });
+        $('#FamilyResearchTableId').DataTable({ searching: false });
     });
 
     </script>

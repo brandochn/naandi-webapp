@@ -4,6 +4,7 @@ using Naandi.Shared.Models;
 using Naandi.Shared.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using WebApp.Areas.SocialWork.Models;
 using WebApp.ExtensionMethods;
@@ -86,12 +87,14 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.VisualSupports = familyResearch.VisualSupports;
                 model.LoadMunicipalitiesOfMexico(familyResearchRepository);
 
+                model.SetFamilyNutritionFoodRelation(familyResearch.FamilyNutrition);
                 model.LoadPatrimonyViewModelCollection(familyResearch.EconomicSituation);
                 model.FamilyMembers = familyResearch.FamilyMembers;
                 model.FamilyMembersId = familyResearch.FamilyMembersId;
                 model.SetFamilyMembersInSession(familyResearch.FamilyMembers);
                 model.BenefitsProvidedList = model.ConvertBenefitsProvidedToBenefitsProvidedViewModel(familyResearch.BenefitsProvided?.BenefitsProvidedDetails);
                 model.BenefitsProvidedId = familyResearch.BenefitsProvidedId;
+                model.IngresosEgresosMensuales = familyResearch.IngresosEgresosMensuales;
                 model.IngresosMensualesList = model.ConvertIngresosEgresosMensualesMovimientoRelationToIngresosMensualesViewModel(familyResearch.IngresosEgresosMensuales?.IngresosEgresosMensualesMovimientoRelation);
                 model.IngresosEgresosMensualesId = familyResearch.IngresosEgresosMensualesId;
                 model.EgresosMensualesList = model.ConvertIngresosEgresosMensualesMovimientoRelationToEgresosMensualesViewModel(familyResearch.IngresosEgresosMensuales?.IngresosEgresosMensualesMovimientoRelation);
@@ -129,6 +132,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                     return View("ShowForm", model);
                 }
 
+                model.VisitTime = DateTime.Parse(model.FormVisitTime);
                 model.GetEconomicSituationPatrimonyRelationFromViewModel(familyResearchRepository);
                 model.GetFamilyNutritionFoodRelationFromViewModel(familyResearchRepository);
                 model.GetBenefitsProvidedFromSession();
@@ -198,6 +202,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.LoadFoods(familyResearchRepository);
                 model.LoadFrequencies(familyResearchRepository);
                 model.LoadTypesOfHousesList(familyResearchRepository);
+                model.VisitTime = DateTime.Now;
 
                 return View("ShowForm", model);
             }
@@ -568,6 +573,29 @@ namespace WebApp.Areas.SocialWork.Controllers
             HttpContext.Session.Remove(Constants.FamilyResearch_EgresosMensuales_Table);
             HttpContext.Session.Remove(Constants.FamilyResearch_FamilyMembers_Table);
             HttpContext.Session.Remove(Constants.FamilyResearch_BenefitsProvided_Table);
+        }
+
+        [HttpGet]
+        [Route("/SocialWork/FamilyResearch/GetFamilyResearchByMinorName/{minorName}")]
+        public IActionResult GetFamilyResearchByMinorName(string minorName)
+        {
+            if (string.IsNullOrEmpty(minorName))
+            {
+                return null;
+            }
+
+            FamilyResearchViewModel model = new FamilyResearchViewModel();
+
+            if (string.Equals(minorName, "_all_", StringComparison.OrdinalIgnoreCase))
+            {
+                model.FamilyResearches = familyResearchRepository.GetFamilyResearches()?.ToList();
+            }
+            else
+            {
+                model.FamilyResearches = familyResearchRepository.GetFamilyResearchByMinorName(minorName)?.ToList();
+            }
+
+            return PartialView("_FamilyResearchTable", model);
         }
     }
 }

@@ -185,7 +185,29 @@ namespace WebApp.Services
 
         public IEnumerable<FamilyResearch> GetFamilyResearchByMinorName(string minorName)
         {
-            throw new System.NotImplementedException();
+            IList<FamilyResearch> familyResearches;
+
+            var client = applicationRestClient.CreateRestClient();
+            var request = new RestRequest("/api/FamilyResearch/GetFamilyResearchByMinorName/{name}", Method.GET);
+
+            request.AddUrlSegment("name", minorName);
+            var response = client.Execute<List<FamilyResearch>>(request);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return new List<FamilyResearch>();
+            }
+
+            if (response.ErrorException != null || response.IsSuccessful == false)
+            {
+                const string message = Constants.UNHANDLED_EXCEPTION_MESSAGE;
+                var exception = new ApplicationException(message, response.ErrorException);
+                throw exception;
+            }
+
+            familyResearches = response.Data;
+
+            return familyResearches;
         }
 
         public IEnumerable<Movimiento> GetMovimientosByTipoMovimiento(string tipoMovimiento)

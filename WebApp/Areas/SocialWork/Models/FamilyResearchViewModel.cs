@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using WebApp.ExtensionMethods;
+using System.Globalization;
 
 namespace WebApp.Areas.SocialWork.Models
 {
@@ -26,6 +27,7 @@ namespace WebApp.Areas.SocialWork.Models
         public IList<BenefitsProvidedViewModel> BenefitsProvidedList { get; set; }
         public IList<IngresosMensualesViewModel> IngresosMensualesList { get; set; }
         public IList<EgresosMensualesViewModel> EgresosMensualesList { get; set; }
+        public string FormVisitTime { get; set; }
 
 
         public bool IsValid(object value)
@@ -132,6 +134,12 @@ namespace WebApp.Areas.SocialWork.Models
                    District.TypeOfDistrictId == 0)
                 {
                     modelState.AddModelError(string.Empty, "Tipo de colonia es requerido");
+                    valid = false;
+                }
+
+                if (DateTime.TryParseExact(FormVisitTime, "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out _) == false)
+                {
+                    modelState.AddModelError(string.Empty, $"La hora de visita no es valida: { FormVisitTime ?? "" }");
                     valid = false;
                 }
             }
@@ -487,7 +495,11 @@ namespace WebApp.Areas.SocialWork.Models
 
             int size = ingresosCollection == null ? 0 : ingresosCollection.Count;
             size = egresosCollection == null ? size : (size + egresosCollection.Count);
-            IngresosEgresosMensuales = new IngresosEgresosMensuales();
+
+            if (IngresosEgresosMensuales == null)
+            {
+                IngresosEgresosMensuales = new IngresosEgresosMensuales();
+            }
             IngresosEgresosMensuales.IngresosEgresosMensualesMovimientoRelation = new IngresosEgresosMensualesMovimientoRelation[size];
             int uniqueIndex = 0;
 
@@ -689,15 +701,32 @@ namespace WebApp.Areas.SocialWork.Models
             PatrimonyViewModelCollection = new List<PatrimonyViewModel>();
             foreach (var iter in economicSituation.EconomicSituationPatrimonyRelation)
             {
-                PatrimonyViewModelCollection.Add(new PatrimonyViewModel() 
+                PatrimonyViewModelCollection.Add(new PatrimonyViewModel()
                 {
                     Id = iter.Id,
                     Name = iter.Patrimony.Name,
                     Value = iter.Value
                 });
             }
+        }
 
+        public void SetFamilyNutritionFoodRelation(FamilyNutrition familyNutrition)
+        {
+            if (familyNutrition?.FamilyNutritionFoodRelation == null)
+            {
+                return;
+            }
 
+            var frequencies = new List<Frequency>();
+            foreach (var iter in familyNutrition.FamilyNutritionFoodRelation)
+            {
+                frequencies.Add(new Frequency()
+                {
+                    Id = iter.FrequencyId
+                });
+            }
+
+            FrequencyIdsSelected = frequencies.ToArray();
         }
     }
 }

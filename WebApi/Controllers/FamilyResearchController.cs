@@ -175,5 +175,19 @@ namespace WebApi.Controllers
 
             return Ok(items);
         }
+
+        [HttpGet]
+        [Route("GetFamilyResearchByMinorName/{name}")]
+        public IActionResult GetFamilyResearchByMinorName(string name)
+        {
+            var familyResearches = familyResearchRepository.GetFamilyResearchByMinorName(name);
+
+            if (familyResearches == null)
+            {
+                return NotFound("No record found");
+            }
+
+            return Ok(familyResearches.ToList());
+        }
     }
 }

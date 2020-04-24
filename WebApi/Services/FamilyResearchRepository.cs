@@ -1396,7 +1396,9 @@ namespace WebApi.Services
                                 `District`.Iglesia, -- 130
                                 `District`.Mercado, -- 131
                                 `District`.Otros, -- 132
-                                `District`.Description -- 133
+                                `District`.Description, -- 133
+                                `FamilyResearch`.RedesDeApoyoFamiliares, -- 134
+                                `FamilyResearch`.ProblemsIdentified -- 135
 
                             FROM `FamilyResearch`
                             LEFT JOIN `LegalGuardian` ON `LegalGuardian`.Id =  `FamilyResearch`.LegalGuardianId
@@ -1602,6 +1604,9 @@ namespace WebApi.Services
                         familyResearch.District.Otros = reader.GetValueOrNull<string>(index++);
                         familyResearch.District.Description = reader.GetValueOrNull<string>(index++);
 
+                        familyResearch.RedesDeApoyoFamiliares = reader.GetValueOrNull<string>(index++);
+                        familyResearch.ProblemsIdentified = reader.GetValueOrNull<string>(index++);
+
                     }
                 }
             }
@@ -1756,7 +1761,9 @@ namespace WebApi.Services
                                 `District`.Iglesia, -- 130
                                 `District`.Mercado, -- 131
                                 `District`.Otros, -- 132
-                                `District`.Description -- 133
+                                 `District`.Description, -- 133
+                                `FamilyResearch`.RedesDeApoyoFamiliares, -- 134
+                                `FamilyResearch`.ProblemsIdentified -- 135
 
                             FROM `FamilyResearch`
                             LEFT JOIN `LegalGuardian` ON `LegalGuardian`.Id =  `FamilyResearch`.LegalGuardianId
@@ -1955,6 +1962,9 @@ namespace WebApi.Services
                         familyResearch.District.Otros = reader.GetValueOrNull<string>(index++);
                         familyResearch.District.Description = reader.GetValueOrNull<string>(index++);
 
+                        familyResearch.RedesDeApoyoFamiliares = reader.GetValueOrNull<string>(index++);
+                        familyResearch.ProblemsIdentified = reader.GetValueOrNull<string>(index++);
+
                         familyResearches.Add(familyResearch);
 
                     }
@@ -1983,7 +1993,375 @@ namespace WebApi.Services
 
         public IEnumerable<FamilyResearch> GetFamilyResearchByMinorName(string minorName)
         {
-            throw new NotImplementedException();
+            IList<FamilyResearch> familyResearches = new List<FamilyResearch>();
+
+            using (MySqlConnection connection = applicationDbContext.GetConnection())
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = @"SELECT `FamilyResearch`.Id, -- 1
+                                `FamilyResearch`.VisitDate, -- 2
+                                `FamilyResearch`.VisitTime, -- 3
+                                `FamilyResearch`.Family, -- 4
+                                `FamilyResearch`.RequestReasons, -- 5
+                                `FamilyResearch`.SituationsOfDomesticViolence, -- 6
+                                `FamilyResearch`.FamilyExpectations, -- 7
+                                `FamilyResearch`.FamilyDiagnostic, -- 8
+                                `FamilyResearch`.CaseStudyConclusion, -- 9
+                                `FamilyResearch`.Recommendations, -- 10
+                                `FamilyResearch`.VisualSupports, -- 11
+                                `FamilyResearch`.Sketch, -- 12
+                                `FamilyResearch`.LegalGuardianId, -- 13
+                                `FamilyResearch`.MinorId, -- 14
+                                `FamilyResearch`.PreviousFoundationId, -- 15
+                                `FamilyResearch`.FamilyHealthId, -- 16
+                                `FamilyResearch`.FamilyMembersId, -- 17
+                                `FamilyResearch`.SocioEconomicStudyId, -- 18
+                                `FamilyResearch`.DistrictId, -- 19
+                                `FamilyResearch`.EconomicSituationId, -- 20
+                                `FamilyResearch`.FamilyNutritionId, -- 21
+                                `FamilyResearch`.BenefitsProvidedId, -- 22
+                                `FamilyResearch`.IngresosEgresosMensualesId, -- 23
+                                `LegalGuardian`.Id, -- 24
+                                `LegalGuardian`.FullName, -- 25
+                                `LegalGuardian`.Age, -- 26
+                                `LegalGuardian`.PlaceOfBirth, -- 27
+                                `LegalGuardian`.MaritalStatusId, -- 28
+                                `LegalGuardian`.Education, -- 29
+                                `LegalGuardian`.CurrentOccupation, -- 30
+                                `LegalGuardian`.RelationshipId, -- 31
+                                `LegalGuardian`.AddressId, -- 32
+                                `LegalGuardian`.CellPhoneNumber, -- 33
+                                `LegalGuardian`.PhoneNumber, -- 34
+                                `LegalGuardian`.Errand, -- 35
+                                `LegalGuardian`.SpouseId, -- 36
+                                `LegalGuardian`.DateOfBirth, -- 37
+                                `MaritalStatus`.Id, -- 38
+                                `MaritalStatus`.Name, -- 39
+                                `Relationship`.Id, -- 40
+                                `Relationship`.Name, -- 41
+                                `Address`.Id, -- 42
+                                `Address`.Street, -- 43
+                                `Address`.HouseNumber, -- 44
+                                `Address`.PoBox, -- 45
+                                `Address`.PhoneNumber, -- 46
+                                `Address`.City, -- 47
+                                `Address`.Zip, -- 48
+                                `Address`.State, -- 49
+                                `Address`.Neighborhood, -- 50
+                                `Address`.Reference, -- 51
+                                `Spouse`.Id, -- 52,
+                                `Spouse`.FullName, -- 53
+                                `Spouse`.Age, -- 54
+                                `Spouse`.CurrentOccupation, -- 55
+                                `Spouse`.Comments, -- 56
+                                `Minor`.Id, -- 57
+                                `Minor`.FullName, -- 58
+                                `Minor`.DateOfBirth, -- 59
+                                `Minor`.PlaceOfBirth, -- 60
+                                `Minor`.Age, -- 61
+                                `Minor`.Education, -- 62
+                                `Minor`.CurrentOccupation, -- 63
+                                `Minor`.FormalEducationId, -- 64
+                                `FormalEducation`.Id, -- 65
+                                `FormalEducation`.CanItRead, -- 66
+                                `FormalEducation`.CanItWrite, -- 67
+                                `FormalEducation`.IsItStudyingNow, -- 68
+                                `FormalEducation`.CurrentGrade, -- 69
+                                `FormalEducation`.ReasonsToStopStudying, -- 70
+                                `PreviousFoundation`.Id, -- 71
+                                `PreviousFoundation`.Familiar, -- 72
+                                `PreviousFoundation`.Procuraduria, -- 73
+                                `PreviousFoundation`.Dif, -- 74
+                                `PreviousFoundation`.Otro, -- 75
+                                `PreviousFoundation`.InstitucionAnterior, -- 76
+                                `PreviousFoundation`.TiempoDeEstadia, -- 77
+                                `PreviousFoundation`.MotivoDeEgreso, -- 78
+                                `FamilyHealth`.Id, -- 79
+                                `FamilyHealth`.FamilyHealthStatus, -- 80
+                                `FamilyHealth`.DerechoHambienteAServiciosDeSalud, -- 81
+                                `FamilyHealth`.Tipo, -- 82
+                                `FamilyHealth`.EnfermedadesCronicasDegenerativas, -- 83
+                                `FamilyHealth`.ConsumoDeTabaco, -- 84
+                                `FamilyHealth`.ConsumoDeAlcohol, -- 85
+                                `FamilyHealth`.ConsumoDeDrogas, -- 86
+                                `FamilyHealth`.Comments, -- 87
+                                `SocioEconomicStudy`.Id, -- 88
+                                `SocioEconomicStudy`.HomeAcquisitionId, -- 89
+                                `SocioEconomicStudy`.NombrePropietario, -- 90
+                                `SocioEconomicStudy`.MedioAdquisicion, -- 91
+                                `SocioEconomicStudy`.TypesOfHousesId, -- 92
+                                `SocioEconomicStudy`.HouseLayoutId, -- 93
+                                `HomeAcquisition`.Id, -- 94
+                                `HomeAcquisition`.Name, -- 95
+                                `TypesOfHouses`.Id, -- 96
+                                `TypesOfHouses`.Name, -- 97
+                                `HouseLayout`.Id,  -- 98
+                                `HouseLayout`.Bedroom, -- 99
+                                `HouseLayout`.Dinningroom, -- 100
+                                `HouseLayout`.Kitchen, -- 101
+                                `HouseLayout`.Livingroom, -- 102
+                                `HouseLayout`.Bathroom, -- 103
+                                `HouseLayout`.Patio, -- 104
+                                `HouseLayout`.Garage, -- 105
+                                `HouseLayout`.Backyard, -- 106
+                                `HouseLayout`.Other, -- 107
+                                `HouseLayout`.Ground, -- 108
+                                `HouseLayout`.Walls, -- 109
+                                `HouseLayout`.Roof, -- 110
+                                `HouseLayout`.Description, -- 111
+                                `HouseLayout`.TipoDeMobiliarioId, -- 112
+                                `HouseLayout`.CharacteristicsOfFurniture, -- 113
+                                `TipoDeMobiliario`.Id, -- 114
+                                `TipoDeMobiliario`.Name, -- 115
+                                `District`.Id, -- 116
+                                `District`.TypeOfDistrictId, -- 117
+                                `District`.AguaPotable, -- 118
+                                `District`.Telefono, -- 119
+                                `District`.Electricidad, -- 120
+                                `District`.Drenaje, -- 121
+                                `District`.Hospital, -- 122
+                                `District`.Correo, -- 123
+                                `District`.Escuela, -- 124
+                                `District`.Policia, -- 125
+                                `District`.AlumbradoPublico, -- 126
+                                `District`.ViasDeAcceso, -- 127
+                                `District`.TransportePublico, -- 128
+                                `District`.AseoPublico, -- 129
+                                `District`.Iglesia, -- 130
+                                `District`.Mercado, -- 131
+                                `District`.Otros, -- 132
+                                 `District`.Description, -- 133
+                                `FamilyResearch`.RedesDeApoyoFamiliares, -- 134
+                                `FamilyResearch`.ProblemsIdentified -- 135
+
+                            FROM `FamilyResearch`
+                            LEFT JOIN `LegalGuardian` ON `LegalGuardian`.Id =  `FamilyResearch`.LegalGuardianId
+                            LEFT JOIN `MaritalStatus` ON `MaritalStatus`.Id = `LegalGuardian`.MaritalStatusId
+                            LEFT JOIN `Relationship` ON `Relationship`.Id = `LegalGuardian`.RelationshipId
+                            LEFT JOIN `Address` ON `Address`.Id = `LegalGuardian`.AddressId
+                            LEFT JOIN `Spouse` ON `Spouse`.Id = `LegalGuardian`.SpouseId
+                            LEFT JOIN `Minor` ON `Minor`.Id = `FamilyResearch`.MinorId
+                            LEFT JOIN `FormalEducation` ON `FormalEducation`.Id = `Minor`.FormalEducationId
+                            LEFT JOIN `PreviousFoundation` ON `PreviousFoundation`.Id = `FamilyResearch`.PreviousFoundationId
+                            LEFT JOIN `FamilyHealth` ON `FamilyHealth`.Id = `FamilyResearch`.FamilyHealthId
+                            LEFT JOIN `SocioEconomicStudy` ON `SocioEconomicStudy`.Id = `FamilyResearch`.SocioEconomicStudyId
+                            LEFT JOIN `HomeAcquisition` on `HomeAcquisition`.Id = `SocioEconomicStudy`.HouseLayoutId
+                            LEFT JOIN `TypesOfHouses` on `TypesOfHouses`.Id = `SocioEconomicStudy`.TypesOfHousesId
+                            LEFT JOIN `HouseLayout` on `HouseLayout`.Id = `SocioEconomicStudy`.HouseLayoutId
+                            LEFT JOIN `TipoDeMobiliario` on `TipoDeMobiliario`.Id = `HouseLayout`.TipoDeMobiliarioId
+                            LEFT JOIN `District` ON `District`.Id = `FamilyResearch`.DistrictId
+                            WHERE `Minor`.FullName LIKE @minorName;";
+
+                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.Parameters.Add(new MySqlParameter()
+                {
+                    ParameterName = "minorName",
+                    Direction = System.Data.ParameterDirection.Input,
+                    MySqlDbType = MySqlDbType.String,
+                    Value = string.Concat("%", minorName, "%")
+                });
+
+                connection.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows == false)
+                    {
+                        return null;
+                    }
+                    int index;
+                    while (reader.Read())
+                    {
+                        index = 0;
+
+                        FamilyResearch familyResearch = new FamilyResearch();
+                        familyResearch.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.VisitDate = reader.GetValueOrDefault<DateTime>(index++);
+                        familyResearch.VisitTime = reader.GetValueOrDefault<DateTime>(index++);
+                        familyResearch.Family = reader.GetValueOrNull<string>(index++);
+                        familyResearch.RequestReasons = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SituationsOfDomesticViolence = reader.GetValueOrNull<string>(index++);
+                        familyResearch.FamilyExpectations = reader.GetValueOrNull<string>(index++);
+                        familyResearch.FamilyDiagnostic = reader.GetValueOrNull<string>(index++);
+                        familyResearch.CaseStudyConclusion = reader.GetValueOrNull<string>(index++);
+                        familyResearch.Recommendations = reader.GetValueOrNull<string>(index++);
+                        familyResearch.VisualSupports = reader.GetValueOrNull<string>(index++);
+                        familyResearch.Sketch = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardianId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.MinorId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.PreviousFoundationId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.FamilyHealthId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.FamilyMembersId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.SocioEconomicStudyId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.DistrictId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.EconomicSituationId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.FamilyNutritionId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.BenefitsProvidedId = reader.GetValueOrNullable<int>(index++);
+                        familyResearch.IngresosEgresosMensualesId = reader.GetValueOrNullable<int>(index++);
+
+                        familyResearch.LegalGuardian = new LegalGuardian();
+                        familyResearch.LegalGuardian.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.LegalGuardian.FullName = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.Age = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.LegalGuardian.PlaceOfBirth = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.MaritalStatusId = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.LegalGuardian.Education = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.CurrentOccupation = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.RelationshipId = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.LegalGuardian.AddressId = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.LegalGuardian.CellPhoneNumber = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.PhoneNumber = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.Errand = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.SpouseId = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.LegalGuardian.DateOfBirth = reader.GetValueOrDefault<DateTime>(index++);
+
+                        familyResearch.LegalGuardian.MaritalStatus = new MaritalStatus();
+                        familyResearch.LegalGuardian.MaritalStatus.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.LegalGuardian.MaritalStatus.Name = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.LegalGuardian.Relationship = new Relationship();
+                        familyResearch.LegalGuardian.Relationship.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.LegalGuardian.Relationship.Name = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.LegalGuardian.Address = new Address();
+                        familyResearch.LegalGuardian.Address.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.LegalGuardian.Address.Street = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.Address.HouseNumber = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.Address.PoBox = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.Address.PhoneNumber = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.Address.City = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.Address.Zip = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.Address.State = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.Address.Neighborhood = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.Address.Reference = reader.GetValueOrNull<string>(index++);
+
+
+                        familyResearch.LegalGuardian.Spouse = new Spouse();
+                        familyResearch.LegalGuardian.Spouse.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.LegalGuardian.Spouse.FullName = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.Spouse.Age = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.LegalGuardian.Spouse.CurrentOccupation = reader.GetValueOrNull<string>(index++);
+                        familyResearch.LegalGuardian.Spouse.Comments = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.Minor = new Minor();
+                        familyResearch.Minor.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.Minor.FullName = reader.GetValueOrNull<string>(index++);
+                        familyResearch.Minor.DateOfBirth = reader.GetValueOrDefault<DateTime>(index++);
+                        familyResearch.Minor.PlaceOfBirth = reader.GetValueOrNull<string>(index++);
+                        familyResearch.Minor.Age = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.Minor.Education = reader.GetValueOrNull<string>(index++);
+                        familyResearch.Minor.CurrentOccupation = reader.GetValueOrNull<string>(index++);
+                        familyResearch.Minor.FormalEducationId = reader.GetValueOrDefault<int>(index++);
+
+                        familyResearch.Minor.FormalEducation = new FormalEducation();
+                        familyResearch.Minor.FormalEducation.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.Minor.FormalEducation.CanItRead = reader.GetValueOrDefault<bool>(index++);
+                        familyResearch.Minor.FormalEducation.CanItWrite = reader.GetValueOrDefault<bool>(index++);
+                        familyResearch.Minor.FormalEducation.IsItStudyingNow = reader.GetValueOrDefault<bool>(index++);
+                        familyResearch.Minor.FormalEducation.CurrentGrade = reader.GetValueOrNull<string>(index++);
+                        familyResearch.Minor.FormalEducation.ReasonsToStopStudying = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.PreviousFoundation = new PreviousFoundation();
+                        familyResearch.PreviousFoundation.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.PreviousFoundation.Familiar = reader.GetValueOrNull<string>(index++);
+                        familyResearch.PreviousFoundation.Procuraduria = reader.GetValueOrNull<string>(index++);
+                        familyResearch.PreviousFoundation.Dif = reader.GetValueOrNull<string>(index++);
+                        familyResearch.PreviousFoundation.Otro = reader.GetValueOrNull<string>(index++);
+                        familyResearch.PreviousFoundation.InstitucionAnterior = reader.GetValueOrNull<string>(index++);
+                        familyResearch.PreviousFoundation.TiempoDeEstadia = reader.GetValueOrNull<string>(index++);
+                        familyResearch.PreviousFoundation.MotivoDeEgreso = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.FamilyHealth = new FamilyHealth();
+                        familyResearch.FamilyHealth.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.FamilyHealth.FamilyHealthStatus = reader.GetValueOrNull<string>(index++);
+                        familyResearch.FamilyHealth.DerechoHambienteAServiciosDeSalud = reader.GetValueOrNull<string>(index++);
+                        familyResearch.FamilyHealth.Tipo = reader.GetValueOrNull<string>(index++);
+                        familyResearch.FamilyHealth.EnfermedadesCronicasDegenerativas = reader.GetValueOrNull<string>(index++);
+                        familyResearch.FamilyHealth.ConsumoDeTabaco = reader.GetValueOrNull<string>(index++);
+                        familyResearch.FamilyHealth.ConsumoDeAlcohol = reader.GetValueOrNull<string>(index++);
+                        familyResearch.FamilyHealth.ConsumoDeDrogas = reader.GetValueOrNull<string>(index++);
+                        familyResearch.FamilyHealth.Comments = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.SocioEconomicStudy = new SocioEconomicStudy();
+                        familyResearch.SocioEconomicStudy.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.SocioEconomicStudy.HomeAcquisitionId = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.SocioEconomicStudy.NombrePropietario = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.MedioAdquisicion = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.TypesOfHousesId = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayoutId = reader.GetValueOrDefault<int>(index++);
+
+                        familyResearch.SocioEconomicStudy.HomeAcquisition = new HomeAcquisition();
+                        familyResearch.SocioEconomicStudy.HomeAcquisition.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.SocioEconomicStudy.HomeAcquisition.Name = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.SocioEconomicStudy.TypesOfHouses = new TypesOfHouses();
+                        familyResearch.SocioEconomicStudy.TypesOfHouses.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.SocioEconomicStudy.TypesOfHouses.Name = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.SocioEconomicStudy.HouseLayout = new HouseLayout();
+                        familyResearch.SocioEconomicStudy.HouseLayout.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Bedroom = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Dinningroom = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Kitchen = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Livingroom = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Bathroom = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Patio = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Garage = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Backyard = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Other = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Ground = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Walls = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Roof = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.Description = reader.GetValueOrNull<string>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.TipoDeMobiliarioId = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.CharacteristicsOfFurniture = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.SocioEconomicStudy.HouseLayout.TipoDeMobiliario = new TipoDeMobiliario();
+                        familyResearch.SocioEconomicStudy.HouseLayout.TipoDeMobiliario.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.SocioEconomicStudy.HouseLayout.TipoDeMobiliario.Name = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.District = new District();
+                        familyResearch.District.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.District.TypeOfDistrictId = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.District.AguaPotable = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Telefono = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Electricidad = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Drenaje = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Hospital = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Correo = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Escuela = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Policia = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.AlumbradoPublico = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.ViasDeAcceso = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.TransportePublico = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.AseoPublico = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Iglesia = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Mercado = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Otros = reader.GetValueOrNull<string>(index++);
+                        familyResearch.District.Description = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.RedesDeApoyoFamiliares = reader.GetValueOrNull<string>(index++);
+                        familyResearch.ProblemsIdentified = reader.GetValueOrNull<string>(index++);
+
+                        familyResearches.Add(familyResearch);
+
+                    }
+                }
+            }
+
+            if (familyResearches != null)
+            {
+                foreach (var fm in familyResearches)
+                {
+                    fm.FamilyMembers = GetFamilyFamilyMembersById(fm.FamilyMembersId);
+                    fm.EconomicSituation = GetEconomicSituationById(fm.EconomicSituationId);
+                    fm.FamilyNutrition = GetFamilyNutritionById(fm.FamilyNutritionId);
+                    fm.BenefitsProvided = GetBenefitsProvidedById(fm.BenefitsProvidedId);
+                    fm.IngresosEgresosMensuales = GetIngresosEgresosMensualesById(fm.IngresosEgresosMensualesId);
+                }
+            }
+
+            return familyResearches;
         }
 
         public IEnumerable<Movimiento> GetMovimientosByTipoMovimiento(string tipoMovimiento)
@@ -2071,12 +2449,12 @@ namespace WebApi.Services
                             where economicsituationId = @economicSituationId;";
 
                     economicSituation.EconomicSituationPatrimonyRelation = connection.Query<EconomicSituationPatrimonyRelation, Patrimony, EconomicSituationPatrimonyRelation>(sql
-                        ,(e, p) => 
-                        {
-                            e.Patrimony = p;
+                        , (e, p) =>
+                         {
+                             e.Patrimony = p;
 
-                            return e;
-                        } 
+                             return e;
+                         }
                         , new { economicSituationId }).ToArray();
                 }
             }
