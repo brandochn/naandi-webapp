@@ -4,7 +4,6 @@ using Naandi.Shared.Models;
 using Naandi.Shared.Services;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using WebApp.Areas.SocialWork.Models;
 using WebApp.ExtensionMethods;
@@ -15,6 +14,7 @@ namespace WebApp.Areas.SocialWork.Controllers
     public class FamilyResearchController : Controller
     {
         private readonly IFamilyResearch familyResearchRepository;
+
         public FamilyResearchController(IFamilyResearch _familyResearchRepository)
         {
             familyResearchRepository = _familyResearchRepository;
@@ -46,12 +46,12 @@ namespace WebApp.Areas.SocialWork.Controllers
             model.LoadHomeAcquisitionList(familyResearchRepository);
             model.LoadTipoDeMobiliarioList(familyResearchRepository);
             model.LoadTypeOfDistrictList(familyResearchRepository);
-            model.SetPatrimonyViewModelCollection(familyResearchRepository);
+            model.SetInitialPatrimonyViewModelCollection(familyResearchRepository);
             model.LoadFoods(familyResearchRepository);
             model.LoadFrequencies(familyResearchRepository);
             model.LoadTypesOfHousesList(familyResearchRepository);
             model.VisitDate = DateTime.Now;
-            model.VisitTime = DateTime.Now;
+            model.FormVisitTime = DateTime.Now.ToShortTimeString();
 
             if (Id > 0)
             {
@@ -59,7 +59,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.Id = familyResearch.Id;
                 model.CaseStudyConclusion = familyResearch.CaseStudyConclusion;
                 model.District = familyResearch.District;
-                model.DistrictId = familyResearch.DistrictId;                
+                model.DistrictId = familyResearch.DistrictId;
                 model.EconomicSituationId = familyResearch.EconomicSituationId;
                 model.Family = familyResearch.Family;
                 model.FamilyDiagnostic = familyResearch.FamilyDiagnostic;
@@ -86,8 +86,9 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.SocioEconomicStudyId = familyResearch.SocioEconomicStudyId;
                 model.VisualSupports = familyResearch.VisualSupports;
                 model.LoadMunicipalitiesOfMexico(familyResearchRepository);
+                model.FormVisitTime = familyResearch.VisitTime.ToShortTimeString();
 
-                model.SetFamilyNutritionFoodRelation(familyResearch.FamilyNutrition);
+                model.LoadFamilyNutritionFoodRelation(familyResearch.FamilyNutrition);
                 model.LoadPatrimonyViewModelCollection(familyResearch.EconomicSituation);
                 model.FamilyMembers = familyResearch.FamilyMembers;
                 model.FamilyMembersId = familyResearch.FamilyMembersId;
@@ -106,7 +107,7 @@ namespace WebApp.Areas.SocialWork.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddOrUpdateFamilyResearch([FromForm]FamilyResearchViewModel model)
+        public IActionResult AddOrUpdateFamilyResearch([FromForm] FamilyResearchViewModel model)
         {
             try
             {
@@ -124,7 +125,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                     model.LoadHomeAcquisitionList(familyResearchRepository);
                     model.LoadTipoDeMobiliarioList(familyResearchRepository);
                     model.LoadTypeOfDistrictList(familyResearchRepository);
-                    model.SetPatrimonyViewModelCollection(familyResearchRepository);
+                    model.SetInitialPatrimonyViewModelCollection(familyResearchRepository);
                     model.LoadFoods(familyResearchRepository);
                     model.LoadFrequencies(familyResearchRepository);
                     model.LoadTypesOfHousesList(familyResearchRepository);
@@ -198,11 +199,10 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.LoadHomeAcquisitionList(familyResearchRepository);
                 model.LoadTipoDeMobiliarioList(familyResearchRepository);
                 model.LoadTypeOfDistrictList(familyResearchRepository);
-                model.SetPatrimonyViewModelCollection(familyResearchRepository);
+                model.SetInitialPatrimonyViewModelCollection(familyResearchRepository);
                 model.LoadFoods(familyResearchRepository);
                 model.LoadFrequencies(familyResearchRepository);
                 model.LoadTypesOfHousesList(familyResearchRepository);
-                model.VisitTime = DateTime.Now;
 
                 return View("ShowForm", model);
             }
@@ -242,7 +242,7 @@ namespace WebApp.Areas.SocialWork.Controllers
 
         [HttpPost]
         [Route("/SocialWork/FamilyResearch/AddItemInFamilyMembersTable")]
-        public IActionResult AddItemInFamilyMembersTable([FromBody]FamilyMembersDetails model)
+        public IActionResult AddItemInFamilyMembersTable([FromBody] FamilyMembersDetails model)
         {
             if (ModelState.IsValid == true)
             {
@@ -323,7 +323,7 @@ namespace WebApp.Areas.SocialWork.Controllers
 
         [HttpPost]
         [Route("/SocialWork/FamilyResearch/AddItemInBenefitsProvidedTable")]
-        public IActionResult AddItemInBenefitsProvidedTable([FromBody]BenefitsProvidedDetails model)
+        public IActionResult AddItemInBenefitsProvidedTable([FromBody] BenefitsProvidedDetails model)
         {
             BenefitsProvidedViewModel benefitsProvidedViewModel = new BenefitsProvidedViewModel()
             {
@@ -388,7 +388,7 @@ namespace WebApp.Areas.SocialWork.Controllers
 
         [HttpPost]
         [Route("/SocialWork/FamilyResearch/AddItemInIngresosMensualesTable")]
-        public IActionResult AddItemInIngresosMensualesTable([FromBody]IngresosEgresosMensualesMovimientoRelation model)
+        public IActionResult AddItemInIngresosMensualesTable([FromBody] IngresosEgresosMensualesMovimientoRelation model)
         {
             IngresosMensualesViewModel ingresosMensualesViewModel = new IngresosMensualesViewModel()
             {
@@ -484,7 +484,7 @@ namespace WebApp.Areas.SocialWork.Controllers
 
         [HttpPost]
         [Route("/SocialWork/FamilyResearch/AddItemInEgresosMensualesTable")]
-        public IActionResult AddItemInEgresosMensualesTable([FromBody]IngresosEgresosMensualesMovimientoRelation model)
+        public IActionResult AddItemInEgresosMensualesTable([FromBody] IngresosEgresosMensualesMovimientoRelation model)
         {
             EgresosMensualesViewModel egresosMensualesViewModel = new EgresosMensualesViewModel()
             {
