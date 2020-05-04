@@ -2563,7 +2563,7 @@ BEGIN
 				,`PreviousFoundationId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundationId')) FROM JSON_TABLE)
 				,`FamilyHealthId` = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealthId')) FROM JSON_TABLE)
 				,`FamilyMembersId` = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembersId')) FROM JSON_TABLE)
-				,`SocioeconomicStudyId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioeconomicStudyId')) FROM JSON_TABLE)
+				,`SocioeconomicStudyId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioEconomicStudyId')) FROM JSON_TABLE)
 				,`DistrictId` = 					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DistrictId')) FROM JSON_TABLE)
 				,`EconomicSituationId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituationId')) FROM JSON_TABLE)
 				,`FamilyNutritionId` = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutritionId')) FROM JSON_TABLE)

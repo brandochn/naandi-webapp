@@ -142,6 +142,12 @@ namespace WebApp.Areas.SocialWork.Models
                     modelState.AddModelError(string.Empty, $"La hora de visita no es valida: { FormVisitTime ?? "" }");
                     valid = false;
                 }
+
+                if (string.IsNullOrEmpty(SocioEconomicStudy?.HouseLayout?.Bedroom))
+                {
+                    modelState.AddModelError(string.Empty, "Debe agregar una recamara como minimo");
+                    valid = false;
+                }
             }
 
             return valid;
