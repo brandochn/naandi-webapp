@@ -1398,7 +1398,9 @@ namespace WebApi.Services
                                 `District`.Otros, -- 132
                                 `District`.Description, -- 133
                                 `FamilyResearch`.RedesDeApoyoFamiliares, -- 134
-                                `FamilyResearch`.ProblemsIdentified -- 135
+                                `FamilyResearch`.ProblemsIdentified, -- 135
+                                `TypeOfDistrict`.Id, -- 136
+                                `TypeOfDistrict`.Name -- 137
 
                             FROM `FamilyResearch`
                             LEFT JOIN `LegalGuardian` ON `LegalGuardian`.Id =  `FamilyResearch`.LegalGuardianId
@@ -1416,6 +1418,7 @@ namespace WebApi.Services
                             LEFT JOIN `HouseLayout` on `HouseLayout`.Id = `SocioEconomicStudy`.HouseLayoutId
                             LEFT JOIN `TipoDeMobiliario` on `TipoDeMobiliario`.Id = `HouseLayout`.TipoDeMobiliarioId
                             LEFT JOIN `District` ON `District`.Id = `FamilyResearch`.DistrictId
+                            LEFT JOIN `TypeOfDistrict` ON `TypeOfDistrict`.Id = `District`.TypeOfDistrictId
                             WHERE `FamilyResearch`.Id = @id;";
 
                 cmd.CommandType = System.Data.CommandType.Text;
@@ -1607,6 +1610,10 @@ namespace WebApi.Services
                         familyResearch.RedesDeApoyoFamiliares = reader.GetValueOrNull<string>(index++);
                         familyResearch.ProblemsIdentified = reader.GetValueOrNull<string>(index++);
 
+                        familyResearch.District.TypeOfDistrict = new TypeOfDistrict();
+                        familyResearch.District.TypeOfDistrict.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.District.TypeOfDistrict.Name = reader.GetValueOrNull<string>(index++);
+
                     }
                 }
             }
@@ -1761,9 +1768,11 @@ namespace WebApi.Services
                                 `District`.Iglesia, -- 130
                                 `District`.Mercado, -- 131
                                 `District`.Otros, -- 132
-                                 `District`.Description, -- 133
+                                `District`.Description, -- 133
                                 `FamilyResearch`.RedesDeApoyoFamiliares, -- 134
-                                `FamilyResearch`.ProblemsIdentified -- 135
+                                `FamilyResearch`.ProblemsIdentified, -- 135
+                                `TypeOfDistrict`.Id, -- 136
+                                `TypeOfDistrict`.Name -- 137
 
                             FROM `FamilyResearch`
                             LEFT JOIN `LegalGuardian` ON `LegalGuardian`.Id =  `FamilyResearch`.LegalGuardianId
@@ -1780,7 +1789,8 @@ namespace WebApi.Services
                             LEFT JOIN `TypesOfHouses` on `TypesOfHouses`.Id = `SocioEconomicStudy`.TypesOfHousesId
                             LEFT JOIN `HouseLayout` on `HouseLayout`.Id = `SocioEconomicStudy`.HouseLayoutId
                             LEFT JOIN `TipoDeMobiliario` on `TipoDeMobiliario`.Id = `HouseLayout`.TipoDeMobiliarioId
-                            LEFT JOIN `District` ON `District`.Id = `FamilyResearch`.DistrictId";
+                            LEFT JOIN `District` ON `District`.Id = `FamilyResearch`.DistrictId
+                            LEFT JOIN `TypeOfDistrict` ON `TypeOfDistrict`.Id = `District`.TypeOfDistrictId";
 
                 cmd.CommandType = System.Data.CommandType.Text;
 
@@ -1964,6 +1974,10 @@ namespace WebApi.Services
 
                         familyResearch.RedesDeApoyoFamiliares = reader.GetValueOrNull<string>(index++);
                         familyResearch.ProblemsIdentified = reader.GetValueOrNull<string>(index++);
+                        
+                        familyResearch.District.TypeOfDistrict = new TypeOfDistrict();
+                        familyResearch.District.TypeOfDistrict.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.District.TypeOfDistrict.Name = reader.GetValueOrNull<string>(index++);
 
                         familyResearches.Add(familyResearch);
 
@@ -2133,7 +2147,9 @@ namespace WebApi.Services
                                 `District`.Otros, -- 132
                                  `District`.Description, -- 133
                                 `FamilyResearch`.RedesDeApoyoFamiliares, -- 134
-                                `FamilyResearch`.ProblemsIdentified -- 135
+                                `FamilyResearch`.ProblemsIdentified, -- 135
+                                `TypeOfDistrict`.Id, -- 136
+                                `TypeOfDistrict`.Name -- 137
 
                             FROM `FamilyResearch`
                             LEFT JOIN `LegalGuardian` ON `LegalGuardian`.Id =  `FamilyResearch`.LegalGuardianId
@@ -2151,6 +2167,7 @@ namespace WebApi.Services
                             LEFT JOIN `HouseLayout` on `HouseLayout`.Id = `SocioEconomicStudy`.HouseLayoutId
                             LEFT JOIN `TipoDeMobiliario` on `TipoDeMobiliario`.Id = `HouseLayout`.TipoDeMobiliarioId
                             LEFT JOIN `District` ON `District`.Id = `FamilyResearch`.DistrictId
+                            LEFT JOIN `TypeOfDistrict` ON `TypeOfDistrict`.Id = `District`.TypeOfDistrictId
                             WHERE `Minor`.FullName LIKE @minorName;";
 
                 cmd.CommandType = System.Data.CommandType.Text;
@@ -2342,6 +2359,10 @@ namespace WebApi.Services
 
                         familyResearch.RedesDeApoyoFamiliares = reader.GetValueOrNull<string>(index++);
                         familyResearch.ProblemsIdentified = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.District.TypeOfDistrict = new TypeOfDistrict();
+                        familyResearch.District.TypeOfDistrict.Id = reader.GetValueOrDefault<int>(index++);
+                        familyResearch.District.TypeOfDistrict.Name = reader.GetValueOrNull<string>(index++);
 
                         familyResearches.Add(familyResearch);
 

@@ -1,3 +1,5 @@
+using jsreport.AspNetCore;
+using jsreport.Types;
 using Microsoft.AspNetCore.Mvc;
 using Naandi.Shared.Exceptions;
 using Naandi.Shared.Models;
@@ -87,6 +89,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.VisualSupports = familyResearch.VisualSupports;
                 model.LoadMunicipalitiesOfMexico(familyResearchRepository);
                 model.FormVisitTime = familyResearch.VisitTime.ToShortTimeString();
+                model.VisitDate = familyResearch.VisitDate;
 
                 model.LoadFamilyNutritionFoodRelation(familyResearch.FamilyNutrition);
                 model.LoadPatrimonyViewModelCollection(familyResearch.EconomicSituation);
@@ -596,6 +599,74 @@ namespace WebApp.Areas.SocialWork.Controllers
             }
 
             return PartialView("_FamilyResearchTable", model);
+        }
+
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        [Route("/SocialWork/FamilyResearch/Print/{id?}")]
+        public IActionResult Print(int? Id)
+        {
+            HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
+
+            FamilyResearchViewModel model = new FamilyResearchViewModel();
+            
+            model.SetInitialPatrimonyViewModelCollection(familyResearchRepository);
+            model.LoadFoods(familyResearchRepository);
+            model.LoadFrequencies(familyResearchRepository);
+            model.VisitDate = DateTime.Now;
+
+
+            if (Id > 0)
+            {
+                FamilyResearch familyResearch = familyResearchRepository.GetFamilyResearchById((int)Id);
+                model.Id = familyResearch.Id;
+                model.CaseStudyConclusion = familyResearch.CaseStudyConclusion;
+                model.District = familyResearch.District;
+                model.DistrictId = familyResearch.DistrictId;
+                model.EconomicSituationId = familyResearch.EconomicSituationId;
+                model.Family = familyResearch.Family;
+                model.FamilyDiagnostic = familyResearch.FamilyDiagnostic;
+                model.FamilyExpectations = familyResearch.FamilyExpectations;
+                model.FamilyHealth = familyResearch.FamilyHealth;
+                model.FamilyHealthId = familyResearch.FamilyHealthId;
+                model.FamilyNutrition = familyResearch.FamilyNutrition;
+                model.FamilyNutritionId = familyResearch.FamilyNutritionId;
+                model.LegalGuardian = familyResearch.LegalGuardian;
+                model.LegalGuardianId = familyResearch.LegalGuardianId;
+                model.Minor = familyResearch.Minor;
+                model.MinorId = familyResearch.MinorId;
+                model.Minor.FormalEducation = familyResearch.Minor.FormalEducation;
+                model.Minor.FormalEducationId = familyResearch.Minor.FormalEducationId;
+                model.PreviousFoundation = familyResearch.PreviousFoundation;
+                model.PreviousFoundationId = familyResearch.PreviousFoundationId;
+                model.ProblemsIdentified = familyResearch.ProblemsIdentified;
+                model.Recommendations = familyResearch.Recommendations;
+                model.RedesDeApoyoFamiliares = familyResearch.RedesDeApoyoFamiliares;
+                model.RequestReasons = familyResearch.RequestReasons;
+                model.SituationsOfDomesticViolence = familyResearch.SituationsOfDomesticViolence;
+                model.Sketch = familyResearch.Sketch;
+                model.SocioEconomicStudy = familyResearch.SocioEconomicStudy;
+                model.SocioEconomicStudyId = familyResearch.SocioEconomicStudyId;
+                model.VisualSupports = familyResearch.VisualSupports;
+                model.LoadMunicipalitiesOfMexico(familyResearchRepository);
+                model.FormVisitTime = familyResearch.VisitTime.ToShortTimeString();
+                model.VisitDate = familyResearch.VisitDate;
+
+                model.LoadFamilyNutritionFoodRelation(familyResearch.FamilyNutrition);
+                model.LoadPatrimonyViewModelCollection(familyResearch.EconomicSituation);
+                model.FamilyMembers = familyResearch.FamilyMembers;
+                model.FamilyMembersId = familyResearch.FamilyMembersId;
+                model.SetFamilyMembersInSession(familyResearch.FamilyMembers);
+                model.BenefitsProvidedList = model.ConvertBenefitsProvidedToBenefitsProvidedViewModel(familyResearch.BenefitsProvided?.BenefitsProvidedDetails);
+                model.BenefitsProvidedId = familyResearch.BenefitsProvidedId;
+                model.IngresosEgresosMensuales = familyResearch.IngresosEgresosMensuales;
+                model.IngresosMensualesList = model.ConvertIngresosEgresosMensualesMovimientoRelationToIngresosMensualesViewModel(familyResearch.IngresosEgresosMensuales?.IngresosEgresosMensualesMovimientoRelation);
+                model.IngresosEgresosMensualesId = familyResearch.IngresosEgresosMensualesId;
+                model.EgresosMensualesList = model.ConvertIngresosEgresosMensualesMovimientoRelationToEgresosMensualesViewModel(familyResearch.IngresosEgresosMensuales?.IngresosEgresosMensualesMovimientoRelation);
+
+                return View(model);
+            }
+
+            return View(model);
         }
     }
 }

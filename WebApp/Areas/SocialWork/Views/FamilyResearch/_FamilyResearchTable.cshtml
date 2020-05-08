@@ -24,9 +24,7 @@
                             <td>@item.VisitDate.ToString("dd/MM/yyyy")</td>
                             <td>
                                 @Html.ActionLink("Editar", "ShowForm", "FamilyResearch", new { id = item.Id, area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-info" })
-                                <button id="btn-print" type="button" class="btn btn-secondary d-inline">
-                                    Imprimir
-                                </button>
+                                @Html.ActionLink("Imprimir", "Print", "FamilyResearch", new { id = item.Id, area = "SocialWork" }, htmlAttributes: new { @class = "btn btn-secondary d-inline", target = "_blank", rel = "noopener" })                                
                             </td>
                         </tr>
                     }

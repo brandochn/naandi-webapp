@@ -1,3 +1,6 @@
+using jsreport.AspNetCore;
+using jsreport.Binary;
+using jsreport.Local;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Naandi.Shared.Services;
 using System;
+using System.Runtime.InteropServices;
 using WebApp.Data;
 using WebApp.Services;
 using WebApp.SessionState;
@@ -32,6 +36,15 @@ namespace WebApp
 
             services.AddTransient(_ => new ApplicationRestClient(Configuration["AppServiceUri"]));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            if (IsWindows == true)
+            {
+                services.AddJsReport(new LocalReporting().UseBinary(JsReportBinary.GetBinary()).AsUtility().Create());
+            }
+            else 
+            {
+                services.AddJsReport(new LocalReporting().UseBinary(jsreport.Binary.Linux.JsReportBinary.GetBinary()).AsUtility().Create());
+            }
 
             services.AddControllersWithViews()
                 .AddNewtonsoftJson();
