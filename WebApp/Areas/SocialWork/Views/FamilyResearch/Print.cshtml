@@ -10,14 +10,14 @@
 
 <html>
 <head>
-    @*<link href="~/css/invoice.css" type="text/css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
 </head>
 <body>
 
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <div class="card shadow-sm">
+                <div class="card ">
                     <h2 class="text-center text-uppercase mt-4">
                         investigación familiar
                     </h2>
@@ -58,7 +58,7 @@
                         </div>
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white bg-primary">
+                                <h5 class="card-header text-center text-white bg-secondary">
                                     Datos del Tutor
                                 </h5>
                                 <div class="card-body">
@@ -184,7 +184,7 @@
                         </section>
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white bg-primary">
+                                <h5 class="card-header text-center text-white bg-secondary">
                                     Dirección
                                 </h5>
                                 <div class="card-body">
@@ -286,7 +286,7 @@
                         </section>
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white bg-primary">
+                                <h5 class="card-header text-center text-white bg-secondary">
                                     Datos de cónyuge o pareja
                                 </h5>
                                 <div class="card-body">
@@ -343,7 +343,7 @@
                         </section>
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white bg-primary">
+                                <h5 class="card-header text-center text-white bg-secondary">
                                     Datos del menor
                                 </h5>
                                 <div class="card-body">
@@ -422,7 +422,7 @@
                         </section>
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white bg-primary">
+                                <h5 class="card-header text-center text-white bg-secondary">
                                     Escolaridad
                                 </h5>
                                 <div class="card-body">
@@ -470,7 +470,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white	bg-primary">
+                                <h5 class="card-header text-center text-white	bg-secondary">
                                     Derivada por
                                 </h5>
                                 <div class="card-body">
@@ -561,7 +561,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white bg-primary">
+                                <h5 class="card-header text-center text-white bg-secondary">
                                     Salud familiar
                                 </h5>
                                 <div class="card-body">
@@ -665,14 +665,41 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Composición familiar
                                 </h5>
                                 <div class="card-body">
                                     <div class="col-12">
-                                        @await Html.PartialAsync("_FamilyMembersTable", Model)
+                                        @*@await Html.PartialAsync("_FamilyMembersTable", Model)*@
+                                        <table id="FamilyMembersTableId" class="table table-responsive-lg table-hover">
+                                            <thead class="">
+                                                <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Edad</th>
+                                                    <th>Edo. Civil</th>
+                                                    <th>Parentesco</th>
+                                                    <th>Escolaridad</th>
+                                                    <th>Ocupación</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.FamilyMembers != null && Model.FamilyMembers.FamilyMembersDetails != null)
+                                                {
+                                                    foreach (var item in Model.FamilyMembers.FamilyMembersDetails)
+                                                    {
+                                                        <tr>
+                                                            <td>@Html.DisplayFor(model => item.FullName)</td>
+                                                            <td>@Html.DisplayFor(model => item.Age)</td>
+                                                            <td>@Html.DisplayFor(model => item.Relationship.Name)</td>
+                                                            <td>@Html.DisplayFor(model => item.MaritalStatus.Name)</td>
+                                                            <td>@Html.DisplayFor(model => item.Education)</td>
+                                                            <td>@Html.DisplayFor(model => item.CurrentOccupation)</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
                                     </div>
-
                                     <div class="form-row mt-4">
                                         <div class="form-group col-md-6">
                                             <label>Dinamica familiar</label>
@@ -704,7 +731,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white bg-primary">
+                                <h5 class="card-header text-center text-white bg-secondary">
                                     Socioeconomico
                                 </h5>
                                 <div class="card-body">
@@ -930,7 +957,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Colonia
                                 </h5>
                                 <div class="card-body">
@@ -1133,7 +1160,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Situación económica
                                 </h5>
                                 <div class="card-body">
@@ -1225,7 +1252,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Alimentacion familiar
                                 </h5>
                                 <div class="card-body">
@@ -1286,12 +1313,38 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Apoyos y Servicios Otorgados
                                 </h5>
                                 <div class="card-body">
                                     <div class="col-12">
-                                        @await Html.PartialAsync("_BenefitsProvidedTable", Model.BenefitsProvidedList)
+                                        @*@await Html.PartialAsync("_BenefitsProvidedTable", Model.BenefitsProvidedList)*@
+                                        <table id="BenefitsProvidedTableId" class="table table-responsive-lg table-hover">
+                                            <thead class="">
+                                                <tr>
+                                                    <th style="display:none">key</th>
+                                                    <th>Institución y/o Dependencia</th>
+                                                    <th>Apoyo y/o servicio recibido</th>
+                                                    <th>Monto</th>
+                                                    <th>Periodo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.BenefitsProvidedList != null)
+                                                {
+                                                    foreach (var item in Model.BenefitsProvidedList)
+                                                    {
+                                                        <tr>
+                                                            <td style="display:none">@Html.DisplayFor(Model => item.Key)</td>
+                                                            <td>@Html.DisplayFor(model => item.Institucion)</td>
+                                                            <td>@Html.DisplayFor(model => item.ApoyoRecibido)</td>
+                                                            <td>@Html.DisplayFor(model => item.Monto)</td>
+                                                            <td>@Html.DisplayFor(model => item.Periodo)</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -1299,7 +1352,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Ingresos y Egresos Mensuales
                                 </h5>
                                 <div class="card-body">
@@ -1310,7 +1363,54 @@
                                             </h5>
                                             <div class="card-body">
                                                 <div class="col-12">
-                                                    @await Html.PartialAsync("_IngresosMensualesTable", Model.IngresosMensualesList)
+                                                    @*@await Html.PartialAsync("_IngresosMensualesTable", Model.IngresosMensualesList)*@
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <table id="IngresosMensualesTableId" class="table table-responsive-lg table-hover">
+                                                                <thead class="">
+                                                                    <tr>
+                                                                        <th style="display:none">key</th>
+                                                                        <th>Ingreso</th>
+                                                                        <th>Monto</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @if (Model.IngresosMensualesList != null)
+                                                                    {
+                                                                        foreach (var item in Model.IngresosMensualesList)
+                                                                        {
+                                                                            if (item.Movimiento != null &&
+                                                                                item.Movimiento.TipoMovimiento != null &&
+                                                                                item.Movimiento.TipoMovimiento.Name == "Ingreso")
+                                                                            {
+                                                                                <tr>
+                                                                                    <td style="display:none">@Html.DisplayFor(Model => item.Key)</td>
+                                                                                    <td>@Html.DisplayFor(model => item.Movimiento.Name)</td>
+                                                                                    <td>@Html.DisplayFor(model => item.Monto)</td>
+                                                                                </tr>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-3">
+                                                        <div class="col">
+                                                            <div>
+                                                                @if (Model.IngresosMensualesList != null)
+                                                                {
+                                                                    decimal total = 0;
+                                                                    foreach (var iter in Model.IngresosMensualesList)
+                                                                    {
+                                                                        total = total + (iter.Monto ?? 0);
+                                                                    }
+                                                                    <label>Total:</label>
+                                                                    <input readonly type="text" class="form-control" value="@total.ToString("C")" />
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1322,7 +1422,52 @@
                                             </h5>
                                             <div class="card-body">
                                                 <div class="col-12">
-                                                    @await Html.PartialAsync("_EgresosMensualesTable", Model.EgresosMensualesList)
+                                                    @*@await Html.PartialAsync("_EgresosMensualesTable", Model.EgresosMensualesList)*@
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <table id="EgresosMensualesTableId" class="table table-responsive-lg table-hover">
+                                                                <thead class="">
+                                                                    <tr>
+                                                                        <th style="display:none">key</th>
+                                                                        <th>Egreso</th>
+                                                                        <th>Monto</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @if (Model.EgresosMensualesList != null)
+                                                                    {
+                                                                        foreach (var item in Model.EgresosMensualesList)
+                                                                        {
+                                                                            if (item.Movimiento.TipoMovimiento.Name == "Egreso")
+                                                                            {
+                                                                                <tr>
+                                                                                    <td style="display:none">@Html.DisplayFor(Model => item.Key)</td>
+                                                                                    <td>@Html.DisplayFor(model => item.Movimiento.Name)</td>
+                                                                                    <td>@Html.DisplayFor(model => item.Monto)</td>
+                                                                                </tr>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-3">
+                                                        <div class="col">
+                                                            <div>
+                                                                @if (Model.EgresosMensualesList != null)
+                                                                {
+                                                                    decimal total = 0;
+                                                                    foreach (var iter in Model.EgresosMensualesList)
+                                                                    {
+                                                                        total = total + (iter.Monto ?? 0);
+                                                                    }
+                                                                    <label>Total:</label>
+                                                                    <input readonly type="text" class="form-control" value="@total.ToString("C")" />
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1348,7 +1493,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Situaciones de violencia
                                 </h5>
                                 <div class="card-body">
@@ -1363,7 +1508,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Redes de Apoyo
                                 </h5>
                                 <div class="card-body">
@@ -1378,7 +1523,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Espectativas familiares
                                 </h5>
                                 <div class="card-body">
@@ -1393,7 +1538,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Diagnóstico familiar
                                 </h5>
                                 <div class="card-body">
@@ -1408,7 +1553,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Problemáticas detectadas
                                 </h5>
                                 <div class="card-body">
@@ -1423,7 +1568,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Conclusión del caso
                                 </h5>
                                 <div class="card-body">
@@ -1438,7 +1583,7 @@
 
                         <section>
                             <div class="card">
-                                <h5 class="card-header text-center text-white   bg-primary">
+                                <h5 class="card-header text-center text-white   bg-secondary">
                                     Recomendaciones
                                 </h5>
                                 <div class="card-body">

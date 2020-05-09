@@ -728,8 +728,9 @@ namespace WebApp.Areas.SocialWork.Models
             {
                 frequencies.Add(new Frequency()
                 {
-                    Id = iter.FrequencyId
-                });
+                    Id = iter.FrequencyId,
+                    Name = Frequencies.Where(f => f.Id == iter.FrequencyId).FirstOrDefault()?.Name
+                }) ;
             }
 
             FrequencyIdsSelected = frequencies.ToArray();
