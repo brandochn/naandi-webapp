@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using jsreport.AspNetCore;
+using jsreport.Types;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Naandi.Shared.Exceptions;
 using Naandi.Shared.Services;
@@ -70,7 +72,7 @@ namespace WebApp.Areas.SocialWork.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddOrUpdateRegistrationRequest([FromForm]RegistrationRequestViewModel model)
+        public IActionResult AddOrUpdateRegistrationRequest([FromForm] RegistrationRequestViewModel model)
         {
             try
             {
@@ -83,7 +85,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                 {
                     model.LoadMaritalStatuses(registrationRequestRepository);
                     model.LoadRelationships(registrationRequestRepository);
-                    model.LoadStatesOfMexico(registrationRequestRepository);                    
+                    model.LoadStatesOfMexico(registrationRequestRepository);
                     model.LoadMunicipalitiesOfMexico(registrationRequestRepository);
                     model.LoadRegistrationRequestStatuses(registrationRequestRepository);
                     model.CreationDate = DateTime.Now;
@@ -158,7 +160,7 @@ namespace WebApp.Areas.SocialWork.Controllers
         [HttpPost]
         [Produces("application/json")]
         [Route("/SocialWork/RegistrationRequest/Delete")]
-        public IActionResult Delete([FromForm]int Id)
+        public IActionResult Delete([FromForm] int Id)
         {
             if (Id > 0)
             {
@@ -166,6 +168,41 @@ namespace WebApp.Areas.SocialWork.Controllers
             }
 
             return StatusCode(StatusCodes.Status200OK, "Item deleted");
+        }
+
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        [Route("/SocialWork/RegistrationRequest/Print/{id?}")]
+        public IActionResult Print(int? Id)
+        {
+            HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
+            RegistrationRequestViewModel model = new RegistrationRequestViewModel();
+           
+            if (Id > 0) // item is stored in database already
+            {
+                var registration = registrationRequestRepository.GetRegistrationRequestById(Convert.ToInt32(Id));
+                model.Comments = registration.Comments;
+                model.CreationDate = registration.CreationDate;
+                model.EconomicSituation = registration.EconomicSituation;
+                model.FamilyComposition = registration.FamilyComposition;
+                model.FamilyHealthStatus = registration.FamilyHealthStatus;
+                model.FamilyInteraction = registration.FamilyInteraction;
+                model.HowYouHearAboutUs = registration.HowYouHearAboutUs;
+                model.Id = registration.Id;
+                model.Minor = registration.Minor;
+                model.MinorId = registration.MinorId;
+                model.Reasons = registration.Reasons;
+                model.Requestor = registration.Requestor;
+                model.RequestorId = registration.RequestorId;
+                model.SituationsOfDomesticViolence = registration.SituationsOfDomesticViolence;
+                model.RegistrationRequestStatus = registration.RegistrationRequestStatus;
+                model.RegistrationRequestStatusId = registration.RegistrationRequestStatusId;
+                model.LoadMunicipalitiesOfMexico(registrationRequestRepository);
+                model.LoadRegistrationRequestStatuses(registrationRequestRepository);
+
+                return View(model);
+            }
+
+            return View(model);
         }
     }
 }
