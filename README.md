@@ -17,6 +17,7 @@ Naandi orphanage was founded in 1997 at Guadalajara México by a group of people
 * MySql.Data   - version 8.0.18
 * MariaDB      - version 10.4
 * RestSharp    - version 106.6.10
+* jsreport     - version 2.7.1
 
 ## Status
 Project is: _in progress_, I am coding as fast as I can ;)
