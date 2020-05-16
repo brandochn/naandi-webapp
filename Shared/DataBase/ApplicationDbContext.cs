@@ -1,8 +1,8 @@
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 
-namespace WebApi.Data
+namespace Naandi.Shared.DataBase
 {
-public class ApplicationDbContext
+    public class ApplicationDbContext
     {
         private string ConnectionString { get; set; }
 

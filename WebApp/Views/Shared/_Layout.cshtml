@@ -1,4 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using  Microsoft.AspNetCore.Http
+
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    bool userIsSignedIn = httpContextAccessor.HttpContext.User.Identity.IsAuthenticated;
+    string userName = httpContextAccessor.HttpContext.User.Identity.Name;
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -59,6 +67,15 @@
                         <input class="form-control mr-sm-2" type="search" placeholder="Busca un contenido" aria-label="Search">
                         <button class="btn btn-primary my-2 my-sm-0" type="submit">Buscar</button>
                     </form>
+                    @if (userIsSignedIn == true)
+                    {
+                        <span class="nav-item navbar-text ml-4">
+                            @userName
+                        </span>
+                        <form class="form-inline" asp-controller="Account" asp-action="Logout">
+                            <button type="submit" class="nav-link btn btn-link text-info">Logout</button>
+                        </form>
+                    }
                 </div>
             </div>
         </nav>

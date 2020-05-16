@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Naandi.Shared.DataBase;
 using Naandi.Shared.Services;
 using System;
 using System.Runtime.InteropServices;
@@ -35,13 +36,14 @@ namespace WebApp
             });
 
             services.AddTransient(_ => new ApplicationRestClient(Configuration["AppServiceUri"]));
+            services.AddTransient(_ => new ApplicationDbContext(Configuration["ConnectionString"]));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             if (IsWindows == true)
             {
                 services.AddJsReport(new LocalReporting().UseBinary(JsReportBinary.GetBinary()).AsUtility().Create());
             }
-            else 
+            else
             {
                 services.AddJsReport(new LocalReporting().UseBinary(jsreport.Binary.Linux.JsReportBinary.GetBinary()).AsUtility().Create());
             }
@@ -65,8 +67,16 @@ namespace WebApp
                 options.Cookie.IsEssential = true;
             });
 
+            services.AddAuthentication("CookieAuth") // Sets the default scheme to cookies
+                .AddCookie("CookieAuth", options =>
+                {
+                    options.AccessDeniedPath = "/Account/AccessDenied";
+                    options.LoginPath = "/Account/Login";
+                });
+
             services.AddScoped<IRegistrationRequest, RegistrationRequestRepository>();
             services.AddScoped<IFamilyResearch, FamilyResearchRepository>();
+            services.AddScoped<IUser, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,6 +100,7 @@ namespace WebApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseSession();
             UserSession.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());

@@ -6,9 +6,9 @@ using Naandi.Shared;
 using Naandi.Shared.Exceptions;
 using Naandi.Shared.Models;
 using Naandi.Shared.Services;
-using WebApi.Data;
 using Dapper;
 using WebApi.ExtensionMethods;
+using Naandi.Shared.DataBase;
 
 namespace WebApi.Services
 {

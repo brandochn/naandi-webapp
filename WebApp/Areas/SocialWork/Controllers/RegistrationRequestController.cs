@@ -1,5 +1,6 @@
 ﻿using jsreport.AspNetCore;
 using jsreport.Types;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Naandi.Shared.Exceptions;
@@ -10,6 +11,7 @@ using WebApp.Areas.SocialWork.Models;
 
 namespace WebApp.Areas.SocialWork.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     [Area("SocialWork")]
     public class RegistrationRequestController : Controller
     {

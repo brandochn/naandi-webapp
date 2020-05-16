@@ -6,10 +6,10 @@ using System.Transactions;
 using Dapper;
 using MySql.Data.MySqlClient;
 using Naandi.Shared;
+using Naandi.Shared.DataBase;
 using Naandi.Shared.Exceptions;
 using Naandi.Shared.Models;
 using Naandi.Shared.Services;
-using WebApi.Data;
 using WebApi.ExtensionMethods;
 
 namespace WebApi.Services

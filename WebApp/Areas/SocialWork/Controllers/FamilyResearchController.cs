@@ -1,5 +1,6 @@
 using jsreport.AspNetCore;
 using jsreport.Types;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Naandi.Shared.Exceptions;
 using Naandi.Shared.Models;
@@ -12,6 +13,7 @@ using WebApp.ExtensionMethods;
 
 namespace WebApp.Areas.SocialWork.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     [Area("SocialWork")]
     public class FamilyResearchController : Controller
     {

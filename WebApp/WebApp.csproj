@@ -8,6 +8,7 @@
     <Content Remove="compilerconfig.json" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.60.9" />
     <PackageReference Include="jsreport.AspNetCore" Version="2.1.0" />
     <PackageReference Include="jsreport.Binary" Version="2.7.1" />
     <PackageReference Include="jsreport.Binary.Linux" Version="2.7.1" />

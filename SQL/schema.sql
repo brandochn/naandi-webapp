@@ -2575,3 +2575,50 @@ BEGIN
 	END IF;
 END ;;
 DELIMITER ;
+
+
+--
+-- Table structure for table `User`
+--
+
+DROP TABLE IF EXISTS `User`;
+
+CREATE TABLE `User` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `UserName` varchar(20) NOT NULL,
+  `Password` varchar(50) NOT NULL,
+  `Email`    varchar(50) NOT NULL,
+  `CreationDate` datetime,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB;
+
+--
+-- Table structure for table `Roles`
+--
+
+DROP TABLE IF EXISTS `Roles`;
+
+CREATE TABLE `Roles` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(20) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB;
+
+
+--
+-- Table structure for table `UserRolesRelation`
+--
+
+DROP TABLE IF EXISTS `UserRolesRelation`;
+
+CREATE TABLE `UserRolesRelation` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `UserId` int(11) NOT NULL,
+  `RolesId` int(11) NOT NULL,
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `UserId_RolesId` (`UserId`,`RolesId`),
+  KEY `FK_UserRolesRelation_User` (`UserId`),
+  CONSTRAINT `FK_UserRolesRelation_User` FOREIGN KEY (`UserId`) REFERENCES `User` (`Id`),
+  KEY `FK_UserRolesRelation_Roles` (`RolesId`),
+  CONSTRAINT `FK_UserRolesRelation_Roles` FOREIGN KEY (`RolesId`) REFERENCES `Roles` (`Id`)
+) ENGINE=InnoDB;
