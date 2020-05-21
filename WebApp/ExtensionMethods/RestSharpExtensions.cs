@@ -10,7 +10,7 @@ namespace WebApp.ExtensionMethods
         {
             var response = client.Execute<T>(request);
 
-            if (response.ErrorException != null)
+            if (response.ErrorException != null || response.IsSuccessful == false)
             {
                 const string message = Constants.UNHANDLED_EXCEPTION_MESSAGE;
                 var exception = new ApplicationException(message, response.ErrorException);

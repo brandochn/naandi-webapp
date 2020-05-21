@@ -5,6 +5,7 @@ using Naandi.Shared.Models;
 using Naandi.Shared.Services;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using WebApp.SessionState;
 
 namespace WebApp.Controllers
 {
@@ -18,7 +19,6 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         [Route("/Account/Login")]
         public IActionResult Login(string returnUrl = null)
         {
@@ -41,8 +41,15 @@ namespace WebApp.Controllers
             if (userResearchRepository.ValidateLogin(user))
             {
                 var claims = userResearchRepository.GetClaimsByByUserName(user.UserName);
-
+                // Sign in to WebApp
                 await HttpContext.SignInAsync(new ClaimsPrincipal(new ClaimsIdentity(claims, "CookieAuth", ClaimTypes.Name, ClaimTypes.Role)));
+
+                // Sign in to WebApi
+                var token = userResearchRepository.CreateToken(user.UserName, user.Password);
+
+                token = token.Replace("\"", "");
+
+                UserSession.SetToken(token);
 
                 return RedirectToLocal(returnUrl);
             }

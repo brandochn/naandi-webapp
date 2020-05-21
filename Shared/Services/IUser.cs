@@ -11,5 +11,9 @@ namespace Naandi.Shared.Services
         IEnumerable<UserRolesRelation> GetUserRolesRelationByUserName(string userName);
 
         IEnumerable<Claim> GetClaimsByByUserName(string userName);
+
+        string CreateToken(string username, string password);
+
+        User GetUserByName(string username);
     }
 }

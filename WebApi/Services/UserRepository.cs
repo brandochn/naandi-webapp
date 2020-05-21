@@ -3,43 +3,24 @@ using MySql.Data.MySqlClient;
 using Naandi.Shared.DataBase;
 using Naandi.Shared.Models;
 using Naandi.Shared.Services;
-using RestSharp;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using WebApp.Data;
 
-namespace WebApp.Services
+namespace WebApi.Services
 {
     public class UserRepository : IUser
     {
         private ApplicationDbContext applicationDbContext;
-        private readonly ApplicationRestClient applicationRestClient;
 
-        public UserRepository(ApplicationDbContext _applicationDbContext, ApplicationRestClient _applicationRestClient)
+        public UserRepository(ApplicationDbContext _applicationDbContext)
         {
             applicationDbContext = _applicationDbContext;
-            applicationRestClient = _applicationRestClient;
         }
 
         public string CreateToken(string username, string password)
         {
-            var client = applicationRestClient.CreateRestClient(false);
-            var request = new RestRequest("/api/Token/Create", Method.POST);
-            request.AddParameter("username", username, ParameterType.QueryString);
-            request.AddParameter("password", password, ParameterType.QueryString);
-            
-            var response = client.Post(request);
-
-            if (response.ErrorException != null || response.IsSuccessful == false)
-            {
-                string message = Constants.UNHANDLED_EXCEPTION_MESSAGE;
-                var exception = new ApplicationException(message, response.ErrorException);
-                throw exception;
-            }
-
-            return response.Content;
+            throw new System.NotImplementedException();
         }
 
         public IEnumerable<Claim> GetClaimsByByUserName(string userName)
@@ -60,6 +41,11 @@ namespace WebApp.Services
             }
 
             return clamis;
+        }
+
+        public User GetUserByName(string username)
+        {
+            throw new System.NotImplementedException();
         }
 
         public IEnumerable<UserRolesRelation> GetUserRolesRelationByUserName(string userName)
@@ -96,16 +82,6 @@ namespace WebApp.Services
                 }
 
                 return true;
-            }
-        }
-
-        public User GetUserByName(string username)
-        {
-            using (MySqlConnection connection = applicationDbContext.GetConnection())
-            {
-                string sql = @"select * from `User` where `username` = @username";
-
-                return connection.Query<User>(sql, param: new { username }).FirstOrDefault();
             }
         }
     }

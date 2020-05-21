@@ -7,6 +7,7 @@ using Naandi.Shared.Services;
 using WebApi.Services;
 using Microsoft.OpenApi.Models;
 using Naandi.Shared.DataBase;
+using WebApi.Middleware;
 
 namespace WebApi
 {
@@ -27,11 +28,14 @@ namespace WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Naandi API", Version = "v1" });
             });
+            services.AddTokenAuthentication(Configuration);
 
             services.AddTransient(_ => new ApplicationDbContext(Configuration["ConnectionString"]));
 
             services.AddScoped<IRegistrationRequest, RegistrationRequestRepository>();
             services.AddScoped<IFamilyResearch, FamilyResearchRepository>();
+            services.AddScoped<IJwt, JwtRepository>();
+            services.AddScoped<IUser, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +50,7 @@ namespace WebApi
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

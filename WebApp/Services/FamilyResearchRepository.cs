@@ -170,8 +170,8 @@ namespace WebApp.Services
 
         public IEnumerable<FamilyResearch> GetFamilyResearches()
         {
-            IList<FamilyResearch> familyResearches = new List<FamilyResearch>();
-            var client = applicationRestClient.CreateRestClient();
+            IList<FamilyResearch> familyResearches;
+            var client = applicationRestClient.CreateRestClient();                        
             var request = new RestRequest("/api/FamilyResearch/GetFamilyResearches", Method.GET);
             familyResearches = client.GetCall<List<FamilyResearch>>(request);
 

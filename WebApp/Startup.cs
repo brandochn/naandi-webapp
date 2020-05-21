@@ -61,8 +61,8 @@ namespace WebApp
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
-                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+                options.IdleTimeout = TimeSpan.FromHours(2);
+                options.Cookie.SameSite = SameSiteMode.Strict;
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
             });
@@ -72,6 +72,10 @@ namespace WebApp
                 {
                     options.AccessDeniedPath = "/Account/AccessDenied";
                     options.LoginPath = "/Account/Login";
+                }).Services.ConfigureApplicationCookie(options =>
+                {
+                    options.SlidingExpiration = true;
+                    options.ExpireTimeSpan = TimeSpan.FromHours(12);
                 });
 
             services.AddScoped<IRegistrationRequest, RegistrationRequestRepository>();
@@ -103,7 +107,7 @@ namespace WebApp
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseSession();
-            UserSession.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
+            UserSession.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>(), Configuration);
 
             app.UseEndpoints(endpoints =>
             {
