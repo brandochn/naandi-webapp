@@ -8,6 +8,7 @@ using Naandi.Shared.Services;
 using System;
 using System.Linq;
 using WebApp.Areas.SocialWork.Models;
+using WebApp.ExtensionMethods;
 
 namespace WebApp.Areas.SocialWork.Controllers
 {
@@ -43,7 +44,7 @@ namespace WebApp.Areas.SocialWork.Controllers
             model.LoadStatesOfMexico(registrationRequestRepository);
             model.LoadMunicipalitiesOfMexico(registrationRequestRepository);
             model.LoadRegistrationRequestStatuses(registrationRequestRepository);
-            model.CreationDate = DateTime.Now;
+            model.CreationDate = DateTime.Now.ToCentralMexicoTime();
 
             if (Id > 0) // item is stored in database already
             {
@@ -90,7 +91,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                     model.LoadStatesOfMexico(registrationRequestRepository);
                     model.LoadMunicipalitiesOfMexico(registrationRequestRepository);
                     model.LoadRegistrationRequestStatuses(registrationRequestRepository);
-                    model.CreationDate = DateTime.Now;
+                    model.CreationDate = DateTime.Now.ToCentralMexicoTime();
 
                     return View("ShowForm", model);
                 }

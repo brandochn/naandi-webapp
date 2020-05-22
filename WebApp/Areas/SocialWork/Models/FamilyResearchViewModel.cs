@@ -66,8 +66,8 @@ namespace WebApp.Areas.SocialWork.Models
                     valid = false;
                 }
 
-                if (LegalGuardian == null || (DateTime.Now - LegalGuardian.DateOfBirth).TotalDays > 27375 // 75 years old
-                   || (DateTime.Now - LegalGuardian.DateOfBirth).TotalDays < 1)
+                if (LegalGuardian == null || (DateTime.Now.ToCentralMexicoTime() - LegalGuardian.DateOfBirth).TotalDays > 27375 // 75 years old
+                   || (DateTime.Now.ToCentralMexicoTime() - LegalGuardian.DateOfBirth).TotalDays < 1)
                 {
                     modelState.AddModelError(string.Empty, "La fecha de nacimiento del tutor no es valida");
                     valid = false;
@@ -91,8 +91,8 @@ namespace WebApp.Areas.SocialWork.Models
                     valid = false;
                 }
 
-                if (Minor == null || (DateTime.Now - Minor.DateOfBirth).TotalDays > 6570 // 18 years old
-                    || (DateTime.Now - Minor.DateOfBirth).TotalDays < 1)
+                if (Minor == null || (DateTime.Now.ToCentralMexicoTime() - Minor.DateOfBirth).TotalDays > 6570 // 18 years old
+                    || (DateTime.Now.ToCentralMexicoTime() - Minor.DateOfBirth).TotalDays < 1)
                 {
                     modelState.AddModelError(string.Empty, "La fecha de nacimiento de la menor no es valida");
                     valid = false;

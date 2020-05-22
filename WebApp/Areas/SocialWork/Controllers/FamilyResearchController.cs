@@ -54,8 +54,8 @@ namespace WebApp.Areas.SocialWork.Controllers
             model.LoadFoods(familyResearchRepository);
             model.LoadFrequencies(familyResearchRepository);
             model.LoadTypesOfHousesList(familyResearchRepository);
-            model.VisitDate = DateTime.Now;
-            model.FormVisitTime = DateTime.Now.ToShortTimeString();
+            model.VisitDate = DateTime.Now.ToCentralMexicoTime();
+            model.FormVisitTime = DateTime.Now.ToCentralMexicoTime().ToShortTimeString();
 
             if (Id > 0)
             {
@@ -614,7 +614,7 @@ namespace WebApp.Areas.SocialWork.Controllers
             model.SetInitialPatrimonyViewModelCollection(familyResearchRepository);
             model.LoadFoods(familyResearchRepository);
             model.LoadFrequencies(familyResearchRepository);
-            model.VisitDate = DateTime.Now;
+            model.VisitDate = DateTime.Now.ToCentralMexicoTime();
 
 
             if (Id > 0)
