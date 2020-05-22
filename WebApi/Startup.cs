@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Naandi.Shared.Services;
-using WebApi.Services;
 using Microsoft.OpenApi.Models;
 using Naandi.Shared.DataBase;
+using Naandi.Shared.Services;
 using WebApi.Middleware;
+using WebApi.Services;
 
 namespace WebApi
 {
