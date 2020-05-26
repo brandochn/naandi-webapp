@@ -8,5 +8,6 @@ namespace Naandi.Shared.Models
         public string Password { get; set; }
         public string Email { get; set; }
         public DateTime CreationDate { get; set; }
+        public bool Active { get; set; }
     }
 }

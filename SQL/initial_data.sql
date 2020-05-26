@@ -182,7 +182,7 @@ LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
 INSERT INTO `User` 
 VALUES 
- (1,'root','admin.123','brandochn@gmail.com', UTC_TIMESTAMP());
+ (1,'root','admin.123','brandochn@gmail.com',1,UTC_TIMESTAMP());
 
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -195,7 +195,7 @@ LOCK TABLES `UserRolesRelation` WRITE;
 /*!40000 ALTER TABLE `UserRolesRelation` DISABLE KEYS */;
 INSERT INTO `UserRolesRelation` 
 VALUES 
- (1,1,1);
+ (1,1,1,1);
 
 /*!40000 ALTER TABLE `UserRolesRelation` ENABLE KEYS */;
 UNLOCK TABLES;

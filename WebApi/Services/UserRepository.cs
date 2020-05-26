@@ -25,7 +25,7 @@ namespace WebApi.Services
 
         public IEnumerable<Claim> GetClaimsByByUserName(string userName)
         {
-            var getUserRolesRelationByUserName = GetUserRolesRelationByUserName(userName)?.ToList();
+            var getUserRolesRelationByUserName = GetUserRolesRelationByUserName(userName, false)?.ToList();
             if (getUserRolesRelationByUserName == null)
             {
                 return null;
@@ -48,7 +48,7 @@ namespace WebApi.Services
             throw new System.NotImplementedException();
         }
 
-        public IEnumerable<UserRolesRelation> GetUserRolesRelationByUserName(string userName)
+        public IEnumerable<UserRolesRelation> GetUserRolesRelationByUserName(string userName, bool includeInactives)
         {
             using (MySqlConnection connection = applicationDbContext.GetConnection())
             {
@@ -57,6 +57,15 @@ namespace WebApi.Services
                                 join `Roles` r on r.Id = ur.RolesId
                                 join `User` u on u.Id = ur.UserId
                                 where u.UserName = @userName;";
+
+                if (includeInactives == false)
+                {
+                    sql = @"select ur.*, r.*, u.*
+                                from `UserRolesRelation` ur
+                                join `Roles` r on r.Id = ur.RolesId
+                                join `User` u on u.Id = ur.UserId
+                                where u.UserName = @userName and ur.active = 1;";
+                }
 
                 return connection.Query<UserRolesRelation, Roles, User, UserRolesRelation>(sql, (ur, r, u) =>
                 {
@@ -72,7 +81,7 @@ namespace WebApi.Services
         {
             using (MySqlConnection connection = applicationDbContext.GetConnection())
             {
-                string sql = @"select * from `User` where `username` = @UserName and `password` = @Password";
+                string sql = @"select * from `User` where `username` = @UserName and `password` = @Password and active = 1;";
 
                 User result = connection.Query<User>(sql, param: new { user.UserName, user.Password }).FirstOrDefault();
 

@@ -2588,6 +2588,7 @@ CREATE TABLE `User` (
   `UserName` varchar(20) NOT NULL,
   `Password` varchar(50) NOT NULL,
   `Email`    varchar(50) NOT NULL,
+  `Active`   tinyint(1)  NOT NULL,
   `CreationDate` datetime,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB;
@@ -2615,6 +2616,7 @@ CREATE TABLE `UserRolesRelation` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `UserId` int(11) NOT NULL,
   `RolesId` int(11) NOT NULL,
+  `Active`  tinyint(1)  NOT NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `UserId_RolesId` (`UserId`,`RolesId`),
   KEY `FK_UserRolesRelation_User` (`UserId`),

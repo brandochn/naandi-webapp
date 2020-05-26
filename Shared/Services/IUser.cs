@@ -8,7 +8,7 @@ namespace Naandi.Shared.Services
     {
         bool ValidateLogin(User user);
 
-        IEnumerable<UserRolesRelation> GetUserRolesRelationByUserName(string userName);
+        IEnumerable<UserRolesRelation> GetUserRolesRelationByUserName(string userName, bool includeInactives);
 
         IEnumerable<Claim> GetClaimsByByUserName(string userName);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
 using Naandi.Shared.DataBase;
 using Naandi.Shared.Services;
@@ -86,6 +87,11 @@ namespace WebApp.SessionState
                 ApplicationRestClient applicationRestClient = new ApplicationRestClient(_configuration["AppServiceUri"]);
                 IUser userResearchRepository = new UserRepository(applicationDbContext, applicationRestClient);
                 var user = userResearchRepository.GetUserByName(userName);
+                if (user.Active == false)
+                {
+                    throw new Exception($"User {user.UserName} inactive");
+                }
+
                 var token = userResearchRepository.CreateToken(user.UserName, user.Password);
 
                 token = token.Replace("\"", "");
