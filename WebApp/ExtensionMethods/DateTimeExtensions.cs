@@ -9,9 +9,22 @@ namespace WebApp.ExtensionMethods
     {
         public static DateTime ToCentralMexicoTime(this DateTime dateTime)
         {
-            var mxTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+            TimeZoneInfo mxTimeZone = null;
+            try
+            {
+                // Microsoft Windows time zone
+                mxTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time");
+            }
+            catch { }
+
+            if (mxTimeZone == null)
+            {
+                //  IANA time zone
+                mxTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Mexico_City");
+            }
+
             DateTime mxTime = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.Local, mxTimeZone);
-           return mxTime;
+            return mxTime;
         }
     }
 }

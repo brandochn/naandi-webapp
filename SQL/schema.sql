@@ -786,7 +786,7 @@ CREATE TABLE `FamilyResearch` (
 DROP PROCEDURE IF EXISTS `AddOrUpdateRegistrationRequest`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateRegistrationRequest`(
+CREATE PROCEDURE `AddOrUpdateRegistrationRequest`(
 	IN JSONData LONGTEXT,
 	OUT ErrorMessage VARCHAR(2000)
 )
@@ -1111,7 +1111,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `GenCSharpModel`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `GenCSharpModel`(in pTableName VARCHAR(255) )
+CREATE PROCEDURE `GenCSharpModel`(in pTableName VARCHAR(255) )
 BEGIN
 DECLARE vClassName varchar(255);
 declare vClassCode mediumtext;
@@ -1208,7 +1208,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `test_mysql_while_loop`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `test_mysql_while_loop`()
+CREATE PROCEDURE `test_mysql_while_loop`()
 BEGIN
  DECLARE x  INT;
  DECLARE str  VARCHAR(255);
@@ -1297,7 +1297,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateAddress`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateAddress`(
+CREATE PROCEDURE `AddOrUpdateAddress`(
 	IN  JSONData LONGTEXT,
     OUT AddressId INT,
 	OUT ErrorMessage VARCHAR(2000)
@@ -1370,7 +1370,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateLegalGuardian`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateLegalGuardian`(
+CREATE PROCEDURE `AddOrUpdateLegalGuardian`(
 	IN  JSONData LONGTEXT,
 	IN  SpouseId INT,
 	IN  AddressId INT,
@@ -1464,7 +1464,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateSpouse`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateSpouse`(
+CREATE PROCEDURE `AddOrUpdateSpouse`(
 	IN  JSONData LONGTEXT,
     OUT SpouseId INT,
 	OUT ErrorMessage VARCHAR(2000)
@@ -1526,7 +1526,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateMinor`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateMinor`(
+CREATE PROCEDURE `AddOrUpdateMinor`(
 	IN  JSONData LONGTEXT,
 	IN  FormalEducationId INT,
     OUT MinorId INT,
@@ -1595,7 +1595,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateFormalEducation`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFormalEducation`(
+CREATE PROCEDURE `AddOrUpdateFormalEducation`(
 	IN  JSONData LONGTEXT,
     OUT FormalEducationId INT,
 	OUT ErrorMessage VARCHAR(2000)
@@ -1660,7 +1660,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdatePreviousFoundation`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdatePreviousFoundation`(
+CREATE PROCEDURE `AddOrUpdatePreviousFoundation`(
 	IN  JSONData LONGTEXT,
     OUT PreviousFoundationId INT,
 	OUT ErrorMessage VARCHAR(2000)
@@ -1728,7 +1728,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyHealth`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyHealth`(
+CREATE PROCEDURE `AddOrUpdateFamilyHealth`(
 	IN  JSONData LONGTEXT,
     OUT FamilyHealthId INT,
 	OUT ErrorMessage VARCHAR(2000)
@@ -1800,7 +1800,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyMembersDetails`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyMembersDetails`(
+CREATE PROCEDURE `AddOrUpdateFamilyMembersDetails`(
 	IN  FamilyMembersId INT,
     IN  ArrayItem BLOB
 )
@@ -1825,7 +1825,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyMembers`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyMembers`(
+CREATE PROCEDURE `AddOrUpdateFamilyMembers`(
 	IN  `JSONData` LONGTEXT,
     OUT `FamilyMembersId` INT,
 	OUT `ErrorMessage` VARCHAR(2000)
@@ -1889,7 +1889,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateSocioEconomicStudy`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateSocioEconomicStudy`(
+CREATE PROCEDURE `AddOrUpdateSocioEconomicStudy`(
 	  IN  `JSONData` LONGTEXT,
       OUT `SocioEconomicStudyId` INT,
 	  OUT `ErrorMessage` VARCHAR(2000)
@@ -2000,7 +2000,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateDistrict`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateDistrict`(
+CREATE PROCEDURE `AddOrUpdateDistrict`(
 	  IN  `JSONData` LONGTEXT,
       OUT `DistrictId` INT,
 	  OUT `ErrorMessage` VARCHAR(2000)
@@ -2089,7 +2089,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddEconomicSituationPatrimonyRelation`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddEconomicSituationPatrimonyRelation`(
+CREATE PROCEDURE `AddEconomicSituationPatrimonyRelation`(
 	In  EconomicSituationId INT,
     IN  ArrayItem BLOB
 )
@@ -2109,7 +2109,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateEconomicSituation`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateEconomicSituation`(
+CREATE PROCEDURE `AddOrUpdateEconomicSituation`(
 	  IN  `JSONData` LONGTEXT,
       OUT `EconomicSituationId` INT,
 	  OUT `ErrorMessage` VARCHAR(2000)
@@ -2172,7 +2172,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `foreach_array_item`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `foreach_array_item`(
+CREATE PROCEDURE `foreach_array_item`(
         in_array JSON,
         in_id INT,
         in_callback VARCHAR(100)
@@ -2208,7 +2208,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddFamilyNutritionFoodRelation`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddFamilyNutritionFoodRelation`(
+CREATE PROCEDURE `AddFamilyNutritionFoodRelation`(
 	IN  FamilyNutritionId INT,
     IN  ArrayItem BLOB
 )
@@ -2227,7 +2227,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyNutrition`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyNutrition`(
+CREATE PROCEDURE `AddOrUpdateFamilyNutrition`(
 	  IN   JSONData LONGTEXT,
       OUT  FamilyNutritionId INT,
 	  OUT  ErrorMessage VARCHAR(2000)
@@ -2291,7 +2291,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateBenefitsProvidedDetails`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateBenefitsProvidedDetails`(
+CREATE PROCEDURE `AddOrUpdateBenefitsProvidedDetails`(
 	IN  BenefitsProvidedId INT,
     IN  ArrayItem BLOB
 )
@@ -2314,7 +2314,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateBenefitsProvided`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateBenefitsProvided`(
+CREATE PROCEDURE `AddOrUpdateBenefitsProvided`(
 	IN  `JSONData` LONGTEXT,
     OUT `BenefitsProvidedId` INT,
 	OUT `ErrorMessage` VARCHAR(2000)
@@ -2369,7 +2369,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddIngresosEgresosMensualesMovimientoRelation`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddIngresosEgresosMensualesMovimientoRelation`(
+CREATE PROCEDURE `AddIngresosEgresosMensualesMovimientoRelation`(
 	In  IngresosEgresosMensualesId INT,
     IN  ArrayItem BLOB
 )
@@ -2388,7 +2388,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateIngresosEgresosMensuales`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateIngresosEgresosMensuales`(
+CREATE PROCEDURE `AddOrUpdateIngresosEgresosMensuales`(
 	IN  `JSONData` LONGTEXT,
     OUT `IngresosEgresosMensualesId` INT,
 	OUT `ErrorMessage` VARCHAR(2000)
@@ -2450,7 +2450,7 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `AddOrUpdateFamilyResearch`;
 
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `AddOrUpdateFamilyResearch`(
+CREATE PROCEDURE `AddOrUpdateFamilyResearch`(
 	IN `JSONData` LONGTEXT,
 	OUT `FamilyResearchId` INT,
 	OUT `ErrorMessage` VARCHAR(2000)
