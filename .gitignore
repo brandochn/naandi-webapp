@@ -17,3 +17,4 @@ WebApi/bin
 omnisharp.json
 /WebApi/logs
 /Shared/Shared.csproj.user
+/WebApp/logs

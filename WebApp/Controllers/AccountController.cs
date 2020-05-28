@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Naandi.Shared.Models;
 using Naandi.Shared.Services;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using WebApp.SessionState;
@@ -12,10 +13,12 @@ namespace WebApp.Controllers
     public class AccountController : Controller
     {
         private readonly IUser userResearchRepository;
+        private readonly ILogger<AccountController> logger;
 
-        public AccountController(IUser _userResearchRepository)
+        public AccountController(IUser _userResearchRepository, ILogger<AccountController> _logger)
         {
             userResearchRepository = _userResearchRepository;
+            logger = _logger;
         }
 
         [HttpGet]
@@ -38,26 +41,36 @@ namespace WebApp.Controllers
                 Password = password
             };
 
-            if (userResearchRepository.ValidateLogin(user))
+            try
             {
-                var claims = userResearchRepository.GetClaimsByByUserName(user.UserName);
-                // Sign in to WebApp
-                await HttpContext.SignInAsync(new ClaimsPrincipal(new ClaimsIdentity(claims, "CookieAuth", ClaimTypes.Name, ClaimTypes.Role)));
+                if (userResearchRepository.ValidateLogin(user))
+                {
+                    var claims = userResearchRepository.GetClaimsByByUserName(user.UserName);
+                    // Sign in to WebApp
+                    await HttpContext.SignInAsync(new ClaimsPrincipal(new ClaimsIdentity(claims, "CookieAuth", ClaimTypes.Name, ClaimTypes.Role)));
 
-                // Sign in to WebApi
-                var token = userResearchRepository.CreateToken(user.UserName, user.Password);
+                    // Sign in to WebApi
+                    var token = userResearchRepository.CreateToken(user.UserName, user.Password);
 
-                token = token.Replace("\"", "");
+                    token = token.Replace("\"", "");
 
-                UserSession.SetToken(token);
+                    UserSession.SetToken(token);
 
-                return RedirectToLocal(returnUrl);
+                    return RedirectToLocal(returnUrl);
+                }
+                else
+                {
+                    string error = "Invalid UserName or Password";
+                    ModelState.AddModelError("", error);
+                    logger.LogWarning(error);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Invalid UserName or Password");
-                return View();
+                logger.LogError(ex, null);
             }
+
+            return View();
         }
 
         [HttpPost]
