@@ -1,1 +1,14 @@
-﻿<h2 class="text-center alert-danger">Access is denied...</h2>
+﻿<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-2 text-center">
+            <p><i class="fa fa-exclamation-triangle fa-5x"></i><br />Status Code: 403</p>
+        </div>
+        <div class="col-md-10">
+            <h3>Oops! This Page Can&#39;t Be Accessed</h3>
+            <p>Sorry, your access is refused for security reasons.<br />Please go back to the previous page to continue browsing.</p>
+            <a class="btn btn-primary btn-lg" href="@Url.Action("Index", "Home", new { Area = "" })">Go Back</a>
+        </div>
+    </div>
+</div>
