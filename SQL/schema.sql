@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS `naandi` CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';
 USE `naandi`;
 
+SET FOREIGN_KEY_CHECKS = 0;
 
 --
 -- Table structure for table `RegistrationRequestStatus`
@@ -2173,7 +2174,7 @@ DROP PROCEDURE IF EXISTS `foreach_array_item`;
 
 DELIMITER ;;
 CREATE PROCEDURE `foreach_array_item`(
-        in_array JSON,
+        in_array LONGTEXT,
         in_id INT,
         in_callback VARCHAR(100)
     )
@@ -2624,3 +2625,5 @@ CREATE TABLE `UserRolesRelation` (
   KEY `FK_UserRolesRelation_Roles` (`RolesId`),
   CONSTRAINT `FK_UserRolesRelation_Roles` FOREIGN KEY (`RolesId`) REFERENCES `Roles` (`Id`)
 ) ENGINE=InnoDB;
+
+SET FOREIGN_KEY_CHECKS = 1;
