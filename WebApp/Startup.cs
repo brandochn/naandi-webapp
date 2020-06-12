@@ -37,7 +37,7 @@ namespace WebApp
 
             services.AddTransient(_ => new ApplicationRestClient(Configuration["AppServiceUri"]));
             services.AddTransient(_ => new ApplicationDbContext(Configuration["ConnectionString"]));
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpContextAccessor();
             bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             if (IsWindows == true)
             {
