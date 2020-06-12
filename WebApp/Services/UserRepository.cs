@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 using Naandi.Shared.DataBase;
 using Naandi.Shared.Models;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using WebApp.Data;
 
 namespace WebApp.Services
@@ -16,11 +18,13 @@ namespace WebApp.Services
     {
         private ApplicationDbContext applicationDbContext;
         private readonly ApplicationRestClient applicationRestClient;
+        private readonly ILogger<UserRepository> logger;
 
-        public UserRepository(ApplicationDbContext _applicationDbContext, ApplicationRestClient _applicationRestClient)
+        public UserRepository(ApplicationDbContext _applicationDbContext, ApplicationRestClient _applicationRestClient, ILogger<UserRepository> _logger)
         {
             applicationDbContext = _applicationDbContext;
             applicationRestClient = _applicationRestClient;
+            logger = _logger;
         }
 
         public string CreateToken(string username, string password)
@@ -29,13 +33,34 @@ namespace WebApp.Services
             var request = new RestRequest("/api/Token/Create", Method.POST);
             request.AddParameter("username", username, ParameterType.QueryString);
             request.AddParameter("password", password, ParameterType.QueryString);
-            
+
             var response = client.Post(request);
 
             if (response.ErrorException != null || response.IsSuccessful == false)
             {
-                string message = Constants.UNHANDLED_EXCEPTION_MESSAGE;
-                var exception = new ApplicationException(message, response.ErrorException);
+                StringBuilder headers = new StringBuilder();
+                if (response.Headers != null)
+                {
+                    foreach (var h in response.Headers)
+                    {
+                        headers.AppendLine(string.Concat(h.Name, " , ", h.Value, " , ", h.ContentType));
+                    }
+                }
+
+                string statusCode = string.Format("StatusCode:{0} | Description:{1}", response.StatusCode, response.StatusDescription);
+                ApplicationException exception; ;
+                if (logger != null)
+                {
+                    logger.LogError(response.ErrorException, response.ErrorMessage ?? response.ErrorException?.Message ?? statusCode);
+                    logger.LogWarning(headers.ToString());
+                    logger.LogWarning(statusCode);
+                    exception = new ApplicationException();
+                }
+                else
+                {
+                    exception = new ApplicationException(response.ErrorMessage ?? response.ErrorException?.Message ?? statusCode, response.ErrorException);
+                }
+
                 throw exception;
             }
 

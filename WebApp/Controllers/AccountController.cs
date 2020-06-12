@@ -67,6 +67,7 @@ namespace WebApp.Controllers
             }
             catch (Exception ex)
             {
+                ModelState.AddModelError("", Constants.UNHANDLED_EXCEPTION_MESSAGE);
                 logger.LogError(ex, null);
             }
 

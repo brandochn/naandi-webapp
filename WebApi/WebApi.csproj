@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>Naandi.WebApi</AssemblyName>
+    <UserSecretsId>830ba258-bb94-4dd0-a96d-073610e6a64f</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />

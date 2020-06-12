@@ -18,3 +18,9 @@ omnisharp.json
 /WebApi/logs
 /Shared/Shared.csproj.user
 /WebApp/logs
+/WebApi/.config/dotnet-tools.json
+/WebApi/Properties/PublishProfiles/FolderProfile.pubxml
+/WebApi/Properties/PublishProfiles/FolderProfile.pubxml.user
+/WebApp/.config/dotnet-tools.json
+/WebApp/Properties/PublishProfiles/FolderProfile.pubxml
+/WebApp/Properties/PublishProfiles/FolderProfile.pubxml.user

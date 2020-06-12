@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <AssemblyName>Naandi.WebApp</AssemblyName>
+    <UserSecretsId>9a71455a-e90f-4a52-8c98-91a945d0494e</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="compilerconfig.json" />

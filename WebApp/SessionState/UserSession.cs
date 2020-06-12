@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Naandi.Shared.DataBase;
 using Naandi.Shared.Services;
 using WebApp.Data;
@@ -85,7 +86,7 @@ namespace WebApp.SessionState
                 string userName = HttpContext.User.Identity.Name;
                 ApplicationDbContext applicationDbContext = new ApplicationDbContext(_configuration["ConnectionString"]);
                 ApplicationRestClient applicationRestClient = new ApplicationRestClient(_configuration["AppServiceUri"]);
-                IUser userResearchRepository = new UserRepository(applicationDbContext, applicationRestClient);
+                IUser userResearchRepository = new UserRepository(applicationDbContext, applicationRestClient, null);
                 var user = userResearchRepository.GetUserByName(userName);
                 if (user.Active == false)
                 {
