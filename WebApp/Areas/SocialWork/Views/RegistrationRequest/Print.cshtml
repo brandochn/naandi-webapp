@@ -180,12 +180,12 @@
                             <div class="form-group col-md-4">
                                 <label>Estado</label>
                                 @*@Html.DropDownListFor(x => Model.Requestor.Address.State, new SelectList(Model.StatesOfMexico, "Nombre", "Nombre"), htmlAttributes: new { @class = "form-control", id = "StatesOfMexico" })*@
-                                @Html.TextBoxFor(m=> m.Requestor.Address.State, htmlAttributes: new { @class = "form-control" })
+                                @Html.TextBoxFor(m => m.Requestor.Address.State, htmlAttributes: new { @class = "form-control" })
                             </div>
                             <div class="form-group col-md-3">
                                 <label>Municipio</label>
                                 @*@Html.DropDownListFor(x => Model.Requestor.Address.City, new SelectList(Model.MunicipalitiesOfMexico, "Nombre", "Nombre"), htmlAttributes: new { @class = "form-control", @id = "MunicipalitiesOfMexico" })*@
-                                @Html.TextBoxFor(m=> m.Requestor.Address.City, htmlAttributes: new { @class = "form-control" })
+                                @Html.TextBoxFor(m => m.Requestor.Address.City, htmlAttributes: new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="form-row">
@@ -466,6 +466,18 @@
                     </h5>
                     <div class="card-body">
                         <textarea rows="3" asp-for="Comments" class="form-control">@Model.Comments</textarea>
+                    </div>
+                </div>
+                <div class="card">
+                    <h5 class="card-header text-center text-white bg-secondary">
+                        Trabajadora social
+                    </h5>
+                    <div class="card-body">
+
+                        <div class="form-group col-md-6">
+                            <label>Nombre</label>
+                            <input type="text" asp-for="SocialWorkerName" class="form-control" value="@Model.SocialWorkerName" />
+                        </div>
                     </div>
                 </div>
             </div>

@@ -3,6 +3,8 @@ USE `naandi`;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
+-- ALTER DATABASE naandi  CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';
+
 --
 -- Table structure for table `RegistrationRequestStatus`
 --
@@ -233,6 +235,7 @@ CREATE TABLE `RegistrationRequest` (
   `FamilyHealthStatus` varchar(200) DEFAULT NULL,
   `Comments` varchar(400) DEFAULT NULL,
   `RegistrationRequestStatusId` int(11) DEFAULT NULL,
+  `SocialWorkerName` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `RequestorId_MinorId` (`RequestorId`,`MinorId`),
   KEY `FK_RegistrationRequest_Minor` (`MinorId`),
@@ -812,75 +815,63 @@ BEGIN
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
    
-	START TRANSACTION;
 	SET autocommit = 0;
- 
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
 	
-	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO RegistrationRequestId
-	FROM JSON_TABLE;
+	SELECT JSON_EXTRACT(JSONData, '$.Id') INTO RegistrationRequestId;
  
+	START TRANSACTION;
 	
 	IF RegistrationRequestId = 0 THEN
 		
 		
 		INSERT INTO Minor (FullName, DateOfBirth, PlaceOfBirth, Age, Education, CurrentOccupation)
 		SELECT
-			JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.FullName'))
-			,CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.DateOfBirth')) AS datetime)
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.PlaceOfBirth'))
-			,JSON_EXTRACT(Data, '$.Minor.Age')
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.Education'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.CurrentOccupation'))
-		FROM JSON_TABLE;
-		SET MinorId = LAST_INSERT_ID();
+			JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Minor.FullName'))
+			,CAST(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Minor.DateOfBirth')) AS datetime)
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Minor.PlaceOfBirth'))
+			,JSON_EXTRACT(JSONData, '$.Minor.Age')
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Minor.Education'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Minor.CurrentOccupation'));
 		
-		
-		SELECT 1 INTO ExistentPath
-		FROM JSON_TABLE
-		WHERE JSON_EXTRACT(Data, ' $.Requestor.Job.Address.Street') IS NOT NULL;
+        SET MinorId = LAST_INSERT_ID();
+					
+        SELECT CASE WHEN JSON_EXTRACT(JSONData, ' $.Requestor.Job.Address.Street') IS NOT NULL THEN 1 ELSE 0 END INTO ExistentPath;
 		
 		IF ExistentPath = 1 THEN
 			INSERT INTO Address (Street ,HouseNumber ,PoBox ,PhoneNumber ,City ,ZIP ,State ,Neighborhood ,Reference )
 			SELECT
-				 JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Requestor.Job.Address.Street'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.HouseNumber'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.PoBox'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.PhoneNumber'))
-				,IFNULL(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.City')), '')
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.Zip'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.State'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.Neighborhood'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.Reference'))
-			FROM JSON_TABLE;
-			SET JobAddressId = LAST_INSERT_ID();
+				 JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.Requestor.Job.Address.Street'))
+				,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.HouseNumber'))
+				,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.PoBox'))
+				,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.PhoneNumber'))
+				,IFNULL(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.City')), '')
+				,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.Zip'))
+				,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.State'))
+				,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.Neighborhood'))
+				,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.Reference'));
+			
+            SET JobAddressId = LAST_INSERT_ID();
 		ELSE
 			SET JobAddressId = NULL;
 		END IF;
 		
-		
-		SELECT 1 INTO ExistentPath
-		FROM JSON_TABLE
-		WHERE JSON_EXTRACT(Data, ' $.Requestor.Job.Location') IS NOT NULL 
-		OR JSON_EXTRACT(Data, ' $.Requestor.Job.JobTitle') IS NOT NULL;
+        
+        SELECT CASE WHEN JSON_EXTRACT(JSONData, ' $.Requestor.Job.Location') IS NOT NULL 
+					OR JSON_EXTRACT(JSONData, ' $.Requestor.Job.JobTitle') IS NOT NULL THEN 1 ELSE 0 END INTO ExistentPath;
 		
 		IF ExistentPath = 1 THEN
 			INSERT INTO Job(Location ,JobTitle ,OfficialHours ,YearsOfService ,Salary ,AddressId ,ManagerName ,ManagerPosition)
 			SELECT
-				 JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Requestor.Job.Location'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.JobTitle'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.OfficialHours'))
-				,JSON_EXTRACT(Data, '$.Requestor.Job.YearsOfService')
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Salary'))
+				 JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.Requestor.Job.Location'))
+				,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.JobTitle'))
+				,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.OfficialHours'))
+				,JSON_EXTRACT(JSONData, '$.Requestor.Job.YearsOfService')
+				,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Salary'))
 				,JobAddressId
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.ManagerName'))
-				,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.ManagerPosition'))
-			FROM JSON_TABLE;
-			SET JobId = LAST_INSERT_ID();
+				,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.ManagerName'))
+				,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.ManagerPosition'));
+			
+            SET JobId = LAST_INSERT_ID();
 		ELSE
 			SET JobId = NULL;
 		END IF;
@@ -889,51 +880,51 @@ BEGIN
 		
 		INSERT INTO Address(Street ,HouseNumber ,PoBox ,PhoneNumber ,City ,ZIP ,State ,Neighborhood ,Reference)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Requestor.Address.Street'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.HouseNumber'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.PoBox'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.PhoneNumber'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.City'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.Zip'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.State'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.Neighborhood'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.Reference'))
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.Requestor.Address.Street'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.HouseNumber'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.PoBox'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.PhoneNumber'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.City'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.Zip'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.State'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.Neighborhood'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.Reference'));
+            
 		SET AddressId = LAST_INSERT_ID();
 		
 		INSERT INTO Requestor
 		(FullName ,Age ,DateOfBirth ,PlaceOfBirth ,MaritalStatusId ,Education ,CurrentOccupation ,RelationshipId ,AddressId ,JobId)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Requestor.FullName'))
-			,JSON_EXTRACT(Data, '$.Requestor.Age')
-			,CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.DateOfBirth')) AS datetime)
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.PlaceOfBirth'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.MaritalStatusId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Education'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.CurrentOccupation'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.RelationshipId'))
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.Requestor.FullName'))
+			,JSON_EXTRACT(JSONData, '$.Requestor.Age')
+			,CAST(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.DateOfBirth')) AS datetime)
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.PlaceOfBirth'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.MaritalStatusId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Education'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.CurrentOccupation'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.RelationshipId'))
 			,AddressId
-			,JobId
-		FROM JSON_TABLE;
-		SET RequestorId = LAST_INSERT_ID();
+			,JobId;
+		
+        SET RequestorId = LAST_INSERT_ID();
 		
 		INSERT INTO RegistrationRequest
 		(HowYouHearAboutUs, CreationDate, RequestorId, MinorId, Reasons, FamilyComposition, FamilyInteraction, EconomicSituation
-		,SituationsOfDomesticViolence, FamilyHealthStatus, Comments, RegistrationRequestStatusId)
+		,SituationsOfDomesticViolence, FamilyHealthStatus, Comments, RegistrationRequestStatusId, SocialWorkerName)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.HowYouHearAboutUs'))
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.HowYouHearAboutUs'))
 			,UTC_TIMESTAMP()
 			,RequestorId
 			,MinorId
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Reasons'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyComposition'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyInteraction'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SituationsOfDomesticViolence'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealthStatus'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments'))
-            ,JSON_EXTRACT(Data, '$.RegistrationRequestStatusId')
-		FROM JSON_TABLE;
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Reasons'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyComposition'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyInteraction'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.EconomicSituation'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.SituationsOfDomesticViolence'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyHealthStatus'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Comments'))
+            ,JSON_EXTRACT(JSONData, '$.RegistrationRequestStatusId')
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.SocialWorkerName'));
 	
 	ELSE
 		
@@ -982,125 +973,122 @@ BEGIN
 			
 			UPDATE Minor
 			SET
-				FullName =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.FullName')) FROM JSON_TABLE)
-				,DateOfBirth =       (SELECT CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.DateOfBirth')) AS datetime) FROM JSON_TABLE) 
-				,PlaceOfBirth =      (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.PlaceOfBirth')) FROM JSON_TABLE)
-				,Age =               (SELECT JSON_EXTRACT(Data, '$.Minor.Age') FROM JSON_TABLE)
-				,Education =         (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.Education')) FROM JSON_TABLE)
-				,CurrentOccupation = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Minor.CurrentOccupation')) FROM JSON_TABLE)
+				FullName =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Minor.FullName')))
+				,DateOfBirth =       (SELECT CAST(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Minor.DateOfBirth')) AS datetime)) 
+				,PlaceOfBirth =      (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Minor.PlaceOfBirth')))
+				,Age =               (SELECT JSON_EXTRACT(JSONData, '$.Minor.Age'))
+				,Education =         (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Minor.Education')))
+				,CurrentOccupation = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Minor.CurrentOccupation')))
 			WHERE Id = MinorId;
 			
 			
 			IF JobAddressId = 0 THEN
-			
-				SELECT 1 INTO ExistentPath
-				FROM JSON_TABLE
-				WHERE JSON_EXTRACT(Data, ' $.Requestor.Job.Address.Street') IS NOT NULL;
+					
+                SELECT CASE WHEN JSON_EXTRACT(Data, ' $.Requestor.Job.Address.Street') IS NOT NULL THEN 1 ELSE 0 END INTO ExistentPath;
 		
 				IF ExistentPath = 1 THEN
 					INSERT INTO Address (Street ,HouseNumber ,PoBox ,PhoneNumber ,City ,ZIP ,State ,Neighborhood ,Reference )
 					SELECT
-						 JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Requestor.Job.Address.Street'))
-						,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.HouseNumber'))
-						,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.PoBox'))
-						,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.PhoneNumber'))
-						,IFNULL(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.City')), '')
-						,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.Zip'))
-						,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.State'))
-						,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.Neighborhood'))
-						,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.Reference'))
-					FROM JSON_TABLE;
-					SET JobAddressId = LAST_INSERT_ID();
+						 JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.Requestor.Job.Address.Street'))
+						,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.HouseNumber'))
+						,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.PoBox'))
+						,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.PhoneNumber'))
+						,IFNULL(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.City')), '')
+						,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.Zip'))
+						,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.State'))
+						,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.Neighborhood'))
+						,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.Reference'));
+					
+                    SET JobAddressId = LAST_INSERT_ID();
 				END IF;
 			ELSE
 				UPDATE Address
 				SET
-					Street = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Requestor.Job.Address.Street')) FROM JSON_TABLE)
-					,HouseNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.HouseNumber')) FROM JSON_TABLE)
-					,PoBox = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.PoBox')) FROM JSON_TABLE)
-					,PhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.PhoneNumber')) FROM JSON_TABLE)
-					,City = (SELECT IFNULL(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.City')), '') FROM JSON_TABLE)
-					,ZIP = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.Zip')) FROM JSON_TABLE)
-					,State = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.State')) FROM JSON_TABLE)
-					,Neighborhood = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.Neighborhood')) FROM JSON_TABLE)
-					,Reference = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Address.Reference')) FROM JSON_TABLE)
+					Street = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.Requestor.Job.Address.Street')))
+					,HouseNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.HouseNumber')))
+					,PoBox = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.PoBox')))
+					,PhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.PhoneNumber')))
+					,City = (SELECT IFNULL(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.City')), ''))
+					,ZIP = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.Zip')))
+					,State = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.State')))
+					,Neighborhood = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.Neighborhood')))
+					,Reference = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Address.Reference')))
 				WHERE Id = JobAddressId;
 			END IF;
 			
 			
 			IF JobId = 0 THEN
-				
-				SELECT 1 INTO ExistentPath
-				FROM JSON_TABLE
-				WHERE JSON_EXTRACT(Data, ' $.Requestor.Job.Location') IS NOT NULL 
-				OR JSON_EXTRACT(Data, ' $.Requestor.Job.JobTitle') IS NOT NULL;
+				               
+                SELECT CASE WHEN JSON_EXTRACT(JSONData, ' $.Requestor.Job.Location') IS NOT NULL 
+				OR JSON_EXTRACT(JSONData, ' $.Requestor.Job.JobTitle') IS NOT NULL THEN 1 ELSE 0 END INTO ExistentPath;
 		
 				IF ExistentPath = 1 THEN
 					INSERT INTO Job (Location ,JobTitle ,OfficialHours ,YearsOfService ,Salary ,AddressId ,ManagerName ,ManagerPosition)
 					SELECT
-						 JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Requestor.Job.Location'))
-						,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.JobTitle'))
-						,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.OfficialHours'))
-						,JSON_EXTRACT(Data, '$.Requestor.Job.YearsOfService')
-						,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Salary'))
+						 JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.Requestor.Job.Location'))
+						,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.JobTitle'))
+						,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.OfficialHours'))
+						,JSON_EXTRACT(JSONData, '$.Requestor.Job.YearsOfService')
+						,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Salary'))
 						,JobAddressId
-						,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.ManagerName'))
-						,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.ManagerPosition'))
-					FROM JSON_TABLE;
-					SET JobId = LAST_INSERT_ID();
+						,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.ManagerName'))
+						,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.ManagerPosition'));
+					
+                    SET JobId = LAST_INSERT_ID();
 				END IF;
 			ELSE
 				UPDATE Job
 					SET
-					Location = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Requestor.Job.Location')) FROM JSON_TABLE)
-					,JobTitle = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.JobTitle')) FROM JSON_TABLE)
-					,OfficialHours = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.OfficialHours')) FROM JSON_TABLE)
-					,YearsOfService = (SELECT JSON_EXTRACT(Data, '$.Requestor.Job.YearsOfService') FROM JSON_TABLE)
-					,Salary = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.Salary')) FROM JSON_TABLE)
-					,ManagerName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.ManagerName')) FROM JSON_TABLE)
-					,ManagerPosition = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Job.ManagerPosition')) FROM JSON_TABLE)
+					Location = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.Requestor.Job.Location')))
+					,JobTitle = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.JobTitle')))
+					,OfficialHours = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.OfficialHours')))
+					,YearsOfService = (SELECT JSON_EXTRACT(JSONData, '$.Requestor.Job.YearsOfService'))
+					,Salary = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.Salary')))
+					,ManagerName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.ManagerName')))
+					,ManagerPosition = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Job.ManagerPosition')))
 				WHERE Id = JobId;
 			END IF;
 						
 			
 			UPDATE Address
 			SET
-				Street = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Requestor.Address.Street')) FROM JSON_TABLE)
-				,HouseNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.HouseNumber')) FROM JSON_TABLE)
-				,PoBox =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.PoBox')) FROM JSON_TABLE)
-				,PhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.PhoneNumber')) FROM JSON_TABLE)
-				,City = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.City')) FROM JSON_TABLE)
-				,ZIP = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.Zip')) FROM JSON_TABLE)
-				,State = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.State')) FROM JSON_TABLE)
-				,Neighborhood = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.Neighborhood')) FROM JSON_TABLE)
-				,Reference = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Address.Reference'))  FROM JSON_TABLE)
+				Street = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.Requestor.Address.Street')))
+				,HouseNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.HouseNumber')))
+				,PoBox =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.PoBox')))
+				,PhoneNumber = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.PhoneNumber')))
+				,City = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.City')))
+				,ZIP = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.Zip')))
+				,State = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.State')))
+				,Neighborhood = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.Neighborhood')))
+				,Reference = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Address.Reference')))
 			WHERE Id = AddressId;
 			
 			
 			UPDATE Requestor
 			SET
-				FullName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Requestor.FullName')) FROM JSON_TABLE)
-				,Age = (SELECT JSON_EXTRACT(Data, '$.Requestor.Age') FROM JSON_TABLE)
-				,DateOfBirth = (SELECT CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.DateOfBirth')) as datetime) FROM JSON_TABLE)
-				,PlaceOfBirth = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.PlaceOfBirth')) FROM JSON_TABLE)
-				,MaritalStatusId = (SELECT JSON_EXTRACT(Data, '$.Requestor.MaritalStatusId') FROM JSON_TABLE)
-				,Education = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.Education')) FROM JSON_TABLE)
-				,CurrentOccupation = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Requestor.CurrentOccupation')) FROM JSON_TABLE)
-				,RelationshipId = (SELECT JSON_EXTRACT(Data, '$.Requestor.RelationshipId') FROM JSON_TABLE)
+				FullName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.Requestor.FullName')))
+				,Age = (SELECT JSON_EXTRACT(JSONData, '$.Requestor.Age'))
+				,DateOfBirth = (SELECT CAST(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.DateOfBirth')) as datetime))
+				,PlaceOfBirth = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.PlaceOfBirth')))
+				,MaritalStatusId = (SELECT JSON_EXTRACT(JSONData, '$.Requestor.MaritalStatusId'))
+				,Education = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.Education')))
+				,CurrentOccupation = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Requestor.CurrentOccupation')))
+				,RelationshipId = (SELECT JSON_EXTRACT(JSONData, '$.Requestor.RelationshipId'))
 			WHERE Id = RequestorId;
 			
 			
 			UPDATE RegistrationRequest
 			SET
-				HowYouHearAboutUs = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.HowYouHearAboutUs')) FROM JSON_TABLE)
-				,Reasons = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Reasons')) FROM JSON_TABLE)
-				,FamilyComposition = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyComposition')) FROM JSON_TABLE)
-				,FamilyInteraction = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyInteraction')) FROM JSON_TABLE)
-				,EconomicSituation = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituation')) FROM JSON_TABLE)
-				,SituationsOfDomesticViolence = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SituationsOfDomesticViolence')) FROM JSON_TABLE)
-				,FamilyHealthStatus = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealthStatus')) FROM JSON_TABLE)
-				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments')) FROM JSON_TABLE)
-                ,RegistrationRequestStatusId = (SELECT JSON_EXTRACT(Data, '$.RegistrationRequestStatusId') FROM JSON_TABLE)
+				HowYouHearAboutUs = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.HowYouHearAboutUs')))
+				,Reasons = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Reasons')))
+				,FamilyComposition = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyComposition')))
+				,FamilyInteraction = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyInteraction')))
+				,EconomicSituation = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.EconomicSituation')))
+				,SituationsOfDomesticViolence = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.SituationsOfDomesticViolence')))
+				,FamilyHealthStatus = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyHealthStatus')))
+				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Comments')))
+                ,RegistrationRequestStatusId = (SELECT JSON_EXTRACT(JSONData, '$.RegistrationRequestStatusId'))
+				,SocialWorkerName = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.SocialWorkerName')))
 			WHERE Id = RegistrationRequestId;
 	
 		END IF;
@@ -1135,7 +1123,7 @@ set vClassCode ='';
         SUBSTRING_INDEX(pTableName, '_', 1) as ColumnName1) A) B;
 
     
-    CREATE TEMPORARY TABLE IF NOT EXISTS  temp1 ENGINE=MyISAM  
+    CREATE TEMPORARY TABLE IF NOT EXISTS  temp1 ENGINE=InnoDB  
     as (
     select concat( 'public ', ColumnType , ' ' , FieldName,' { get; set; }') code
     FROM(
@@ -1309,36 +1297,26 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
-	
-	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO AddressId
-	FROM JSON_TABLE;
- 
-	
+    	
+	SELECT JSON_EXTRACT(JSONData, '$.Id') INTO AddressId;
+ 	
 	IF AddressId = 0 THEN							
 		
 		INSERT INTO Address(Street ,HouseNumber ,PoBox ,PhoneNumber ,City ,ZIP ,State ,Neighborhood ,Reference)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Street'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseNumber'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PoBox'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PhoneNumber'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.City'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Zip'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.State'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Neighborhood'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Reference'))
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Street'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseNumber'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.PoBox'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.PhoneNumber'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.City'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Zip'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.State'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Neighborhood'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Reference'));
 		SET AddressId = LAST_INSERT_ID();
 	
 	ELSE
@@ -1352,15 +1330,15 @@ BEGIN
 						
 			UPDATE Address
 			SET
-				 `Street` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Street')) FROM JSON_TABLE)
-				,`HouseNumber` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseNumber')) FROM JSON_TABLE)
-				,`PoBox` =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PoBox')) FROM JSON_TABLE)
-				,`PhoneNumber` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PhoneNumber')) FROM JSON_TABLE)
-				,`City` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.City')) FROM JSON_TABLE)
-				,`ZIP` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Zip')) FROM JSON_TABLE)
-				,`State` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.State')) FROM JSON_TABLE)
-				,`Neighborhood` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Neighborhood')) FROM JSON_TABLE)
-				,`Reference` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Reference'))  FROM JSON_TABLE)
+				 `Street` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.Street')))
+				,`HouseNumber` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseNumber')))
+				,`PoBox` =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.PoBox')))
+				,`PhoneNumber` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.PhoneNumber')))
+				,`City` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.City')))
+				,`ZIP` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Zip')))
+				,`State` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.State')))
+				,`Neighborhood` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Neighborhood')))
+				,`Reference` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Reference')))
 			WHERE Id = AddressId;
 		END IF;
 	END IF;
@@ -1384,22 +1362,13 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
-	
-	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO LegalGuardianId
-	FROM JSON_TABLE;
- 
-	
+    		
+	SELECT JSON_EXTRACT(JSONData, '$.Id') INTO LegalGuardianId;
+ 	
 	IF LegalGuardianId = 0 THEN							
 		
 		INSERT INTO LegalGuardian(`FullName` 
@@ -1416,20 +1385,19 @@ BEGIN
 			,`SpouseId`
 			,`DateOfBirth`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FullName'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Age'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PlaceOfBirth'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MaritalStatusId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Education'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RelationshipId'))
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FullName'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Age'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.PlaceOfBirth'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.MaritalStatusId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Education'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CurrentOccupation'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.RelationshipId'))
 			,AddressId
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CellPhoneNumber'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PhoneNumber'))
-      		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Errand'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CellPhoneNumber'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.PhoneNumber'))
+      		,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Errand'))
 			,SpouseId
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DateOfBirth'))
-		FROM JSON_TABLE;
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.DateOfBirth'));
 		SET LegalGuardianId = LAST_INSERT_ID();
 	
 	ELSE
@@ -1443,19 +1411,19 @@ BEGIN
 						
 			UPDATE LegalGuardian
 			SET
-				 `FullName` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.FullName')) FROM JSON_TABLE)
-				,`Age` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Age')) FROM JSON_TABLE)
-				,`PlaceOfBirth` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PlaceOfBirth')) FROM JSON_TABLE)
-				,`MaritalStatusId` =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MaritalStatusId')) FROM JSON_TABLE)
-				,`Education` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Education')) FROM JSON_TABLE)
-				,`CurrentOccupation` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation')) FROM JSON_TABLE)
-				,`RelationshipId` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RelationshipId')) FROM JSON_TABLE)
+				 `FullName` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.FullName')))
+				,`Age` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Age')))
+				,`PlaceOfBirth` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.PlaceOfBirth')))
+				,`MaritalStatusId` =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.MaritalStatusId')))
+				,`Education` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Education')))
+				,`CurrentOccupation` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CurrentOccupation')))
+				,`RelationshipId` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.RelationshipId')))
 				,`AddressId` = AddressId
-				,`CellPhoneNumber` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CellPhoneNumber')) FROM JSON_TABLE)
-				,`PhoneNumber`= (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PhoneNumber'))  FROM JSON_TABLE)
-                ,`Errand` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Errand'))  FROM JSON_TABLE)
+				,`CellPhoneNumber` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CellPhoneNumber')))
+				,`PhoneNumber`= (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.PhoneNumber')))
+                ,`Errand` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Errand')))
 				,`SpouseId` = SpouseId
-				,`DateOfBirth` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DateOfBirth'))  FROM JSON_TABLE)
+				,`DateOfBirth` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.DateOfBirth')))
 			WHERE Id = LegalGuardianId;
 		END IF;
 	END IF;
@@ -1476,31 +1444,23 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
-	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
+	END;    
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO SpouseId
-	FROM JSON_TABLE;
+	JSON_EXTRACT(JSONData, '$.Id') INTO SpouseId;
  
 	
 	IF SpouseId = 0 THEN							
 		
 		INSERT INTO Spouse(`FullName` ,`Age` ,`CurrentOccupation` ,`Comments`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FullName'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Age'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments'))
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FullName'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Age'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CurrentOccupation'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Comments'));
 		SET SpouseId = LAST_INSERT_ID();
 	
 	ELSE
@@ -1514,10 +1474,10 @@ BEGIN
 						
 			UPDATE Spouse
 			SET
-				 `FullName` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.FullName')) FROM JSON_TABLE)
-				,`Age` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Age')) FROM JSON_TABLE)
-				,`CurrentOccupation` =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation')) FROM JSON_TABLE)
-				,`Comments` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments')) FROM JSON_TABLE)
+				 `FullName` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.FullName')))
+				,`Age` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Age')))
+				,`CurrentOccupation` =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CurrentOccupation')))
+				,`Comments` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Comments')))
 			WHERE Id = SpouseId;
 		END IF;
 	END IF;
@@ -1539,34 +1499,26 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
-	
+    	
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO MinorId
-	FROM JSON_TABLE;
+	JSON_EXTRACT(JSONData, '$.Id') INTO MinorId;
  
 	
 	IF MinorId = 0 THEN							
 		
 		INSERT INTO Minor (`FullName`, `DateOfBirth`, `PlaceOfBirth`, `Age`, `Education`, `CurrentOccupation` ,`FormalEducationId`)
 		SELECT
-			JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FullName'))
-			,CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DateOfBirth')) AS datetime)
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PlaceOfBirth'))
-			,JSON_EXTRACT(Data, '$.Age')
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Education'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation'))
-			,FormalEducationId
-		FROM JSON_TABLE;
+			JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FullName'))
+			,CAST(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.DateOfBirth')) AS datetime)
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.PlaceOfBirth'))
+			,JSON_EXTRACT(JSONData, '$.Age')
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Education'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CurrentOccupation'))
+			,FormalEducationId;
 		SET MinorId = LAST_INSERT_ID();
 	
 	ELSE
@@ -1580,12 +1532,12 @@ BEGIN
 						
 			UPDATE Minor
 			SET
-				 `FullName` =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FullName')) FROM JSON_TABLE)
-				,`DateOfBirth` =       (SELECT CAST(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DateOfBirth')) AS datetime) FROM JSON_TABLE) 
-				,`PlaceOfBirth` =      (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PlaceOfBirth')) FROM JSON_TABLE)
-				,`Age` =               (SELECT JSON_EXTRACT(Data, '$.Age') FROM JSON_TABLE)
-				,`Education` =         (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Education')) FROM JSON_TABLE)
-				,`CurrentOccupation` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentOccupation')) FROM JSON_TABLE)
+				 `FullName` =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FullName')))
+				,`DateOfBirth` =       (SELECT CAST(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.DateOfBirth')) AS datetime)) 
+				,`PlaceOfBirth` =      (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.PlaceOfBirth')))
+				,`Age` =               (SELECT JSON_EXTRACT(JSONData, '$.Age'))
+				,`Education` =         (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Education')))
+				,`CurrentOccupation` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CurrentOccupation')))
 				,`FormalEducationId` =  FormalEducationId
 			WHERE Id = MinorId;
 		END IF;
@@ -1607,32 +1559,24 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO FormalEducationId
-	FROM JSON_TABLE;
+	JSON_EXTRACT(JSONData, '$.Id') INTO FormalEducationId;
  
 	
 	IF FormalEducationId = 0 THEN							
 		
 		INSERT INTO FormalEducation (CanItRead, CanItWrite, IsItStudyingNow, CurrentGrade, ReasonsToStopStudying)
 		SELECT
-			 CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItRead'))) = 'TRUE' THEN 1 ELSE 0 END
-			,CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItWrite'))) = 'TRUE' THEN 1 ELSE 0 END
-			,CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IsItStudyingNow'))) = 'TRUE' THEN 1 ELSE 0 END
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentGrade'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ReasonsToStopStudying'))
-		FROM JSON_TABLE;
+			 CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CanItRead'))) = 'TRUE' THEN 1 ELSE 0 END
+			,CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CanItWrite'))) = 'TRUE' THEN 1 ELSE 0 END
+			,CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.IsItStudyingNow'))) = 'TRUE' THEN 1 ELSE 0 END
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CurrentGrade'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.ReasonsToStopStudying'));
 		SET FormalEducationId = LAST_INSERT_ID();
 	
 	ELSE
@@ -1646,11 +1590,11 @@ BEGIN
 						
 			UPDATE FormalEducation
 			SET
-				 CanItRead = 		(SELECT CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItRead'))) = 'TRUE' THEN 1 ELSE 0 END FROM JSON_TABLE)
-				,CanItWrite = 		(SELECT CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CanItWrite'))) = 'TRUE' THEN 1 ELSE 0 END FROM JSON_TABLE)
-				,IsItStudyingNow = 	(SELECT CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IsItStudyingNow'))) = 'TRUE' THEN 1 ELSE 0 END FROM JSON_TABLE)
-				,CurrentGrade =   	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CurrentGrade')) FROM JSON_TABLE)
-				,ReasonsToStopStudying = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ReasonsToStopStudying')) FROM JSON_TABLE)
+				 CanItRead = 		(SELECT CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CanItRead'))) = 'TRUE' THEN 1 ELSE 0 END)
+				,CanItWrite = 		(SELECT CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CanItWrite'))) = 'TRUE' THEN 1 ELSE 0 END)
+				,IsItStudyingNow = 	(SELECT CASE WHEN UPPER(JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.IsItStudyingNow'))) = 'TRUE' THEN 1 ELSE 0 END)
+				,CurrentGrade =   	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CurrentGrade')))
+				,ReasonsToStopStudying = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.ReasonsToStopStudying')))
 			WHERE Id = FormalEducationId;
 		END IF;
 	END IF;
@@ -1672,34 +1616,25 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
-	
+    	
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO PreviousFoundationId
-	FROM JSON_TABLE;
- 
+	JSON_EXTRACT(JSONData, '$.Id') INTO PreviousFoundationId;
 	
 	IF PreviousFoundationId = 0 THEN							
 		
 		INSERT INTO PreviousFoundation(`Familiar` ,`Procuraduria` ,`Dif` ,`Otro`,`InstitucionAnterior`,`TiempoDeEstadia`,`MotivoDeEgreso`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Familiar'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Procuraduria'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Dif'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Otro'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.InstitucionAnterior'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TiempoDeEstadia'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MotivoDeEgreso'))
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Familiar'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Procuraduria'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Dif'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Otro'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.InstitucionAnterior'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.TiempoDeEstadia'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.MotivoDeEgreso'));
 		SET PreviousFoundationId = LAST_INSERT_ID();
 	
 	ELSE
@@ -1713,13 +1648,13 @@ BEGIN
 						
 			UPDATE PreviousFoundation
 			SET
-				Familiar = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.Familiar')) FROM JSON_TABLE)
-				,Procuraduria = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Procuraduria')) FROM JSON_TABLE)
-				,Dif =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Dif')) FROM JSON_TABLE)
-				,Otro = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Otro')) FROM JSON_TABLE)
-				,InstitucionAnterior = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.InstitucionAnterior')) FROM JSON_TABLE)
-				,TiempoDeEstadia = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TiempoDeEstadia')) FROM JSON_TABLE)
-				,MotivoDeEgreso = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MotivoDeEgreso')) FROM JSON_TABLE)
+				Familiar = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.Familiar')))
+				,Procuraduria = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Procuraduria')))
+				,Dif =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Dif')))
+				,Otro = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Otro')))
+				,InstitucionAnterior = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.InstitucionAnterior')))
+				,TiempoDeEstadia = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.TiempoDeEstadia')))
+				,MotivoDeEgreso = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.MotivoDeEgreso')))
 			WHERE Id = PreviousFoundationId;
 		END IF;
 	END IF;
@@ -1740,20 +1675,13 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO FamilyHealthId
-	FROM JSON_TABLE;
+	JSON_EXTRACT(JSONData, '$.Id') INTO FamilyHealthId;
  
 	
 	IF FamilyHealthId = 0 THEN							
@@ -1761,15 +1689,14 @@ BEGIN
 		INSERT INTO FamilyHealth
 		(`FamilyHealthStatus` ,`DerechoHambienteAServiciosDeSalud` ,`Tipo` ,`EnfermedadesCronicasDegenerativas`,`ConsumoDeTabaco`,`ConsumoDeAlcohol`,`ConsumoDeDrogas`, `Comments`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealthStatus'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DerechoHambienteAServiciosDeSalud'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Tipo'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EnfermedadesCronicasDegenerativas'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ConsumoDeTabaco'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ConsumoDeAlcohol'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ConsumoDeDrogas'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments'))
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyHealthStatus'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.DerechoHambienteAServiciosDeSalud'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Tipo'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.EnfermedadesCronicasDegenerativas'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.ConsumoDeTabaco'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.ConsumoDeAlcohol'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.ConsumoDeDrogas'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Comments'));
 		SET FamilyHealthId = LAST_INSERT_ID();
 	
 	ELSE
@@ -1783,14 +1710,14 @@ BEGIN
 						
 			UPDATE FamilyHealth
 			SET
-				FamilyHealthStatus = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.FamilyHealthStatus')) FROM JSON_TABLE)
-				,DerechoHambienteAServiciosDeSalud = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealth.DerechoHambienteAServiciosDeSalud')) FROM JSON_TABLE)
-				,Tipo =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Tipo')) FROM JSON_TABLE)
-				,EnfermedadesCronicasDegenerativas = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EnfermedadesCronicasDegenerativas')) FROM JSON_TABLE)
-				,ConsumoDeTabaco = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ConsumoDeTabaco')) FROM JSON_TABLE)
-				,ConsumoDeAlcohol = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ConsumoDeAlcohol')) FROM JSON_TABLE)
-				,ConsumoDeDrogas = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ConsumoDeDrogas')) FROM JSON_TABLE)
-				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments')) FROM JSON_TABLE)
+				FamilyHealthStatus = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.FamilyHealthStatus')))
+				,DerechoHambienteAServiciosDeSalud = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyHealth.DerechoHambienteAServiciosDeSalud')))
+				,Tipo =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Tipo')))
+				,EnfermedadesCronicasDegenerativas = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.EnfermedadesCronicasDegenerativas')))
+				,ConsumoDeTabaco = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.ConsumoDeTabaco')))
+				,ConsumoDeAlcohol = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.ConsumoDeAlcohol')))
+				,ConsumoDeDrogas = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.ConsumoDeDrogas')))
+				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Comments')))
 			WHERE Id = FamilyHealthId;
 		END IF;
 	END IF;
@@ -1837,31 +1764,23 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
-	
+    	
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO FamilyMembersId
-	FROM JSON_TABLE;
+	JSON_EXTRACT(JSONData, '$.Id') INTO FamilyMembersId;
  
 	IF FamilyMembersId = 0 THEN							
 		
 		INSERT INTO FamilyMembers (`FamilyInteraction` ,`Comments`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyInteraction'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments'))			
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyInteraction'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Comments'));
 		SET FamilyMembersId = LAST_INSERT_ID();
 
-		CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.FamilyMembersDetails') FROM JSON_TABLE), FamilyMembersId, 'AddOrUpdateFamilyMembersDetails');
+		CALL `foreach_array_item`((SELECT JSON_EXTRACT(JSONData, '$.FamilyMembersDetails')), FamilyMembersId, 'AddOrUpdateFamilyMembersDetails');
 	
 	ELSE
 		
@@ -1874,13 +1793,13 @@ BEGIN
 						
 			UPDATE FamilyMembers
 			SET
-				FamilyInteraction = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, ' $.FamilyInteraction')) FROM JSON_TABLE)
-				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments')) FROM JSON_TABLE)				
+				FamilyInteraction = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, ' $.FamilyInteraction')))
+				,Comments = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Comments')))				
 			WHERE Id = FamilyMembersId;
 
 			DELETE FROM FamilyMembersDetails  WHERE `FamilyMembersId` = FamilyMembersId;
 
-			CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.FamilyMembersDetails') FROM JSON_TABLE), FamilyMembersId, 'AddOrUpdateFamilyMembersDetails');
+			CALL `foreach_array_item`((SELECT JSON_EXTRACT(JSONData, '$.FamilyMembersDetails')), FamilyMembersId, 'AddOrUpdateFamilyMembersDetails');
 			
 		END IF;
 	END IF;
@@ -1902,53 +1821,44 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO SocioEconomicStudyId
-	FROM JSON_TABLE;
+	JSON_EXTRACT(JSONData, '$.Id') INTO SocioEconomicStudyId;
  
 	
 	IF SocioEconomicStudyId = 0 THEN						
 
 		INSERT INTO HouseLayout (`Bedroom` ,`Dinningroom`,`Kitchen`,`Livingroom`,`Bathroom`,`Patio`,`Garage`,`Backyard`,`Other`,`Ground`,`Walls`,`Roof`,`Description`,`TipoDeMobiliarioId`,`CharacteristicsOfFurniture`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Bedroom'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Dinningroom'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Kitchen'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Livingroom'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Bathroom'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Patio'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Garage'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Backyard'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Other'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Ground'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Walls'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Roof'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Description'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.TipoDeMobiliarioId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.CharacteristicsOfFurniture'))
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Bedroom'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Dinningroom'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Kitchen'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Livingroom'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Bathroom'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Patio'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Garage'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Backyard'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Other'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Ground'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Walls'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Roof'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Description'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.TipoDeMobiliarioId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.CharacteristicsOfFurniture'));
 		SET HouseLayoutId = LAST_INSERT_ID();
 		
 		
 		INSERT INTO SocioEconomicStudy (`HomeAcquisitionId` ,`NombrePropietario`, `MedioAdquisicion`, `TypesOfHousesId`, `HouseLayoutId`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HomeAcquisitionId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.NombrePropietario'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MedioAdquisicion'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TypesOfHousesId'))
-			,HouseLayoutId
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HomeAcquisitionId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.NombrePropietario'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.MedioAdquisicion'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.TypesOfHousesId'))
+			,HouseLayoutId;
 		SET SocioEconomicStudyId = LAST_INSERT_ID();
 
 	ELSE
@@ -1967,29 +1877,29 @@ BEGIN
 						
 			UPDATE SocioEconomicStudy
 				SET
-				 HomeAcquisitionId =           (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HomeAcquisitionId')) FROM JSON_TABLE)
-				,NombrePropietario =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.NombrePropietario')) FROM JSON_TABLE)
-				,MedioAdquisicion =   (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MedioAdquisicion')) FROM JSON_TABLE)
-				,TypesOfHousesId =    (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TypesOfHousesId')) FROM JSON_TABLE)
+				 HomeAcquisitionId =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HomeAcquisitionId')))
+				,NombrePropietario =  (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.NombrePropietario')))
+				,MedioAdquisicion =   (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.MedioAdquisicion')))
+				,TypesOfHousesId =    (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.TypesOfHousesId')))
 			WHERE Id = SocioEconomicStudyId;
 
 			UPDATE HouseLayout
 			SET
-				Bedroom =          				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Bedroom')) FROM JSON_TABLE)
-				,Dinningroom = 					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Dinningroom')) FROM JSON_TABLE)
-				,Kitchen =  					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Kitchen')) FROM JSON_TABLE)
-				,Livingroom =   				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Livingroom')) FROM JSON_TABLE)
-				,Bathroom =   				    (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Bathroom')) FROM JSON_TABLE)
-				,Patio = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Patio')) FROM JSON_TABLE)
-				,Garage =  						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Garage')) FROM JSON_TABLE)
-				,Backyard =   					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Backyard')) FROM JSON_TABLE)
-				,Other = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Other')) FROM JSON_TABLE)
-				,Ground =  						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Ground')) FROM JSON_TABLE)
-				,Walls =   						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Walls')) FROM JSON_TABLE)
-				,Roof = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Roof')) FROM JSON_TABLE)
-				,Description =  				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.Description')) FROM JSON_TABLE)
-				,TipoDeMobiliarioId =          	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.TipoDeMobiliarioId')) FROM JSON_TABLE)
-				,CharacteristicsOfFurniture =  	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.HouseLayout.CharacteristicsOfFurniture')) FROM JSON_TABLE)
+				Bedroom =          				(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Bedroom')))
+				,Dinningroom = 					(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Dinningroom')))
+				,Kitchen =  					(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Kitchen')))
+				,Livingroom =   				(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Livingroom')))
+				,Bathroom =   				    (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Bathroom')))
+				,Patio = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Patio')))
+				,Garage =  						(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Garage')))
+				,Backyard =   					(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Backyard')))
+				,Other = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Other')))
+				,Ground =  						(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Ground')))
+				,Walls =   						(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Walls')))
+				,Roof = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Roof')))
+				,Description =  				(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.Description')))
+				,TipoDeMobiliarioId =          	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.TipoDeMobiliarioId')))
+				,CharacteristicsOfFurniture =  	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.HouseLayout.CharacteristicsOfFurniture')))
 			WHERE Id = HouseLayoutId;
 		
 		END IF;
@@ -2012,44 +1922,36 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
-	
+    	
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO DistrictId
-	FROM JSON_TABLE;
+	JSON_EXTRACT(JSONData, '$.Id') INTO DistrictId;
  
 	
 	IF DistrictId = 0 THEN						
 		
 		INSERT INTO District (`TypeOfDistrictId` ,`AguaPotable`, `Telefono`, `Electricidad`, `Drenaje`,`Hospital`,`Correo`,`Escuela`,`Policia`,`AlumbradoPublico`,`ViasDeAcceso`,`TransportePublico`,`AseoPublico`,`Iglesia`,`Mercado`,`Otros`,`Description`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TypeOfDistrictId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AguaPotable'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Telefono'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Electricidad'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Drenaje'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Hospital'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Correo'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Escuela'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Policia'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AlumbradoPublico'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ViasDeAcceso'))			
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TransportePublico'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AseoPublico'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Iglesia'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Mercado'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Otros'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Description'))
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.TypeOfDistrictId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.AguaPotable'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Telefono'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Electricidad'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Drenaje'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Hospital'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Correo'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Escuela'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Policia'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.AlumbradoPublico'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.ViasDeAcceso'))			
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.TransportePublico'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.AseoPublico'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Iglesia'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Mercado'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Otros'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Description'));
 		SET DistrictId = LAST_INSERT_ID();
 
 	ELSE
@@ -2063,23 +1965,23 @@ BEGIN
 						
 			UPDATE District
 				SET
-				 TypeOfDistrictId = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TypeOfDistrictId')) FROM JSON_TABLE)
-				,AguaPotable =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AguaPotable')) FROM JSON_TABLE)
-				,Telefono = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Telefono')) FROM JSON_TABLE)
-				,Electricidad = 		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Electricidad')) FROM JSON_TABLE)
-				,Drenaje =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Drenaje')) FROM JSON_TABLE)
-				,Hospital = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Hospital')) FROM JSON_TABLE)
-				,Correo = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Correo')) FROM JSON_TABLE)
-				,Escuela =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Escuela')) FROM JSON_TABLE)
-				,Policia = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Policia')) FROM JSON_TABLE)
-				,AlumbradoPublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AlumbradoPublico')) FROM JSON_TABLE)
-				,ViasDeAcceso =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ViasDeAcceso')) FROM JSON_TABLE)
-				,TransportePublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.TransportePublico')) FROM JSON_TABLE)
-				,AseoPublico = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.AseoPublico')) FROM JSON_TABLE)
-				,Iglesia =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Iglesia')) FROM JSON_TABLE)
-				,Mercado =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Mercado')) FROM JSON_TABLE)
-				,Otros = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Otros')) FROM JSON_TABLE)
-				,Description = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Description')) FROM JSON_TABLE)				
+				 TypeOfDistrictId = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.TypeOfDistrictId')))
+				,AguaPotable =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.AguaPotable')))
+				,Telefono = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Telefono')))
+				,Electricidad = 		(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Electricidad')))
+				,Drenaje =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Drenaje')))
+				,Hospital = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Hospital')))
+				,Correo = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Correo')))
+				,Escuela =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Escuela')))
+				,Policia = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Policia')))
+				,AlumbradoPublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.AlumbradoPublico')))
+				,ViasDeAcceso =  		(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.ViasDeAcceso')))
+				,TransportePublico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.TransportePublico')))
+				,AseoPublico = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.AseoPublico')))
+				,Iglesia =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Iglesia')))
+				,Mercado =  			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Mercado')))
+				,Otros = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Otros')))
+				,Description = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Description')))				
 			WHERE Id = DistrictId;
 			
 		END IF;
@@ -2121,31 +2023,23 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
 	
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO EconomicSituationId
-	FROM JSON_TABLE;
+	JSON_EXTRACT(JSONData, '$.Id') INTO EconomicSituationId;
  
 	
 	IF EconomicSituationId = 0 THEN						
 		
 		INSERT INTO EconomicSituation (`NivelSocioEconomico`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.NivelSocioEconomico'))
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.NivelSocioEconomico'));
 		SET EconomicSituationId = LAST_INSERT_ID();
 
-		CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.EconomicSituationPatrimonyRelation') FROM JSON_TABLE), EconomicSituationId, 'AddEconomicSituationPatrimonyRelation');
+		CALL `foreach_array_item`((SELECT JSON_EXTRACT(JSONData, '$.EconomicSituationPatrimonyRelation')), EconomicSituationId, 'AddEconomicSituationPatrimonyRelation');
 		
 	ELSE
 		
@@ -2158,12 +2052,12 @@ BEGIN
 						
 			UPDATE EconomicSituation
 				SET
-				NivelSocioEconomico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.NivelSocioEconomico')) FROM JSON_TABLE)							
+				NivelSocioEconomico = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.NivelSocioEconomico')))							
 			WHERE Id = EconomicSituationId;
 			
 			DELETE FROM EconomicSituationPatrimonyRelation  WHERE `EconomicSituationId` = EconomicSituationId;
 
-			CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.EconomicSituationPatrimonyRelation') FROM JSON_TABLE), EconomicSituationId, 'AddEconomicSituationPatrimonyRelation');
+			CALL `foreach_array_item`((SELECT JSON_EXTRACT(JSONData, '$.EconomicSituationPatrimonyRelation')), EconomicSituationId, 'AddEconomicSituationPatrimonyRelation');
 				
 		END IF;
 	END IF;
@@ -2239,31 +2133,23 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE,
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
 
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
-
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO FamilyNutritionId
-	FROM JSON_TABLE;
+	JSON_EXTRACT(JSONData, '$.Id') INTO FamilyNutritionId;
 
 	IF FamilyNutritionId = 0 THEN
 
 		INSERT INTO FamilyNutrition (`Comments`, `FoodAllergy`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments'))
-       		,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FoodAllergy'))
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Comments'))
+       		,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FoodAllergy'));
 		SET FamilyNutritionId = LAST_INSERT_ID();
 
-		CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.FamilyNutritionFoodRelation') FROM JSON_TABLE), FamilyNutritionId, 'AddFamilyNutritionFoodRelation');
+		CALL `foreach_array_item`((SELECT JSON_EXTRACT(JSONData, '$.FamilyNutritionFoodRelation')), FamilyNutritionId, 'AddFamilyNutritionFoodRelation');
 
 	ELSE
 
@@ -2276,13 +2162,13 @@ BEGIN
 
 			UPDATE FamilyNutrition
 				SET
-				`Comments` =		(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments')) FROM JSON_TABLE)
-				,`FoodAllergy` =	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FoodAllergy')) FROM JSON_TABLE)
+				`Comments` =		(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Comments')))
+				,`FoodAllergy` =	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FoodAllergy')))
 			WHERE Id = FamilyNutritionId;
 
 			DELETE FROM FamilyNutritionFoodRelation WHERE `FamilyNutritionId` = FamilyNutritionId;
 
-			CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.FamilyNutritionFoodRelation') FROM JSON_TABLE), FamilyNutritionId, 'AddFamilyNutritionFoodRelation');
+			CALL `foreach_array_item`((SELECT JSON_EXTRACT(JSONData, '$.FamilyNutritionFoodRelation')), FamilyNutritionId, 'AddFamilyNutritionFoodRelation');
 
 		END IF;
 	END IF;
@@ -2326,20 +2212,13 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
-	
+    	
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO BenefitsProvidedId
-	FROM JSON_TABLE;
+	JSON_EXTRACT(JSONData, '$.Id') INTO BenefitsProvidedId;
  
 	IF BenefitsProvidedId = 0 THEN							
 		
@@ -2347,7 +2226,7 @@ BEGIN
 		SELECT UTC_TIMESTAMP();
 		SET BenefitsProvidedId = LAST_INSERT_ID();
 
-		CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.BenefitsProvidedDetails') FROM JSON_TABLE), BenefitsProvidedId, 'AddOrUpdateBenefitsProvidedDetails');
+		CALL `foreach_array_item`((SELECT JSON_EXTRACT(JSONData, '$.BenefitsProvidedDetails')), BenefitsProvidedId, 'AddOrUpdateBenefitsProvidedDetails');
 	
 	ELSE
 		
@@ -2360,7 +2239,7 @@ BEGIN
 						
 			DELETE FROM BenefitsProvidedDetails  WHERE `BenefitsProvidedId` = BenefitsProvidedId;
 
-			CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.BenefitsProvidedDetails') FROM JSON_TABLE), BenefitsProvidedId, 'AddOrUpdateBenefitsProvidedDetails');
+			CALL `foreach_array_item`((SELECT JSON_EXTRACT(JSONData, '$.BenefitsProvidedDetails')), BenefitsProvidedId, 'AddOrUpdateBenefitsProvidedDetails');
 			
 		END IF;
 	END IF;
@@ -2400,30 +2279,22 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE,
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
 
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
-
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO IngresosEgresosMensualesId
-	FROM JSON_TABLE;
+	JSON_EXTRACT(JSONData, '$.Id') INTO IngresosEgresosMensualesId;
 
 	IF IngresosEgresosMensualesId = 0 THEN
 
 		INSERT INTO IngresosEgresosMensuales (`Comments`)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments'))
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Comments'));
 		SET IngresosEgresosMensualesId = LAST_INSERT_ID();
 
-		CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.IngresosEgresosMensualesMovimientoRelation') FROM JSON_TABLE), IngresosEgresosMensualesId, 'AddIngresosEgresosMensualesMovimientoRelation');
+		CALL `foreach_array_item`((SELECT JSON_EXTRACT(JSONData, '$.IngresosEgresosMensualesMovimientoRelation')), IngresosEgresosMensualesId, 'AddIngresosEgresosMensualesMovimientoRelation');
 
 	ELSE
 
@@ -2436,12 +2307,12 @@ BEGIN
 
 			UPDATE IngresosEgresosMensuales
 				SET
-				`Comments` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Comments')) FROM JSON_TABLE)
+				`Comments` = (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Comments')))
 			WHERE Id = IngresosEgresosMensualesId;
 
 			DELETE FROM IngresosEgresosMensualesMovimientoRelation WHERE `IngresosEgresosMensualesId` = IngresosEgresosMensualesId;
 
-			CALL `foreach_array_item`((SELECT JSON_EXTRACT(Data, '$.IngresosEgresosMensualesMovimientoRelation') FROM JSON_TABLE), IngresosEgresosMensualesId, 'AddIngresosEgresosMensualesMovimientoRelation');
+			CALL `foreach_array_item`((SELECT JSON_EXTRACT(JSONData, '$.IngresosEgresosMensualesMovimientoRelation')), IngresosEgresosMensualesId, 'AddIngresosEgresosMensualesMovimientoRelation');
 
 		END IF;
 	END IF;
@@ -2462,20 +2333,13 @@ BEGIN
 
 	DECLARE exit handler for SQLEXCEPTION
 	BEGIN
-		 ROLLBACK;
 		 GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE, 
 		 @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
 		 SET ErrorMessage = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
 	END;
-    
-	DROP TEMPORARY TABLE IF EXISTS JSON_TABLE;
-
-	CREATE TEMPORARY TABLE JSON_TABLE
-	SELECT JSONData AS 'Data';
-	
+    	
 	SELECT
-	JSON_EXTRACT(Data, '$.Id') INTO FamilyResearchId
-	FROM JSON_TABLE;
+	JSON_EXTRACT(JSONData, '$.Id') INTO FamilyResearchId;
  
 	
 	IF FamilyResearchId = 0 THEN							
@@ -2508,31 +2372,30 @@ BEGIN
 			,IngresosEgresosMensualesId
 		)
 		SELECT
-			 JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisitDate'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisitTime'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Family'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RequestReasons'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RedesDeApoyoFamiliares'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SituationsOfDomesticViolence'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyExpectations'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyDiagnostic'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ProblemsIdentified'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CaseStudyConclusion'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Recommendations'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisualSupports'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Sketch'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardianId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MinorId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundationId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealthId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembersId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioEconomicStudyId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DistrictId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituationId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutritionId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.BenefitsProvidedId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IngresosEgresosMensualesId'))
-		FROM JSON_TABLE;
+			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.VisitDate'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.VisitTime'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Family'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.RequestReasons'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.RedesDeApoyoFamiliares'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.SituationsOfDomesticViolence'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyExpectations'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyDiagnostic'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.ProblemsIdentified'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CaseStudyConclusion'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Recommendations'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.VisualSupports'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Sketch'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.LegalGuardianId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.MinorId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.PreviousFoundationId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyHealthId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyMembersId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.SocioEconomicStudyId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.DistrictId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.EconomicSituationId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyNutritionId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.BenefitsProvidedId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.IngresosEgresosMensualesId'));
 		SET FamilyResearchId = LAST_INSERT_ID();
 	
 	ELSE
@@ -2546,30 +2409,30 @@ BEGIN
 						
 			UPDATE FamilyResearch
 			SET
-				 `VisitDate` =                     	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisitDate')) FROM JSON_TABLE)
-				,`VisitTime` =                     	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisitTime')) FROM JSON_TABLE)
-				,`Family` =                        	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Family')) FROM JSON_TABLE)
-				,`RequestReasons` =                	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RequestReasons')) FROM JSON_TABLE)
-				,`RedesDeApoyoFamiliares` =        	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.RedesDeApoyoFamiliares')) FROM JSON_TABLE)
-				,`SituationsOfDomesticViolence` =  	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SituationsOfDomesticViolence')) FROM JSON_TABLE)
-				,`FamilyExpectations` =            	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyExpectations')) FROM JSON_TABLE)
-				,`FamilyDiagnostic` =              	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyDiagnostic')) FROM JSON_TABLE)
-				,`ProblemsIdentified` =            	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.ProblemsIdentified')) FROM JSON_TABLE)
-				,`CaseStudyConclusion` =           	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.CaseStudyConclusion')) FROM JSON_TABLE)
-				,`Recommendations` =               	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Recommendations')) FROM JSON_TABLE)
-				,`VisualSupports` =                	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.VisualSupports')) FROM JSON_TABLE)
-				,`Sketch` =                        	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.Sketch')) FROM JSON_TABLE)
-				,`LegalGuardianId` = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.LegalGuardianId')) FROM JSON_TABLE)
-				,`MinorId` = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.MinorId')) FROM JSON_TABLE)
-				,`PreviousFoundationId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.PreviousFoundationId')) FROM JSON_TABLE)
-				,`FamilyHealthId` = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyHealthId')) FROM JSON_TABLE)
-				,`FamilyMembersId` = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyMembersId')) FROM JSON_TABLE)
-				,`SocioeconomicStudyId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.SocioEconomicStudyId')) FROM JSON_TABLE)
-				,`DistrictId` = 					(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.DistrictId')) FROM JSON_TABLE)
-				,`EconomicSituationId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.EconomicSituationId')) FROM JSON_TABLE)
-				,`FamilyNutritionId` = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.FamilyNutritionId')) FROM JSON_TABLE)
-				,`BenefitsProvidedId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.BenefitsProvidedId')) FROM JSON_TABLE)
-				,`IngresosEgresosMensualesId` = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(Data, '$.IngresosEgresosMensualesId')) FROM JSON_TABLE)
+				 `VisitDate` =                     	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.VisitDate')))
+				,`VisitTime` =                     	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.VisitTime')))
+				,`Family` =                        	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Family')))
+				,`RequestReasons` =                	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.RequestReasons')))
+				,`RedesDeApoyoFamiliares` =        	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.RedesDeApoyoFamiliares')))
+				,`SituationsOfDomesticViolence` =  	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.SituationsOfDomesticViolence')))
+				,`FamilyExpectations` =            	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyExpectations')))
+				,`FamilyDiagnostic` =              	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyDiagnostic')))
+				,`ProblemsIdentified` =            	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.ProblemsIdentified')))
+				,`CaseStudyConclusion` =           	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.CaseStudyConclusion')))
+				,`Recommendations` =               	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Recommendations')))
+				,`VisualSupports` =                	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.VisualSupports')))
+				,`Sketch` =                        	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.Sketch')))
+				,`LegalGuardianId` = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.LegalGuardianId')))
+				,`MinorId` = 						(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.MinorId')))
+				,`PreviousFoundationId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.PreviousFoundationId')))
+				,`FamilyHealthId` = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyHealthId')))
+				,`FamilyMembersId` = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyMembersId')))
+				,`SocioeconomicStudyId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.SocioEconomicStudyId')))
+				,`DistrictId` = 					(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.DistrictId')))
+				,`EconomicSituationId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.EconomicSituationId')))
+				,`FamilyNutritionId` = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyNutritionId')))
+				,`BenefitsProvidedId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.BenefitsProvidedId')))
+				,`IngresosEgresosMensualesId` = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.IngresosEgresosMensualesId')))
 				
 			WHERE Id = FamilyResearchId;
 		END IF;
@@ -2625,5 +2488,64 @@ CREATE TABLE `UserRolesRelation` (
   KEY `FK_UserRolesRelation_Roles` (`RolesId`),
   CONSTRAINT `FK_UserRolesRelation_Roles` FOREIGN KEY (`RolesId`) REFERENCES `Roles` (`Id`)
 ) ENGINE=InnoDB;
+
+--
+-- Table structure for table `log`
+--
+
+DROP TABLE IF EXISTS `log`;
+
+CREATE TABLE `log` (
+  `Id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `Application` varchar(50) DEFAULT NULL,
+  `Logged` datetime DEFAULT NULL,
+  `Level` varchar(50) DEFAULT NULL,
+  `Message` text DEFAULT NULL,
+  `Logger` varchar(250) DEFAULT NULL,
+  `Callsite` text DEFAULT NULL,
+  `Exception` longtext DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB;
+
+
+
+DROP PROCEDURE IF EXISTS `SaveLog`;
+
+DELIMITER ;;
+CREATE PROCEDURE `SaveLog`(
+    IN Application varchar(50),
+    IN Logged datetime,
+    IN Level varchar(50),
+    IN Message text ,
+    IN Logger varchar(250),
+    IN Callsite text,
+    IN Exception longtext
+)
+BEGIN
+
+	INSERT INTO log (
+			`Application`,
+			`Logged`,
+			`Level`,
+			`Message`,
+			`Logger`,
+			`Callsite`,
+			`Exception`
+		)
+	VALUES (
+		Application,
+		Logged,
+		Level,
+		Message,
+		Logger,
+		Callsite,
+		Exception
+	);
+
+END ;;
+DELIMITER ;
+
+
+
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -19,6 +19,7 @@ namespace Naandi.Shared.Models
         public string FamilyHealthStatus { get; set; }
         public string Comments { get; set; }
         public int RegistrationRequestStatusId { get; set; }
+        public string SocialWorkerName { get; set; }
         public RegistrationRequestStatus RegistrationRequestStatus { get; set; }
     }
 }

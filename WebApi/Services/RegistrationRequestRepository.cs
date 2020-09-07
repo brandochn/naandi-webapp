@@ -126,8 +126,8 @@ namespace WebApi.Services
                     SELECT rr.Id
                         , IFNULL(rr.HowYouHearAboutUs, '') HowYouHearAboutUs
                         , rr.CreationDate
-                        , IFNULL(rr.RequestorId, 0) RequestorId
-                        , IFNULL(rr.MinorId, 0) MinorId
+                        , rr.RequestorId RequestorId
+                        , rr.MinorId MinorId
                         , IFNULL(rr.Reasons,'') Reasons
                         , IFNULL(rr.FamilyComposition, '') FamilyComposition
                         , IFNULL(rr.FamilyInteraction, '') FamilyInteraction
@@ -148,12 +148,12 @@ namespace WebApi.Services
                         , IFNULL(r.CurrentOccupation, '') CurrentOccupation
                         , r.RelationshipId
                         , r.AddressId
-                        , IFNULL(r.JobId, 0) JobId
+                        , r.JobId JobId
                         , ms.Id
                         , ms.Name
                         , rs.Id
                         , rs.Name
-                        , IFNULL(a.Id, 0 ) Id
+                        , a.Id Id
                         , IFNULL(a.Street, '') Street
                         , IFNULL(a.HouseNumber, '') HouseNumber
                         , IFNULL(a.PoBox, '') PoBox
@@ -163,16 +163,16 @@ namespace WebApi.Services
                         , IFNULL(a.State, '') State
                         , IFNULL(a.Neighborhood, '') Neighborhood
                         , IFNULL(a.Reference, '') Reference
-                        , IFNULL(j.Id, 0) Id
+                        , j.Id Id
                         , IFNULL(j.Location, '') Location
                         , IFNULL(j.JobTitle, '') JobTitle
                         , IFNULL(j.OfficialHours, '') OfficialHours
-                        , IFNULL(j.YearsOfService, 0) YearsOfService
-                        , IFNULL(j.Salary, 0) Salary
-                        , IFNULL(j.AddressId, 0) AddressId
+                        , j.YearsOfService YearsOfService
+                        , j.Salary Salary
+                        , j.AddressId AddressId
                         , IFNULL(j.ManagerName, '') ManagerName
                         , IFNULL(j.ManagerPosition, '') ManagerPosition 
-                        , IFNULL(aj.Id, 0) Id
+                        , aj.Id Id
                         , IFNULL(aj.Street,'') Street
                         , IFNULL(aj.HouseNumber, '') HouseNumber
                         , IFNULL(aj.PoBox, '') PoBox
@@ -189,6 +189,7 @@ namespace WebApi.Services
                         , m.Age
                         , IFNULL(m.Education, '') Education
                         , IFNULL(m.CurrentOccupation, '') CurrentOccupation
+                        , rr.SocialWorkerName
                     FROM RegistrationRequest rr
                     LEFT JOIN Requestor r ON r.Id = rr.RequestorId
                     LEFT JOIN MaritalStatus ms ON ms.Id = r.MaritalStatusId
@@ -321,6 +322,7 @@ namespace WebApi.Services
                             }
                         };
 
+                        registrationRequest.SocialWorkerName = reader.GetValueOrNull<string>(index++);
                     }
                 }
             }
@@ -341,8 +343,8 @@ namespace WebApi.Services
                     SELECT rr.Id
                         , IFNULL(rr.HowYouHearAboutUs, '') HowYouHearAboutUs
                         , rr.CreationDate
-                        , IFNULL(rr.RequestorId, 0) RequestorId
-                        , IFNULL(rr.MinorId, 0) MinorId
+                        , rr.RequestorId RequestorId
+                        , rr.MinorId MinorId
                         , IFNULL(rr.Reasons,'') Reasons
                         , IFNULL(rr.FamilyComposition, '') FamilyComposition
                         , IFNULL(rr.FamilyInteraction, '') FamilyInteraction
@@ -363,12 +365,12 @@ namespace WebApi.Services
                         , IFNULL(r.CurrentOccupation, '') CurrentOccupation
                         , r.RelationshipId
                         , r.AddressId
-                        , IFNULL(r.JobId, 0) JobId
+                        , r.JobId JobId
                         , ms.Id
                         , ms.Name
                         , rs.Id
                         , rs.Name
-                        , IFNULL(a.Id, 0 ) Id
+                        , a.Id Id
                         , IFNULL(a.Street, '') Street
                         , IFNULL(a.HouseNumber, '') HouseNumber
                         , IFNULL(a.PoBox, '') PoBox
@@ -378,16 +380,16 @@ namespace WebApi.Services
                         , IFNULL(a.State, '') State
                         , IFNULL(a.Neighborhood, '') Neighborhood
                         , IFNULL(a.Reference, '') Reference
-                        , IFNULL(j.Id, 0) Id
+                        , j.Id Id
                         , IFNULL(j.Location, '') Location
                         , IFNULL(j.JobTitle, '') JobTitle
                         , IFNULL(j.OfficialHours, '') OfficialHours
-                        , IFNULL(j.YearsOfService, 0) YearsOfService
-                        , IFNULL(j.Salary, 0) Salary
-                        , IFNULL(j.AddressId, 0) AddressId
+                        , j.YearsOfService YearsOfService
+                        , j.Salary Salary
+                        , j.AddressId AddressId
                         , IFNULL(j.ManagerName, '') ManagerName
                         , IFNULL(j.ManagerPosition, '') ManagerPosition 
-                        , IFNULL(aj.Id, 0) Id
+                        , aj.Id Id
                         , IFNULL(aj.Street,'') Street
                         , IFNULL(aj.HouseNumber, '') HouseNumber
                         , IFNULL(aj.PoBox, '') PoBox
@@ -404,6 +406,7 @@ namespace WebApi.Services
                         , m.Age
                         , IFNULL(m.Education, '') Education
                         , IFNULL(m.CurrentOccupation, '') CurrentOccupation
+                        , rr.SocialWorkerName
                     FROM RegistrationRequest rr
                     LEFT JOIN Requestor r ON r.Id = rr.RequestorId
                     LEFT JOIN MaritalStatus ms ON ms.Id = r.MaritalStatusId
@@ -536,7 +539,7 @@ namespace WebApi.Services
                                 CurrentOccupation = reader.GetValueOrNull<string>(index++)
                             }
                         };
-
+                        registrationRequest.SocialWorkerName = reader.GetValueOrNull<string>(index++);
                         registrationRequests.Add(registrationRequest);
                     }
                 }
@@ -558,8 +561,8 @@ namespace WebApi.Services
                     SELECT rr.Id
                         , IFNULL(rr.HowYouHearAboutUs, '') HowYouHearAboutUs
                         , rr.CreationDate
-                        , IFNULL(rr.RequestorId, 0) RequestorId
-                        , IFNULL(rr.MinorId, 0) MinorId
+                        , rr.RequestorId RequestorId
+                        , rr.MinorId MinorId
                         , IFNULL(rr.Reasons,'') Reasons
                         , IFNULL(rr.FamilyComposition, '') FamilyComposition
                         , IFNULL(rr.FamilyInteraction, '') FamilyInteraction
@@ -580,12 +583,12 @@ namespace WebApi.Services
                         , IFNULL(r.CurrentOccupation, '') CurrentOccupation
                         , r.RelationshipId
                         , r.AddressId
-                        , IFNULL(r.JobId, 0) JobId
+                        , r.JobId JobId
                         , ms.Id
                         , ms.Name
                         , rs.Id
                         , rs.Name
-                        , IFNULL(a.Id, 0 ) Id
+                        , a.Id Id
                         , IFNULL(a.Street, '') Street
                         , IFNULL(a.HouseNumber, '') HouseNumber
                         , IFNULL(a.PoBox, '') PoBox
@@ -595,16 +598,16 @@ namespace WebApi.Services
                         , IFNULL(a.State, '') State
                         , IFNULL(a.Neighborhood, '') Neighborhood
                         , IFNULL(a.Reference, '') Reference
-                        , IFNULL(j.Id, 0) Id
+                        , j.Id Id
                         , IFNULL(j.Location, '') Location
                         , IFNULL(j.JobTitle, '') JobTitle
                         , IFNULL(j.OfficialHours, '') OfficialHours
-                        , IFNULL(j.YearsOfService, 0) YearsOfService
-                        , IFNULL(j.Salary, 0) Salary
-                        , IFNULL(j.AddressId, 0) AddressId
+                        , j.YearsOfService YearsOfService
+                        , j.Salary Salary
+                        , j.AddressId AddressId
                         , IFNULL(j.ManagerName, '') ManagerName
                         , IFNULL(j.ManagerPosition, '') ManagerPosition 
-                        , IFNULL(aj.Id, 0) Id
+                        , aj.Id Id
                         , IFNULL(aj.Street,'') Street
                         , IFNULL(aj.HouseNumber, '') HouseNumber
                         , IFNULL(aj.PoBox, '') PoBox
@@ -621,6 +624,7 @@ namespace WebApi.Services
                         , m.Age
                         , IFNULL(m.Education, '') Education
                         , IFNULL(m.CurrentOccupation, '') CurrentOccupation
+                        , rr.SocialWorkerName
                     FROM RegistrationRequest rr
                     LEFT JOIN Requestor r ON r.Id = rr.RequestorId
                     LEFT JOIN MaritalStatus ms ON ms.Id = r.MaritalStatusId
@@ -744,7 +748,7 @@ namespace WebApi.Services
                                 CurrentOccupation = reader.GetValueOrNull<string>(index++)
                             }
                         };
-
+                        registrationRequest.SocialWorkerName = reader.GetValueOrNull<string>(index++);
                         registrationRequests.Add(registrationRequest);
                     }
                 }

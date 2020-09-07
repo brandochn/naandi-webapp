@@ -67,6 +67,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.RegistrationRequestStatusId = registration.RegistrationRequestStatusId;
                 model.LoadMunicipalitiesOfMexico(registrationRequestRepository);
                 model.LoadRegistrationRequestStatuses(registrationRequestRepository);
+                model.SocialWorkerName = registration.SocialWorkerName;
 
                 return View(model);
             }
@@ -201,6 +202,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.RegistrationRequestStatusId = registration.RegistrationRequestStatusId;
                 model.LoadMunicipalitiesOfMexico(registrationRequestRepository);
                 model.LoadRegistrationRequestStatuses(registrationRequestRepository);
+                model.SocialWorkerName = registration.SocialWorkerName;
 
                 return View(model);
             }

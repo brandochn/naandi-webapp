@@ -28,10 +28,10 @@
                     <label>Fecha de solicitud</label>
                     <input type="text" readonly asp-for="CreationDate" class="form-control" value="@Model.CreationDate.ToString("dd/MM/yyyy")" />
                 </div>
-                 <div class="form-group col-md-4">
-                        <label>Estatus de la solicitud</label>
-                        @Html.DropDownListFor(x => Model.RegistrationRequestStatusId, new SelectList(Model.RegistrationRequestStatusList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "RegistrationRequestStatus" })
-                 </div>
+                <div class="form-group col-md-4">
+                    <label>Estatus de la solicitud</label>
+                    @Html.DropDownListFor(x => Model.RegistrationRequestStatusId, new SelectList(Model.RegistrationRequestStatusList, "Id", "Name"), htmlAttributes: new { @class = "form-control", id = "RegistrationRequestStatus" })
+                </div>
             </div>
             <div class="card">
                 <h5 class="card-header text-center text-white bg-primary">
@@ -318,6 +318,17 @@
                                 <input type="text" asp-for="Requestor.Job.ManagerPosition" class="form-control" value="@Model.Requestor.Job.ManagerPosition" />
                             }
                         </div>
+                        <div class="form-group col-md-3">
+                            <label>Teléfono</label>
+                            @if (Model.Requestor == null || Model.Requestor.Job.Address == null)
+                            {
+                                <input type="text" asp-for="Requestor.Job.Address.PhoneNumber" class="form-control" />
+                            }
+                            else
+                            {
+                                <input type="text" asp-for="Requestor.Job.Address.PhoneNumber" class="form-control" value="@Model.Requestor.Job.Address.PhoneNumber" />
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -460,6 +471,18 @@
                 </h5>
                 <div class="card-body">
                     <textarea rows="3" asp-for="Comments" class="form-control">@Model.Comments</textarea>
+                </div>
+            </div>
+            <div class="card">
+                <h5 class="card-header text-center text-white bg-primary">
+                    Trabajadora social
+                </h5>
+                <div class="card-body">
+
+                    <div class="form-group col-md-6">
+                        <label>Nombre</label>
+                        <input type="text" asp-for="SocialWorkerName" class="form-control" value="@Model.SocialWorkerName" />
+                    </div>
                 </div>
             </div>
         </div>
