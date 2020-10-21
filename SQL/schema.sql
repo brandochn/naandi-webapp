@@ -2087,7 +2087,8 @@ BEGIN
         -- get the current item and build an SQL statement
         -- to pass it to a callback procedure
         SET v_current_item :=
-            JSON_QUOTE(JSON_EXTRACT(in_array, CONCAT('$[', i, ']')));
+            JSON_EXTRACT(in_array, CONCAT('$[', i, ']'));
+		SET v_current_item := JSON_QUOTE(CONVERT(v_current_item using utf8mb4));
         SET @sql_array_callback :=
             CONCAT('CALL ', in_callback, '(', in_id, ', ', v_current_item, ');');
         
