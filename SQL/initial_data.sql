@@ -38,7 +38,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `Relationship` WRITE;
 /*!40000 ALTER TABLE `Relationship` DISABLE KEYS */;
-INSERT INTO `Relationship` VALUES (1,'Abuelo'),(2,'Abuela'),(3,'Padre'),(4,'Madre'),(5,'Hermano'),(6,'Hermana'),(7,'Tutor');
+INSERT INTO `Relationship` VALUES (1,'Abuelo'),(2,'Abuela'),(3,'Padre'),(4,'Madre'),(5,'Hermano'),(6,'Hermana'),(7,'Tutor'),(8,'Hijo'),(9,'Hija');
 /*!40000 ALTER TABLE `Relationship` ENABLE KEYS */;
 UNLOCK TABLES;
 
