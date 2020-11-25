@@ -758,6 +758,8 @@ CREATE TABLE `FamilyResearch` (
   `FamilyNutritionId` int(11) DEFAULT NULL,
   `BenefitsProvidedId` int(11) DEFAULT NULL,
   `IngresosEgresosMensualesId` int(11) DEFAULT NULL,
+  `SocialWorkerName` varchar(100) DEFAULT NULL,
+  `CreationDate` datetime NOT NULL,  
   PRIMARY KEY (`Id`),
   KEY `FK_FamilyResearch_Minor` (`MinorId`),
   CONSTRAINT `FK_FamilyResearch_Minor` FOREIGN KEY (`MinorId`) REFERENCES `Minor` (`Id`),
@@ -2371,6 +2373,8 @@ BEGIN
 			,FamilyNutritionId
 			,BenefitsProvidedId
 			,IngresosEgresosMensualesId
+			,SocialWorkerName
+  			,CreationDate
 		)
 		SELECT
 			 JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.VisitDate'))
@@ -2396,7 +2400,9 @@ BEGIN
 			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.EconomicSituationId'))
 			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyNutritionId'))
 			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.BenefitsProvidedId'))
-			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.IngresosEgresosMensualesId'));
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.IngresosEgresosMensualesId'))
+			,JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.SocialWorkerName'))
+			,UTC_TIMESTAMP();
 		SET FamilyResearchId = LAST_INSERT_ID();
 	
 	ELSE
@@ -2434,6 +2440,7 @@ BEGIN
 				,`FamilyNutritionId` = 				(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.FamilyNutritionId')))
 				,`BenefitsProvidedId` = 			(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.BenefitsProvidedId')))
 				,`IngresosEgresosMensualesId` = 	(SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.IngresosEgresosMensualesId')))
+				,`SocialWorkerName` =               (SELECT JSON_UNQUOTE(JSON_EXTRACT(JSONData, '$.SocialWorkerName')))
 				
 			WHERE Id = FamilyResearchId;
 		END IF;

@@ -180,17 +180,17 @@
                                                 <input type="text" asp-for="LegalGuardian.CellPhoneNumber" class="form-control" value="@Model.LegalGuardian.CellPhoneNumber" />
                                             }
                                         </div>
-                                        <div class="form-group col-md-4">
-                                            <label>Telefono de casa</label>
-                                            @if (Model.LegalGuardian == null)
-                                            {
-                                                <input type="text" asp-for="LegalGuardian.PhoneNumber" class="form-control" />
-                                            }
-                                            else
-                                            {
-                                                <input type="text" asp-for="LegalGuardian.PhoneNumber" class="form-control" value="@Model.LegalGuardian.PhoneNumber" />
-                                            }
-                                        </div>
+                                        @*<div class="form-group col-md-4">
+                                                <label>Telefono de casa</label>
+                                                @if (Model.LegalGuardian == null)
+                                                {
+                                                    <input type="text" asp-for="LegalGuardian.PhoneNumber" class="form-control" />
+                                                }
+                                                else
+                                                {
+                                                    <input type="text" asp-for="LegalGuardian.PhoneNumber" class="form-control" value="@Model.LegalGuardian.PhoneNumber" />
+                                                }
+                                            </div>*@
                                     </div>
                                 </div>
                             </div>
@@ -1464,6 +1464,26 @@
                                         <div class="form-group col-md-12">
                                             <textarea rows="3" asp-for="Recommendations" class="form-control">@Model.Recommendations</textarea>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section>
+                            <div class="card">
+                                <h5 class="card-header text-center text-white bg-primary">
+                                    Trabajadora social
+                                </h5>
+                                <div class="card-body">
+
+                                    <div class="form-group col-md-6">
+                                        <label>Nombre</label>
+                                        <input type="text" asp-for="SocialWorkerName" class="form-control" value="@Model.SocialWorkerName" />
+                                    </div>
+
+                                    <div class="form-group col-md-3">
+                                        <label>Fecha de elaboración</label>
+                                        <input type="text" readonly asp-for="CreationDate" class="form-control" value="@Model.CreationDate.ToString("dd/MM/yyyy")" />
                                     </div>
                                 </div>
                             </div>

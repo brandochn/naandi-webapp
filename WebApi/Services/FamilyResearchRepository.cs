@@ -1400,7 +1400,9 @@ namespace WebApi.Services
                                 `FamilyResearch`.RedesDeApoyoFamiliares, -- 134
                                 `FamilyResearch`.ProblemsIdentified, -- 135
                                 `TypeOfDistrict`.Id, -- 136
-                                `TypeOfDistrict`.Name -- 137
+                                `TypeOfDistrict`.Name, -- 137
+                                `FamilyResearch`.SocialWorkerName, -- 138
+                                `FamilyResearch`.CreationDate -- 139
 
                             FROM `FamilyResearch`
                             LEFT JOIN `LegalGuardian` ON `LegalGuardian`.Id =  `FamilyResearch`.LegalGuardianId
@@ -1614,6 +1616,9 @@ namespace WebApi.Services
                         familyResearch.District.TypeOfDistrict.Id = reader.GetValueOrDefault<int>(index++);
                         familyResearch.District.TypeOfDistrict.Name = reader.GetValueOrNull<string>(index++);
 
+                        familyResearch.SocialWorkerName = reader.GetValueOrNull<string>(index++);
+                        familyResearch.CreationDate = reader.GetValueOrDefault<DateTime>(index++);
+
                     }
                 }
             }
@@ -1772,7 +1777,9 @@ namespace WebApi.Services
                                 `FamilyResearch`.RedesDeApoyoFamiliares, -- 134
                                 `FamilyResearch`.ProblemsIdentified, -- 135
                                 `TypeOfDistrict`.Id, -- 136
-                                `TypeOfDistrict`.Name -- 137
+                                `TypeOfDistrict`.Name, -- 137
+                                `FamilyResearch`.SocialWorkerName, -- 138
+                                `FamilyResearch`.CreationDate -- 139
 
                             FROM `FamilyResearch`
                             LEFT JOIN `LegalGuardian` ON `LegalGuardian`.Id =  `FamilyResearch`.LegalGuardianId
@@ -1979,6 +1986,9 @@ namespace WebApi.Services
                         familyResearch.District.TypeOfDistrict.Id = reader.GetValueOrDefault<int>(index++);
                         familyResearch.District.TypeOfDistrict.Name = reader.GetValueOrNull<string>(index++);
 
+                        familyResearch.SocialWorkerName = reader.GetValueOrNull<string>(index++);
+                        familyResearch.CreationDate = reader.GetValueOrDefault<DateTime>(index++);
+
                         familyResearches.Add(familyResearch);
 
                     }
@@ -2149,7 +2159,9 @@ namespace WebApi.Services
                                 `FamilyResearch`.RedesDeApoyoFamiliares, -- 134
                                 `FamilyResearch`.ProblemsIdentified, -- 135
                                 `TypeOfDistrict`.Id, -- 136
-                                `TypeOfDistrict`.Name -- 137
+                                `TypeOfDistrict`.Name, -- 137
+                                `FamilyResearch`.SocialWorkerName, -- 138
+                                `FamilyResearch`.CreationDate -- 139
 
                             FROM `FamilyResearch`
                             LEFT JOIN `LegalGuardian` ON `LegalGuardian`.Id =  `FamilyResearch`.LegalGuardianId
@@ -2363,6 +2375,9 @@ namespace WebApi.Services
                         familyResearch.District.TypeOfDistrict = new TypeOfDistrict();
                         familyResearch.District.TypeOfDistrict.Id = reader.GetValueOrDefault<int>(index++);
                         familyResearch.District.TypeOfDistrict.Name = reader.GetValueOrNull<string>(index++);
+
+                        familyResearch.SocialWorkerName = reader.GetValueOrNull<string>(index++);
+                        familyResearch.CreationDate = reader.GetValueOrDefault<DateTime>(index++);
 
                         familyResearches.Add(familyResearch);
 

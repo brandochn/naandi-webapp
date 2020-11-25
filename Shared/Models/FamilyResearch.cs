@@ -40,5 +40,7 @@ namespace Naandi.Shared.Models
         public BenefitsProvided BenefitsProvided { get; set; }
         public int? IngresosEgresosMensualesId { get; set; }
         public IngresosEgresosMensuales IngresosEgresosMensuales { get; set; }
+        public string SocialWorkerName { get; set; }
+        public DateTime CreationDate { get; set; }
     }
 }

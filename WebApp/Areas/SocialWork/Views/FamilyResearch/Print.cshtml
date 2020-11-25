@@ -1596,6 +1596,26 @@
                             </div>
                         </section>
 
+                        <section>
+                            <div class="card">
+                                <h5 class="card-header text-center text-white bg-secondary">
+                                    Trabajadora social
+                                </h5>
+                                <div class="card-body">
+
+                                    <div class="form-group col-md-6">
+                                        <label>Nombre</label>
+                                        <input type="text" asp-for="SocialWorkerName" class="form-control" value="@Model.SocialWorkerName" />
+                                    </div>
+
+                                    <div class="form-group col-md-3">
+                                        <label>Fecha de elaboración</label>
+                                        <input type="text" readonly asp-for="CreationDate" class="form-control" value="@Model.CreationDate.ToString("dd/MM/yyyy")" />
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
                     </div>
                 </div>
             </div>

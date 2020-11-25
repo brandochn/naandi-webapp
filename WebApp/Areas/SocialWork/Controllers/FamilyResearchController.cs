@@ -56,6 +56,7 @@ namespace WebApp.Areas.SocialWork.Controllers
             model.LoadTypesOfHousesList(familyResearchRepository);
             model.VisitDate = DateTime.Now.ToCentralMexicoTime();
             model.FormVisitTime = DateTime.Now.ToCentralMexicoTime().ToShortTimeString();
+            model.CreationDate = DateTime.Now.ToCentralMexicoTime();
 
             if (Id > 0)
             {
@@ -92,6 +93,8 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.LoadMunicipalitiesOfMexico(familyResearchRepository);
                 model.FormVisitTime = familyResearch.VisitTime.ToShortTimeString();
                 model.VisitDate = familyResearch.VisitDate;
+                model.CreationDate = familyResearch.CreationDate;
+                model.SocialWorkerName = familyResearch.SocialWorkerName;
 
                 model.LoadFamilyNutritionFoodRelation(familyResearch.FamilyNutrition);
                 model.LoadPatrimonyViewModelCollection(familyResearch.EconomicSituation);
@@ -134,6 +137,7 @@ namespace WebApp.Areas.SocialWork.Controllers
                     model.LoadFoods(familyResearchRepository);
                     model.LoadFrequencies(familyResearchRepository);
                     model.LoadTypesOfHousesList(familyResearchRepository);
+                    model.CreationDate = DateTime.Now.ToCentralMexicoTime();
 
                     return View("ShowForm", model);
                 }
@@ -652,6 +656,8 @@ namespace WebApp.Areas.SocialWork.Controllers
                 model.LoadMunicipalitiesOfMexico(familyResearchRepository);
                 model.FormVisitTime = familyResearch.VisitTime.ToShortTimeString();
                 model.VisitDate = familyResearch.VisitDate;
+                model.CreationDate = familyResearch.CreationDate;
+                model.SocialWorkerName = familyResearch.SocialWorkerName;
 
                 model.LoadFamilyNutritionFoodRelation(familyResearch.FamilyNutrition);
                 model.LoadPatrimonyViewModelCollection(familyResearch.EconomicSituation);
